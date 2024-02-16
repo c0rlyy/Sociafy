@@ -56,6 +56,9 @@ def create_user(user: user_schema.UserCreate, profile: profile_schema.ProfileCre
             raise HTTPException(status_code=400, detail="Username already exists, LEARN C NOT REACT")
 
     created_user = user_controller.create_user(db=db, user=user)
+
+    if created_user is None:
+        raise HTTPException(status_code=500, detail="Failed in creating a User Try again")
     user_profile = profile_controller.create_user_profile(db=db, profile=profile, user_id=created_user.id)  # type: ignore
     return created_user
 
