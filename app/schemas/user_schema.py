@@ -34,3 +34,7 @@ class UserOut(UserBase):
 
 class UserCredentials(UserBase):
     password: str
+
+
+class UserUpdate(UserCreate):
+    pass

@@ -11,10 +11,10 @@ from models.profile_model import Profile as ProfileModel
 from schemas import profile_schema
 
 
-def create_user_profile(db: Session, profile: profile_schema.ProfileCreate, user_id: int):
+def create_user_profile(db: Session, user_id: int):
     db_profile = ProfileModel(
         user_id=user_id,
-        description=profile.description,
+        description="Well hello There",
     )
     db.add(db_profile)
     db.commit()
