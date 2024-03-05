@@ -13,7 +13,7 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    is_active: bool
+    # is_active: bool
     user_name: str
     password: str
     profile: profile_schema.ProfileOut
@@ -25,7 +25,7 @@ class User(UserBase):
 class UserOut(UserBase):
     user_name: str
     id: int
-    is_active: bool
+    # is_active: bool
     profile: profile_schema.ProfileOut
 
     class Config:

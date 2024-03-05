@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_
+from sqlalchemy.sql import text
 from fastapi import HTTPException
 
 from service.password_hash import hash_password, verify_password
@@ -27,23 +28,39 @@ def get_users(db: Session, skip: int | None = 0, limit: int = 100):
     return db.query(UserModel).offset(skip).limit(limit).all()
 
 
-def create_user(db: Session, user: UserCreateSchema):
+def create_user_and_profile(db: Session, user: UserCreateSchema):
     hashed_password = hash_password(user.password)
-    db_user = UserModel(email=user.email, password=hashed_password, user_name=user.user_name)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+    try:
+        with db.begin_nested():
+            db_user = UserModel(email=user.email, password=hashed_password, user_name=user.user_name)
+            db.add(db_user)
+            db.flush()  # Ensure the user ID is generated before adding the profile
+            db.refresh(db_user)
+
+            db_profile = ProfileModel(user_id=db_user.id, description="I want my PHP Lambo")
+            print(db_profile)
+            db.add(db_profile)
+            db.commit()
+            return db_user
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        db.rollback()
+        return None
+
+    # db_user = UserModel(email=user.email, password=hashed_password, user_name=user.user_name)
+    # db.add(db_user)
+    # db.commit()
+    # db.refresh(db_user)
     # profile_controller.create_user_profile(db=db, profile=profile, user_id=db_user.id)  # type: ignore
-    return db_user
+    # return db_user
 
 
-def log_in(db: Session, user: UserCredentials):
+def log_in(db: Session, user: UserCredentials) -> str | None:
     db_user = db.query(UserModel).filter(UserModel.email == user.email).first()
     # i think doing it this way is fine coz if the user is None the if statment will stop executing before
-    # fn verify_password
+    # fn verify_password so db user password will not be none
     if db_user and verify_password(user.password, db_user.password):  # type: ignore
         token: str = encode({"user_id": db_user.id, "profile_id": db_user.profile.profile_id, "user_name": db_user.user_name})
-        print(decode(token))
         return token
     return None
 
