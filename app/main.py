@@ -7,11 +7,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 
-from controllers import user_controller, profile_controller
+from controllers import user_controller, profile_controller, post_controller
 
 from models.user_model import User as UserModel
 from models import user_model, profile_model
-from schemas import user_schema, profile_schema, token_schema
+from schemas import user_schema, profile_schema, token_schema, post_schema
 
 
 from dbConfig.database import SessionLocal, engine
@@ -30,12 +30,7 @@ def get_db():
         db.close()
 
 
-origins: list[str] = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:5137",
-]
+origins: list[str] = ["*"]  # "http://localhost:5173" i love CORS
 
 app.add_middleware(
     CORSMiddleware,
@@ -57,11 +52,11 @@ async def read_user_me(token: Annotated[str, Header()]) -> dict:
 
 @app.get("/users/", response_model=list[user_schema.UserOut])
 def read_users(skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users = user_controller.get_users(db, skip=skip, limit=limit)
+    users: list[UserModel] = user_controller.get_users(db, skip=skip, limit=limit)
     return users
 
 
-@app.get("/users/{user_id}", response_model=user_schema.UserCreate)
+@app.get("/users/{user_id}", response_model=user_schema.User)
 def read_user(user_id: int, db: Session = Depends(get_db)):
     db_user = user_controller.get_user(db, user_id=user_id)
     if db_user is None:
@@ -75,7 +70,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 def create_user_with_profile(user: user_schema.UserCreate, db: Session = Depends(get_db)):
 
     user_in_db = db.query(UserModel).filter(or_(UserModel.email == user.email, UserModel.user_name == user.user_name)).first()
-    if user_in_db:
+    if user_in_db:  # not None
         # print(type(user_in_db.email))
         # print(type(user.email))
         # they are both string, i checked so i dont understand why pylance shows me an error
@@ -90,8 +85,6 @@ def create_user_with_profile(user: user_schema.UserCreate, db: Session = Depends
         raise HTTPException(status_code=500, detail="Failed in creating a User Try again")
     # user_profile = profile_controller.create_user_profile(db=db, user_id=created_user.id)  # type: ignore
     token: str = encode({"user_id": created_user.id, "profile_id": created_user.profile.profile_id, "user_name": created_user.user_name})
-    print(decode(token))
-    print(created_user)
     return {"token": token}
 
 
@@ -112,5 +105,23 @@ def delete_user(user: user_schema.UserCredentials, token: Annotated[str, Header(
 
 
 @app.put("/users/", response_model=user_schema.UserOut)
-def update_user_model(user_credentials: user_schema.UserCredentials, user_data_update: user_schema.UserUpdate, db: Session = Depends(get_db)):
-    pass
+def update_user_model(
+    user_credentials: user_schema.UserCredentials,
+    updated_user_data: user_schema.UserUpdate,
+    token: Annotated[str, Header()],
+    db: Session = Depends(get_db),
+) -> UserModel:
+    user_updated: UserModel | None = user_controller.update_user(db, user_credentials, updated_user_data, token)
+    # i know its None if it wont update but i find it more readable this way
+    # other way it reads if user_updated raise excetioon
+    if user_updated is None:
+        raise HTTPException(status_code=401, detail="incorrect Credentials")
+    return user_updated
+
+
+@app.post("/posts/", response_model=post_schema.PostBase)
+def create_post(post_data: post_schema.PostBase, token: Annotated[str, Header()], db: Session = Depends(get_db)):
+    new_post = post_controller.create_post(db, post_data=post_data, token=token)
+    if new_post is None:
+        raise HTTPException(status_code=401, detail="failed adding the psot")
+    return new_post

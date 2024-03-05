@@ -36,5 +36,7 @@ class UserCredentials(UserBase):
     password: str
 
 
-class UserUpdate(UserCreate):
-    pass
+class UserUpdate(BaseModel):
+    email: str | None
+    password: str | None
+    user_name: str | None
