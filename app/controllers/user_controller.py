@@ -34,7 +34,7 @@ def create_user_and_profile(db: Session, user: UserCreateSchema):
         with db.begin_nested():
             db_user = UserModel(email=user.email, password=hashed_password, user_name=user.user_name)
             db.add(db_user)
-            db.flush()  # Ensure the user ID is generated before adding the profile
+            db.flush()
             db.refresh(db_user)
 
             db_profile = ProfileModel(user_id=db_user.id, description="I want my PHP Lambo")
