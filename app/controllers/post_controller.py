@@ -11,7 +11,7 @@ from service.web_token import encode, decode
 from schemas import post_schema
 
 
-def create_post(db: Session, post_data: post_schema.PostBase, token: str):
+def create_post(db: Session, post_data: post_schema.PostBase, token: str) -> PostModel:
     user_info = decode(token=token)
 
     post = PostModel(**post_data.model_dump(), profile_id=user_info["profile_id"], user_id=user_info["user_id"], post_description="aaaa")
@@ -21,5 +21,5 @@ def create_post(db: Session, post_data: post_schema.PostBase, token: str):
     return post
 
 
-def get_posts(db: Session, skip: int | None = 0, limit: int = 100):
+def get_posts(db: Session, skip: int | None = 0, limit: int = 100) -> list[PostModel]:
     return db.query(PostModel).offset(skip).limit(limit).all()

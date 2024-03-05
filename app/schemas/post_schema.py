@@ -10,13 +10,21 @@ class PostBase(BaseModel):
 
 
 class PostAllInfo(PostBase):
-    id: int | None
-    profile_id: int | None
-    user_id: int | None
+    id: int
+    profile_id: int
+    user_id: int
     post_description: str | None
 
-    profile: profile_schema.ProfileOut
+    post_profile: profile_schema.ProfileOut
+
+    class Config:
+        from_attributes = True
 
 
 class Post(PostBase):
-    profile_pic: str | None
+    post_description: str | None
+
+
+class PostOut(Post):
+    id: int
+    post_profile: profile_schema.ProfileOut

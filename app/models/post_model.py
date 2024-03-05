@@ -14,4 +14,4 @@ class Post(Base):
     post_description = Column(String)
     profile_id = Column(Integer, ForeignKey("profiles.profile_id"))
 
-    post_profile = relationship("Profile", back_populates="posts")
+    post_profile = relationship("Profile", back_populates="posts", uselist=False)

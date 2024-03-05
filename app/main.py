@@ -12,6 +12,7 @@ from controllers import user_controller, profile_controller, post_controller
 from models.user_model import User as UserModel
 from models import user_model, profile_model
 from schemas import user_schema, profile_schema, token_schema, post_schema
+from models.post_model import Post as PostModel
 
 
 from dbConfig.database import SessionLocal, engine
@@ -120,8 +121,14 @@ def update_user_model(
 
 
 @app.post("/posts/", response_model=post_schema.PostBase)
-def create_post(post_data: post_schema.PostBase, token: Annotated[str, Header()], db: Session = Depends(get_db)):
-    new_post = post_controller.create_post(db, post_data=post_data, token=token)
+def create_post(post_data: post_schema.PostBase, token: Annotated[str, Header()], db: Session = Depends(get_db)) -> PostModel:
+    new_post: PostModel | None = post_controller.create_post(db, post_data=post_data, token=token)
     if new_post is None:
         raise HTTPException(status_code=401, detail="failed adding the psot")
     return new_post
+
+
+@app.get("/posts", response_model=list[post_schema.PostOut])
+def read_posts(skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[PostModel]:
+    posts: list[PostModel] = post_controller.get_posts(skip=skip, limit=limit, db=db)
+    return posts
