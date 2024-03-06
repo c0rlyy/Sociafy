@@ -1,6 +1,6 @@
 import LoginForm from "../Forms/LoginForm/LoginForm";
 import { useMediaQuery } from "react-responsive";
-import React from "react";
+import React, { useEffect } from "react";
 import TypeAnimation from "../Animations/TypeAnimation";
 import { useLoaderData, useNavigation } from "react-router-dom";
 import Loader from "../Loader/Loader";
@@ -20,7 +20,18 @@ const LandingPage: React.FC = () => {
   if (navigation.state === "loading") {
     return <Loader />;
   }
-  console.log(users);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/users/1");
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
     <div className=" grid grid-cols-landing gap-1/2 border relative border-slate-500 items-center h-screen justify-items-center">
       <TypeAnimation mdScreen={mdScreen} />

@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
 import classes from "./LoginForm.module.css";
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { Cookies } from "react-cookie";
 import useInputs from "../../../CustomHooks/useInputs";
 type LoginFormProps = {
@@ -26,12 +26,14 @@ function LoginForm({ mdScreen }: LoginFormProps) {
   // };
 
   const fetchValidation = async () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     try {
       const response = await fetch("http://localhost:8000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        mode: "cors",
         body: JSON.stringify({
           email: inputs.email,
           password: inputs.password,

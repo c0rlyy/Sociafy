@@ -1,0 +1,5 @@
+Front:
+
+1. Redirect do MainPage
+2. Przechowywać JWT najlepiej w headerze requestu
+3. Abort Controller ogarnąć 

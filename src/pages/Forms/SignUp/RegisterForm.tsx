@@ -27,6 +27,8 @@ const RegisterForm: React.FC<RegisterState> = () => {
           "Content-Type": "application/json",
         },
         method: "POST",
+        mode: "cors",
+
         body: JSON.stringify({
           email: userForm.email,
           password: userForm.password,
