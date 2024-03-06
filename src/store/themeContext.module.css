@@ -1,0 +1,8 @@
+.darkMode {
+  background-color: rgba(0, 0, 0, 0.917);
+  color: white;
+}
+.standardMode {
+  background-color: white;
+  color: black;
+}

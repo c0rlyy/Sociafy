@@ -1,0 +1,50 @@
+.backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 20;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modal {
+  position: absolute;
+  top: 15%;
+  right: 25%;
+  width: 50%;
+  height: 75%;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 30000;
+  animation: slide-down 300ms ease-out forwards;
+  margin: 0 auto;
+  overflow: hidden;
+  display: flex;
+  border: 5px solid green;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .modal {
+    width: 35%;
+    left: calc(50% - 20rem);
+    flex-direction: column;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-3rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,81 @@
+.anim-text {
+  position: relative;
+  top: 50%;
+  margin: 0 auto;
+  border-right: 2px solid rgba(255, 255, 255, 0.75);
+  font-size: clamp(1rem, 1.5vw, 3rem);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  padding: 10px 5px 5px 10px;
+}
+.anim-type {
+  animation: TypeWriter steps(55) 3s normal both,
+    blinkingCaret steps(55) 650ms infinite;
+}
+.anim-github {
+  animation: positionChange 500ms 3s ease-in both;
+}
+.github-item {
+  position: relative;
+  background-color: rgb(
+    51,
+    51,
+    51
+  ); /* You can set a specific background color if needed */
+  padding: 0.75rem /* 12px */;
+  --tw-bg-opacity: 0.8;
+  font-family: Helvetica, Arial, sans-serif;
+  gap: 0.75rem /* 12px */;
+  align-items: center;
+  display: flex;
+  border-radius: 9999px;
+  z-index: 1;
+  box-shadow: 0px 2px 4px black;
+}
+.github-item:hover {
+  color: black;
+  cursor: pointer;
+}
+.github-item::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 100%;
+  top: 0;
+  right: 0;
+  border-radius: 9999px;
+  background-color: white;
+  transition: width 250ms ease-in, height 250ms ease-in, transform 250ms ease-in;
+  z-index: -1;
+}
+.github-item:hover::after {
+  width: 100%;
+}
+@keyframes TypeWriter {
+  from {
+    width: 0em;
+  }
+  to {
+    width: 100%;
+  }
+}
+@keyframes blinkingCaret {
+  from {
+    border-right-color: black;
+  }
+  to {
+    border-right-color: transparent;
+  }
+}
+@keyframes positionChange {
+  from {
+    opacity: 0;
+    transform: translateY(-50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

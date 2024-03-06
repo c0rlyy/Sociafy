@@ -1,0 +1,7 @@
+.username {
+  font-size: clamp(0.1rem, 1vw, 0.8rem);
+  font-weight: bold;
+}
+.userlink {
+  font-size: clamp(0.1rem, 1vw, 0.7rem);
+}

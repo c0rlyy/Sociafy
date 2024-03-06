@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Agbalumo&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,500&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+:root {
+  --background-color: #fff;
+  --text-color: #333;
+}
+
+.dark-mode {
+  --background-color: #333;
+  --text-color: #fff;
+}
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
