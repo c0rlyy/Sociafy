@@ -10,11 +10,14 @@ import { CiLogout } from "react-icons/ci";
 import { SlMagnifier } from "react-icons/sl";
 import FooterSearchBar from "./FooterSearchBar";
 import { useState } from "react";
+import { Cookies } from "react-cookie";
 function FooterMenu() {
   // const postCtx = useContext(PostContext);
   const [, setIsLogout] = useState(false);
   const logoutHandler = () => {
     setIsLogout(true);
+    const cookies = new Cookies();
+    cookies.remove("token");
     localStorage.clear();
   };
   const [openPost, setOpenPost] = useState(false);

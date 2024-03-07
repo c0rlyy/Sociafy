@@ -32,29 +32,13 @@ const reducerFunc = (state: any, action: any) => {
   }
 };
 // Fetching Posts
-export async function FetchPosts() {
-  const [initState, dispatchAction] = useReducer(reducerFunc, INIT_STATE);
-  try {
-    const response = await fetch("http://localhost:3000/api/posts");
-    const postData = await response.json();
-    if (response.ok) {
-    }
-  } catch (error) {
-    dispatchAction({ type: "FETCH_FAILED" });
-  }
-  dispatchAction({ type: "FETCH_SUCCESS" });
-}
 function Post() {
   const [serverResponse, setServerResponse] = useState(false);
   const postCtx = useContext(PostContext);
-  const posts = useLoaderData();
-  console.log(posts);
   const postsArr: [] = [];
   return (
     <>
-      <div className="order-2 h-1/2 flex-col flex  gap-9 p-4">
-        {postsArr.length === 0 ? "" : ""}
-      </div>
+      <div className="order-2 h-1/2 flex-col flex  gap-9 p-4"></div>
     </>
   );
 }

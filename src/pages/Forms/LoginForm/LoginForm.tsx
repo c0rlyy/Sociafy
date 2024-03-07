@@ -1,6 +1,5 @@
-import { ChangeEvent } from "react";
 import classes from "./LoginForm.module.css";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, Form, redirect, useActionData } from "react-router-dom";
 import { Cookies } from "react-cookie";
 import useInputs from "../../../CustomHooks/useInputs";
 type LoginFormProps = {
@@ -9,10 +8,11 @@ type LoginFormProps = {
   password?: string;
 };
 function LoginForm({ mdScreen }: LoginFormProps) {
-  const { inputs, inputHandler, resetInputs } = useInputs({
+  const { inputs, inputHandler } = useInputs({
     email: "",
     password: "",
   });
+  const loginData = useActionData();
   // const [inputs, setInputs] = useState({
   //   email: "",
   //   password: "",
@@ -25,42 +25,11 @@ function LoginForm({ mdScreen }: LoginFormProps) {
   //   setInputs(nextState);
   // };
 
-  const fetchValidation = async () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    try {
-      const response = await fetch("http://localhost:8000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        mode: "cors",
-        body: JSON.stringify({
-          email: inputs.email,
-          password: inputs.password,
-        }),
-      });
-      console.log(inputs);
-      console.log(response);
-      if (response.ok) {
-        handleSuccess(response);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const handleSuccess = (response: Response) => {
-    const userValid = response.json();
-    console.log(response);
-    const cookies = new Cookies();
-    cookies.set("token", userValid);
-    console.log("Success!");
-  };
-  const formSubmitHandler = (e: ChangeEvent<HTMLFormElement>) => {
-    fetchValidation();
-    console.log(inputs);
-    e.preventDefault();
-    resetInputs();
-  };
+  // const formSubmitHandler = (e: ChangeEvent<HTMLFormElement>) => {
+  //   fetchValidation();
+  //   e.preventDefault();
+  //   resetInputs();
+  // };
 
   // useEffect(() => {
   //   const identifier = setTimeout(() => {
@@ -78,10 +47,11 @@ function LoginForm({ mdScreen }: LoginFormProps) {
         mdScreen ? "col-start-3 col-end-4" : "col-start-2 col-end-4"
       } items-center h-full lg:h-auto w-screen lg:w-3/4 shadow-black shadow-sm lg:justify-start  gap-3 flex flex-col p-3 `}
     >
-      <form
-        onSubmit={formSubmitHandler}
+      <Form
+        // onSubmit={formSubmitHandler}
         className="  lg:shadow-sm lg:w-full lg:h-auto lg:p-7 flex flex-col gap-4 mt-2"
-        action=""
+        action={"/"}
+        method="post"
       >
         <h1 className="font-logoFont text-center text-3xl">InstaClone</h1>
         <div className={classes.field}>
@@ -92,7 +62,6 @@ function LoginForm({ mdScreen }: LoginFormProps) {
             name="email"
             id=""
             value={inputs.email}
-            placeholder="email"
           />
           <label htmlFor="username" className={classes.label}>
             Login
@@ -106,7 +75,6 @@ function LoginForm({ mdScreen }: LoginFormProps) {
             name="password"
             value={inputs.password}
             id=""
-            placeholder="password"
           />
           <label className={classes.label} htmlFor="">
             Password
@@ -131,8 +99,65 @@ function LoginForm({ mdScreen }: LoginFormProps) {
             <Link to={"/Register"}>Sign Up</Link>
           </button>
         </div>
-      </form>
+      </Form>
+      {loginData && loginData.error && <p>{loginData.error}</p>}
     </div>
   );
 }
+// eslint-disable-next-line react-refresh/only-export-components
+export const loginAction = async ({ request }: { request: Request }) => {
+  const data = await request.formData();
+
+  const submission = {
+    email: data?.get("email") || "",
+    password: data?.get("password") || "",
+  };
+  // Post request
+  // const handleSuccess = async (response: Response) => {
+  //   const userValid = await response.json();
+
+  //   console.log("Success!");
+  // };
+  const fetchValidation = async () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    try {
+      const response = await fetch("http://localhost:8000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        mode: "cors",
+        body: JSON.stringify({
+          email: submission.email,
+          password: submission.password,
+        }),
+      });
+      const data = await response.json();
+      console.log(data);
+      if (response.ok) {
+        const cookies = new Cookies();
+        cookies.set("token", data.token, {
+          sameSite: "lax",
+          secure: true,
+        });
+        return true;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(submission);
+
+  const fetchValidationResult = await fetchValidation();
+
+  if (submission.email.length < 10) {
+    return { error: "No i co, nie działa xD" };
+  }
+
+  if (fetchValidationResult) {
+    return redirect("/MainPage");
+  } else {
+    return { error: "Login failed" };
+  }
+};
 export default LoginForm;

@@ -1,5 +1,3 @@
-import { redirect } from "react-router-dom";
-
 const fetchUsers = async () => {
   try {
     const resp = await fetch("http://127.0.0.1:8000/users/");

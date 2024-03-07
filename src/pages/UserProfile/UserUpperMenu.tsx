@@ -1,7 +1,7 @@
 import { useState } from "react";
-import user from "../../assets/rafal.jpg";
 import ChooseImg from "./ChooseImg";
 import "./UserProfile.css";
+import { useLoaderData } from "react-router-dom";
 type UserUpperMenuProps = {
   chooseImg: React.FC;
 };
@@ -10,7 +10,7 @@ const UserUpperMenu = () => {
   const openModalHandler = () => {
     setIsOpenModal(true);
   };
-
+  const userData = useLoaderData();
   return (
     <div className="flex items-center justify-around p-5">
       <div className="flex items-center gap-5">
@@ -27,7 +27,7 @@ const UserUpperMenu = () => {
           </div>
           {isOpenModal ? <ChooseImg /> : ""}
         </div>
-        <h1 className="font-bold">{localStorage.getItem("username")}</h1>
+        <h1 className="font-bold">{userData.user_name}</h1>
       </div>
 
       <div className="flex items-center gap-5 ">
