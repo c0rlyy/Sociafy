@@ -120,15 +120,24 @@ def update_user_model(
     return user_updated
 
 
+@app.get("/profile/{profile_id}/posts", response_model=profile_schema.ProfileWithPost)
+def get_profile_and_posts(profile_id: int, db: Session = Depends(get_db)):
+    profile_with_posts = profile_controller.get_profile_with_posts(db, profile_id)
+    if profile_with_posts is None:
+        raise HTTPException(status_code=404, detail="wrong id, try again")
+
+    return profile_with_posts
+
+
 @app.post("/posts/", response_model=post_schema.PostBase)
 def create_post(post_data: post_schema.PostBase, token: Annotated[str, Header()], db: Session = Depends(get_db)) -> PostModel:
     new_post: PostModel | None = post_controller.create_post(db, post_data=post_data, token=token)
     if new_post is None:
-        raise HTTPException(status_code=401, detail="failed adding the psot")
+        raise HTTPException(status_code=500, detail="failed adding the post")
     return new_post
 
 
-@app.get("/posts", response_model=list[post_schema.PostOut])
+@app.get("/posts", response_model=list[post_schema.PostAllInfo])
 def read_posts(skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[PostModel]:
     posts: list[PostModel] = post_controller.get_posts(skip=skip, limit=limit, db=db)
     return posts

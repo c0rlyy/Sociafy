@@ -9,7 +9,7 @@ ALGORYTHM = os.getenv("ALGORYTHM")
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 
-def encode(payload: dict):
+def encode(payload: dict) -> str:
     payload["exp"] = time.time() + 1800
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORYTHM)
 

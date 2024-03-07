@@ -1,6 +1,12 @@
 from pydantic import BaseModel
 
 
+def import_post_base():
+    from schemas.post_schema import PostBase
+
+    return PostBase
+
+
 class ProfileBase(BaseModel):
     description: str | None = None
 
@@ -19,3 +25,7 @@ class ProfileOut(ProfileBase):
 
 class Profile(ProfileOut):
     profile_pic: str | None
+
+
+class ProfileWithPost(ProfileOut):
+    posts: list[import_post_base()]  # type: ignore

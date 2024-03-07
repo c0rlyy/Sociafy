@@ -12,12 +12,27 @@ from schemas import post_schema
 
 
 def create_post(db: Session, post_data: post_schema.PostBase, token: str) -> PostModel:
-    user_info = decode(token=token)
+    # dunno how i shgould handle the errors logic since in the example starting project FastAPi devs did not use any try except for stuff like this
+    # but i think it would make sense from frontend perspecvie(they need to know what happend on server side)
+    # and also maybe it can provie more usfull inromation to user
+    # like for example not bad requuest but session expired log in again
+    if token is None:
+        raise HTTPException(status_code=403, detail="no token was given")
+    try:
+        user_info: dict = decode(token=token)
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    # TODO:
+    # BEING EBLE TO NOT SEND ALL DATA LIKE I CAN WITH USER, DUNNO WHY SQLALCHEMY IS DOING WHAT ITS DOING
+    # I CAN ALWAYS MAKE QUSTOM QUERRY BUT THAT DOES NOT MAKE SENSE AND ITS DUMB
 
-    post = PostModel(**post_data.model_dump(), profile_id=user_info["profile_id"], user_id=user_info["user_id"], post_description="aaaa")
+    post = PostModel(
+        post_title=post_data.post_title,
+        profile_id=user_info["profile_id"],
+        user_id=user_info["user_id"],
+    )
     db.add(post)
     db.commit()
-    print(post.id)
     return post
 
 

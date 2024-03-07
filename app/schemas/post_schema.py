@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from schemas import profile_schema
+from schemas.profile_schema import ProfileOut
 
 
 class PostBase(BaseModel):
@@ -15,7 +15,7 @@ class PostAllInfo(PostBase):
     user_id: int
     post_description: str | None
 
-    post_profile: profile_schema.ProfileOut
+    post_profile: ProfileOut
 
     class Config:
         from_attributes = True
@@ -27,4 +27,4 @@ class Post(PostBase):
 
 class PostOut(Post):
     id: int
-    post_profile: profile_schema.ProfileOut
+    post_profile: ProfileOut

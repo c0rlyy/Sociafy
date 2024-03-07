@@ -22,15 +22,3 @@ Make sure you have the following dependencies installed:
 - uvicorn[standard]
 - python-dotenv
 
-## Usage
-
-To run the application, follow these steps:
-
-1. Install the dependencies mentioned above.
-2. Set up your environment variables using `.env` file.
-3. Navigate to the `app` directory.
-4. Run the command:
-
-unicorn main:app --reload
-
-This command will start the server, and you can access the Sociafy platform from your browser.

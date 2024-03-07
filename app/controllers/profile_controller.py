@@ -1,22 +1,16 @@
-# from sqlalchemy.orm import Session
-# from sqlalchemy import or_, and_
+from sqlalchemy.orm import Session
+from sqlalchemy import or_, and_
 
 
-# from models.user_model import User as UserModel
-# from models.profile_model import Profile as ProfileModel
+from models.user_model import User as UserModel
+from models.profile_model import Profile as ProfileModel
 
-# from schemas.user_schema import UserCredentials
-
-# from schemas import user_schema
-# from schemas import profile_schema
+from schemas.user_schema import UserCredentials
 
 
-# def create_user_profile(db: Session, user_id: int):
-# db_profile = ProfileModel(
-#     user_id=user_id,
-#     description="Well hello There",
-# )
-# db.add(db_profile)
-# db.commit()
-# db.refresh(db_profile)
-# return db_profile
+from schemas import user_schema, post_schema, profile_schema
+
+
+def get_profile_with_posts(db: Session, profile_id: int) -> ProfileModel | None:
+    profile_posts: ProfileModel | None = db.query(ProfileModel).filter(ProfileModel.profile_id == profile_id).first()
+    return profile_posts
