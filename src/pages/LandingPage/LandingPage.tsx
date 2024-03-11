@@ -17,9 +17,11 @@ const LandingPage: React.FC = () => {
   });
   const users: UserData = useLoaderData();
   const navigation = useNavigation();
-  if (navigation.state === "loading") {
-    return <Loader />;
-  }
+  setTimeout(() => {
+    if (navigation.state === "submitting") {
+      return <Loader />;
+    }
+  }, 3000);
   return (
     <div className=" grid grid-cols-landing gap-1/2 border relative border-slate-500 items-center h-screen justify-items-center">
       <TypeAnimation mdScreen={mdScreen} />

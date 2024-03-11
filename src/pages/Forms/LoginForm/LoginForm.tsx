@@ -1,7 +1,14 @@
 import classes from "./LoginForm.module.css";
-import { Link, Form, redirect, useActionData } from "react-router-dom";
+import {
+  Link,
+  Form,
+  redirect,
+  useActionData,
+  useNavigation,
+} from "react-router-dom";
 import { Cookies } from "react-cookie";
 import useInputs from "../../../CustomHooks/useInputs";
+import Loader from "../../Loader/Loader";
 type LoginFormProps = {
   mdScreen: boolean;
   email?: string;
@@ -13,6 +20,7 @@ function LoginForm({ mdScreen }: LoginFormProps) {
     password: "",
   });
   const loginData = useActionData();
+  const loginDataReload = useNavigation();
   // const [inputs, setInputs] = useState({
   //   email: "",
   //   password: "",
@@ -40,7 +48,6 @@ function LoginForm({ mdScreen }: LoginFormProps) {
   //     console.log("CLEANUP");
   //   };
   // }, [inputs.email, inputs.password, email, password]);
-
   return (
     <div
       className={` ${

@@ -8,3 +8,4 @@ FIXME:
 useSubmit wykorzystam do automatycznego wylogowania usera po kilku minutach nieaktywności
 Dodawanie tokena do localStorage
 Usuniecie tokena z localStorage podczas wylogowania
+Dodawnie chwilowego czekania na załadowanie kontentu (useNavigation)
