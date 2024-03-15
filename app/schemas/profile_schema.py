@@ -1,10 +1,12 @@
 from pydantic import BaseModel
+from schemas.post_schema import PostOut
 
 
-def import_post_base():
-    from schemas.post_schema import PostBase
+# circullar dependency error fix
+# def import_post_base():
+#     from schemas.post_schema import Post
 
-    return PostBase
+#     return Post
 
 
 class ProfileBase(BaseModel):
@@ -27,5 +29,9 @@ class Profile(ProfileOut):
     profile_pic: str | None
 
 
+class ProfileWithUser(ProfileBase):
+    profile_id: int
+
+
 class ProfileWithPost(ProfileOut):
-    posts: list[import_post_base()]  # type: ignore
+    posts: list[PostOut]

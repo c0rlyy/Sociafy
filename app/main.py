@@ -10,15 +10,17 @@ from fastapi.middleware.cors import CORSMiddleware
 from controllers import user_controller, profile_controller, post_controller
 
 from models.user_model import User as UserModel
-from models import user_model, profile_model
+from models import user_model, profile_model, post_model
 from schemas import user_schema, profile_schema, token_schema, post_schema
 from models.post_model import Post as PostModel
+from models.profile_model import Profile as ProfileModel
 
 
 from dbConfig.database import SessionLocal, engine
 
 user_model.Base.metadata.create_all(bind=engine)
 profile_model.Base.metadata.create_all(bind=engine)
+post_model.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -42,7 +44,7 @@ app.add_middleware(
 )
 
 
-@app.get("/users/me", response_model=token_schema.TokenGetUser)
+@app.get("/me/user", response_model=token_schema.TokenGetUser)
 async def read_user_me(token: Annotated[str, Header()]) -> dict:
     try:
         user_info = decode(token)
@@ -68,7 +70,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 # this below is a respone model so how should the response look like, it automaticly filters what you want
 @app.post("/users/", response_model=user_schema.UserOut | dict[str, str])
 # this below me user is a request model
-def create_user_with_profile(user: user_schema.UserCreate, db: Session = Depends(get_db)):
+def create_user_with_profile(user: user_schema.UserCreate, db: Session = Depends(get_db)) -> dict[str, str]:
 
     user_in_db = db.query(UserModel).filter(or_(UserModel.email == user.email, UserModel.user_name == user.user_name)).first()
     if user_in_db:  # not None
@@ -80,7 +82,7 @@ def create_user_with_profile(user: user_schema.UserCreate, db: Session = Depends
         else:
             raise HTTPException(status_code=400, detail="Username already exists, LEARN C NOT REACT")
 
-    created_user = user_controller.create_user_and_profile(db=db, user=user)
+    created_user: UserModel | None = user_controller.create_user_and_profile(db=db, user=user)
 
     if created_user is None:
         raise HTTPException(status_code=500, detail="Failed in creating a User Try again")
@@ -98,7 +100,7 @@ def log_in(user: user_schema.UserCredentials, db: Session = Depends(get_db)) -> 
 
 
 @app.delete("/users/", response_model=dict[str, str])
-def delete_user(user: user_schema.UserCredentials, token: Annotated[str, Header()], db: Session = Depends(get_db)) -> dict[str, str]:
+def delete_user_with_profile(user: user_schema.UserCredentials, token: Annotated[str, Header()], db: Session = Depends(get_db)) -> dict[str, str]:
     user_to_delete: bool = user_controller.deleting_user(db, user, token=token)
     if not user_to_delete:
         raise HTTPException(status_code=401, detail="Try Again, wrong credentials")
@@ -120,17 +122,33 @@ def update_user_model(
     return user_updated
 
 
+@app.get("/profile/{user_id}", response_model=profile_schema.ProfileWithUser)
+def read_profile(user_id: int, db: Session = Depends(get_db)) -> user_controller.ProfileModel:
+    user_profile: user_controller.ProfileModel | None = profile_controller.get_profile(db, user_id)
+    if user_profile is None:
+        raise HTTPException(status_code=404, detail="No profile was found try again")
+    return user_profile
+
+
 @app.get("/profile/{profile_id}/posts", response_model=profile_schema.ProfileWithPost)
-def get_profile_and_posts(profile_id: int, db: Session = Depends(get_db)):
-    profile_with_posts = profile_controller.get_profile_with_posts(db, profile_id)
+def get_profile_and_posts(profile_id: int, db: Session = Depends(get_db)) -> ProfileModel:
+    profile_with_posts: ProfileModel | None = profile_controller.get_profile_with_posts(db, profile_id)
     if profile_with_posts is None:
         raise HTTPException(status_code=404, detail="wrong id, try again")
 
     return profile_with_posts
 
 
+@app.get("/me/posts", response_model=list[post_schema.PostAllInfo])
+def read_posts_me(token: Annotated[str, Header()], skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[PostModel]:
+    user_me_posts: list[PostModel] | None = post_controller.get_current_user_posts(db, token=token, skip=skip, limit=limit)
+    if user_me_posts is None:
+        raise HTTPException(status_code=404, detail="no user posts were found")
+    return user_me_posts
+
+
 @app.post("/posts/", response_model=post_schema.PostBase)
-def create_post(post_data: post_schema.PostBase, token: Annotated[str, Header()], db: Session = Depends(get_db)) -> PostModel:
+def create_post(post_data: post_schema.PostCreate, token: Annotated[str, Header()], db: Session = Depends(get_db)) -> PostModel:
     new_post: PostModel | None = post_controller.create_post(db, post_data=post_data, token=token)
     if new_post is None:
         raise HTTPException(status_code=500, detail="failed adding the post")

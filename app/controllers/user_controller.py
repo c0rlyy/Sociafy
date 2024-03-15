@@ -70,7 +70,6 @@ def deleting_user(db: Session, user: UserCredentials, token: str) -> bool:
         decoded_token = decode(token)
     except Exception as e:
         raise HTTPException(status_code=401, detail=f":) {e}")
-    # print(db_user.id, decoded_token["user_id"])
     if db_user and verify_password(user.password, db_user.password) and decoded_token["user_id"] == db_user.id:  # type: ignore
         profile = db.query(ProfileModel).filter(ProfileModel.profile_id == db_user.profile.profile_id).first()
         db.delete(db_user)
@@ -86,11 +85,11 @@ def update_user(db: Session, user_credentials: UserCredentials, updated_user_dat
     # db.query(UserModel).filter(UserModel.id == user_id).update(updated_user_data)
     # db.commit()
     try:
-        current_user = decode(token)
+        current_user: dict = decode(token)
     except Exception as e:
         raise HTTPException(status_code=401, detail=f"{e}")
 
-    db_user = db.query(UserModel).filter(UserModel.id == current_user["user_id"]).first()
+    db_user: UserModel | None = db.query(UserModel).filter(UserModel.id == current_user["user_id"]).first()
 
     if db_user and verify_password(user_credentials.password, db_user.password) and user_credentials.email == db_user.email:  # type: ignore
 
