@@ -37,7 +37,7 @@ def create_post(db: Session, post_data: post_schema.PostCreate, token: str) -> P
     # cannot use .modelDump if i want to have descrition optional
     # coz sql querries dont adapt to that
     post = PostModel(
-        # post_description = post.description | "i love css"
+        post_description=post_data.post_description,
         post_title=post_data.post_title,
         profile_id=user_info["profile_id"],
         user_id=user_info["user_id"],

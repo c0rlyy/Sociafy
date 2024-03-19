@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, Path, Header
+from fastapi import Depends, FastAPI, HTTPException, Path, Header, UploadFile, File
 from typing import Annotated, Any, Generator
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
@@ -7,9 +7,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.concurrency import run_in_threadpool
 from fastapi.responses import FileResponse
+from service.file_security import validate_file_type, change_file_name
 
 
-from controllers import user_controller, profile_controller, post_controller
+from controllers import user_controller, profile_controller, post_controller, file_controler
 
 from models.user_model import User as UserModel
 from models import user_model, profile_model, post_model, file_model
@@ -46,6 +47,32 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# this does threads in background so the stuff inside sometimes acts funny(unprediciable, at least to me)
+@app.post("/file-upload/")
+async def uploading_file(file: UploadFile = File(...)):
+
+    try:
+        if validate_file_type(file.content_type):  # type: ignore
+            new_file_name: str = change_file_name(file.filename)  # type: ignore
+            file_path: str = f"../fileStorage/images/{new_file_name}"
+            file.filename = new_file_name
+            with open(file_path, "wb") as f:
+                f.write(file.file.read())
+
+            return {"succes": "image was added succesfully, it only took 20000000000h to get workign :)"}
+
+    except Exception:
+        raise HTTPException(status_code=400, detail="error while saving the file formaty")
+
+    raise HTTPException(status_code=400, detail="wrong File format")
+
+
+@app.get("/file-retrive/", response_class=FileResponse)
+async def read_file():
+    # this will return the path store in file model in db
+    return f"../fileStorage/images/test.png"
 
 
 @app.get("/me/posts", response_model=list[post_schema.PostAllInfo])

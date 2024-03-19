@@ -1,9 +1,11 @@
 from pydantic import BaseModel
-from schemas import file_schema
+
+# from schemas import file_schema
 
 
 class PostBase(BaseModel):
     post_title: str
+    post_description: str | None
 
     class Config:
         from_attributes = True
@@ -20,7 +22,7 @@ class PostAllInfo(PostBase):
 
 
 class PostCreate(PostBase):
-    post_description: str | None = None
+    post_description: str | None
 
 
 class Post(PostBase):
@@ -31,5 +33,5 @@ class PostOut(Post):
     post_id: int
 
 
-class PostWithFile(Post):
-    file: file_schema.FileAllInfo
+# class PostWithFile(Post):
+#     file: file_schema.FileAllInfo

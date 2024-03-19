@@ -28,6 +28,7 @@ Python packages:
 - uvicorn[standard]
 - python-dotenv
 - python-multipart
+- python-magic
 
 ## Set Up
 
@@ -41,6 +42,6 @@ Follow these steps to set up the project:
    - Define the following environment variables in the `.env` file:
 
    ```plaintext
-   ALGORITHM="yourAlgorithm"  
+   ALGORYTHM="yourAlgorythm"  
    SECRET_KEY="yourSecretKey"
     ```
