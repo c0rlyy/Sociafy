@@ -27,6 +27,7 @@ Python packages:
 - pyjwt
 - uvicorn[standard]
 - python-dotenv
+- python-multipart
 
 ## Set Up
 
@@ -40,6 +41,6 @@ Follow these steps to set up the project:
    - Define the following environment variables in the `.env` file:
 
    ```plaintext
-   ALGORITHM="yourAlgorithm"
+   ALGORITHM="yourAlgorithm"  
    SECRET_KEY="yourSecretKey"
-
+    ```

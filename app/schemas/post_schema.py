@@ -28,7 +28,7 @@ class Post(PostBase):
 
 
 class PostOut(Post):
-    id: int
+    post_id: int
 
 
 class PostWithFile(Post):

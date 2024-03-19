@@ -10,3 +10,7 @@ app/models/__pycache__
 app/schemas/__pycache__
 app/service/__pycache__
 app/.env
+
+fileStorage/images
+fileStorage/video
+
