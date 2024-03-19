@@ -1,5 +1,5 @@
 from fastapi import Depends, FastAPI, HTTPException, Path, Header
-from typing import Annotated
+from typing import Annotated, Any, Generator
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from service.web_token import decode, encode
@@ -25,7 +25,7 @@ post_model.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
-def get_db():
+def get_db() -> Generator[Session, Any, None]:
     db: Session = SessionLocal()
     try:
         yield db
@@ -44,24 +44,43 @@ app.add_middleware(
 )
 
 
+@app.get("/me/posts", response_model=list[post_schema.PostAllInfo])
+def read_posts_me(token: Annotated[str, Header()], skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[PostModel]:
+    user_me_posts: list[PostModel] | None = post_controller.get_current_user_posts(db, token=token, skip=skip, limit=limit)
+    if user_me_posts is None:
+        raise HTTPException(status_code=404, detail="no user posts were found")
+    return user_me_posts
+
+
+@app.get("/me/user/refresh-token", response_model=dict[str, str])
+async def refresh_token(token: Annotated[str, Header()]) -> dict:
+    try:
+        old_token: dict = decode(token)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Unauthorized! expired or incorect token")
+
+    new_token: str = encode({"user_id": old_token["user_id"], "profile_id": old_token["profile_id"], "user_name": old_token["user_name"]})
+    return {"refreshed token:": new_token}
+
+
 @app.get("/me/user", response_model=token_schema.TokenGetUser)
 async def read_user_me(token: Annotated[str, Header()]) -> dict:
     try:
-        user_info = decode(token)
+        user_info: dict = decode(token)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"{e}")
+        raise HTTPException(status_code=400, detail="Unauthorized! expired or incorect token")
     return user_info
 
 
 @app.get("/users/", response_model=list[user_schema.UserOut])
-def read_users(skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)):
+def read_users(skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[UserModel]:
     users: list[UserModel] = user_controller.get_users(db, skip=skip, limit=limit)
     return users
 
 
-@app.get("/users/{user_id}", response_model=user_schema.User)
-def read_user(user_id: int, db: Session = Depends(get_db)):
-    db_user = user_controller.get_user(db, user_id=user_id)
+@app.get("/users/{user_id}", response_model=user_schema.UserOut)
+def read_user(user_id: int, db: Session = Depends(get_db)) -> UserModel:
+    db_user: UserModel | None = user_controller.get_user(db, user_id=user_id)
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
@@ -137,14 +156,6 @@ def get_profile_and_posts(profile_id: int, db: Session = Depends(get_db)) -> Pro
         raise HTTPException(status_code=404, detail="wrong id, try again")
 
     return profile_with_posts
-
-
-@app.get("/me/posts", response_model=list[post_schema.PostAllInfo])
-def read_posts_me(token: Annotated[str, Header()], skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[PostModel]:
-    user_me_posts: list[PostModel] | None = post_controller.get_current_user_posts(db, token=token, skip=skip, limit=limit)
-    if user_me_posts is None:
-        raise HTTPException(status_code=404, detail="no user posts were found")
-    return user_me_posts
 
 
 @app.post("/posts/", response_model=post_schema.PostBase)
