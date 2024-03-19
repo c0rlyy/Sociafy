@@ -18,7 +18,7 @@ The `--reload` flag is optional; it restarts the server on every saved change.
 Make sure you have the following dependencies installed:
 
 Database:
-    sqllite3 
+   - sqllite3 
 
 Python packages:
 - bcrypt 

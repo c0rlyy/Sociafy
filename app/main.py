@@ -6,6 +6,7 @@ from service.web_token import decode, encode
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.concurrency import run_in_threadpool
+from fastapi.responses import FileResponse
 
 
 from controllers import user_controller, profile_controller, post_controller
@@ -45,82 +46,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-from typing import Annotated
-
-from fastapi import FastAPI, File, UploadFile
-
-app = FastAPI()
-
-
-from fastapi import FastAPI
-from fastapi.responses import FileResponse
-
-some_file_path = "../fileStorage/images/image.png"
-app = FastAPI()
-
-
-# TODO
-# i take an imagfe then i save it in directoryu and return the image it self
-# but can i just save the image like that? lets test this buich out
-@app.get("/s", response_class=FileResponse)
-async def main():
-    return some_file_path
-
-
-import os
-
-
-@app.post("/files/")
-async def create_file(file: Annotated[bytes, File()]):
-    return {"file_size": len(file)}
-
-
-from fastapi import UploadFile, File
-import os
-
-
-# @app.post("/uploadfile/", response_class=FileResponse)
-# async def create_upload_file(file: UploadFile = File(...)):
-#     # Define the directory where you want to save the file
-#     directory = "../fileStorage/images"
-
-#     # Define the file path by joining the directory path with the uploaded file name
-#     file_path = os.path.join(directory, file.filename)  # type: ignore
-
-#     # Open the file in binary write mode and write the contents of the uploaded file to it
-#     with open(file_path, "wb") as new_file:
-#         # Iterate over the file chunks and write them to the new file
-#         while chunk := await file.read(1024):
-#             new_file.write(chunk)
-
-#     # Print a message indicating that the file has been saved successfully
-#     print("File saved successfully at:", file_path)
-
-#     # Return a response indicating the uploaded file's filename
-#     return file_path
-#     pass
-
-
-@app.post("/upload-file/")
-async def create_upload_file(uploaded_file: UploadFile = File(...)):
-    file_location = f"files/{uploaded_file.filename}"
-    with open(file_location, "wb+") as file_object:
-        shutil.copyfileobj(uploaded_file.file, file_object)
-    return {"info": f"file '{uploaded_file.filename}' saved at '{file_location}'"}
-
-
-# @app.post("/upload-file/", response_class=FileResponse)
-# async def create_upload_file(uploaded_file: UploadFile = File(...)):
-#     file_location = f"../fileStorage/images/{uploaded_file.filename}"
-#     await run_in_threadpool(save_file, file_location, uploaded_file)
-#     return uploaded_file
-
-
-# def save_file(file_location, uploaded_file):
-#     with open(file_location, "wb+") as file_object:
-#         file_object.write(uploaded_file.file.read())
 
 
 @app.get("/me/posts", response_model=list[post_schema.PostAllInfo])
