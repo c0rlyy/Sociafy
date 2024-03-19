@@ -16,6 +16,8 @@ import fetchUsers from "./pages/Fetch/fetchUsers";
 import { loginAction } from "./pages/Forms/LoginForm/LoginForm";
 import fetchPosts from "./pages/Fetch/fetchPosts";
 import React from "react";
+import fetchMyPost from "./pages/Fetch/fetchMyPosts";
+
 function App() {
   const router = createBrowserRouter([
     {
@@ -32,7 +34,7 @@ function App() {
     {
       path: "/User",
       element: <UserProfile />,
-      loader: fetchUsers,
+      loader: fetchMyPost,
     },
   ]);
   return <RouterProvider router={router}></RouterProvider>;

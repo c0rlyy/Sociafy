@@ -12,7 +12,7 @@ export type CurrentUserPost = {
 const fetchPosts = async (): Promise<CurrentUserPostProps[]> => {
   try {
     const cookies = new Cookies();
-    const response = await fetch("http://127.0.0.1:8000/me/posts", {
+    const response = await fetch("http://127.0.0.1:8000/posts", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
