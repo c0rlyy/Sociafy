@@ -10,7 +10,7 @@ class PostBase(BaseModel):
 
 
 class PostAllInfo(PostBase):
-    id: int
+    post_id: int
     post_description: str | None
     profile_id: int
     user_id: int
