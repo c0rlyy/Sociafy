@@ -6,7 +6,10 @@ Sociafy is a social media platform crafted to replicate the features commonly fo
 
 Navigate to the `app` directory and run the following command in your terminal:
 
+
+```bash
 unicorn main:app --reload
+```
 
 The `--reload` flag is optional; it restarts the server on every saved change.
 
