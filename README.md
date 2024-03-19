@@ -28,7 +28,6 @@ Python packages:
 - uvicorn[standard]
 - python-dotenv
 - python-multipart
-- python-magic
 
 ## Set Up
 
