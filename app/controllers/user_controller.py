@@ -55,7 +55,7 @@ def create_user_and_profile(db: Session, user: UserCreateSchema) -> UserModel | 
 
 
 def log_in(db: Session, user: UserCredentials) -> str | None:
-    db_user = db.query(UserModel).filter(UserModel.email == user.email).first()
+    db_user: UserModel | None = db.query(UserModel).filter(UserModel.email == user.email).first()
     # i think doing it this way is fine coz if the user is None the if statment will stop executing before
     # fn verify_password so db user password will not be none
     if db_user and verify_password(user.password, db_user.password):  # type: ignore

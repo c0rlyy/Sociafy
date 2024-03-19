@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from schemas import file_schema
 
 
 class PostBase(BaseModel):
@@ -28,3 +29,7 @@ class Post(PostBase):
 
 class PostOut(Post):
     id: int
+
+
+class PostWithFile(Post):
+    file: file_schema.FileAllInfo
