@@ -80,11 +80,11 @@ const RegisterForm: React.FC<RegisterState> = () => {
   );
 };
 export const registerAction = async ({ request }: { request: Request }) => {
-  const data = await request.formData();
+  const data = Object.fromEntries(await request.formData());
   const submission = {
-    email: data.get("email"),
-    username: data.get("username"),
-    password: data.get("password"),
+    email: data.email,
+    username: data.username,
+    password: data.password,
   };
   console.log(submission);
   const fetchAddUser = async () => {
@@ -94,8 +94,6 @@ export const registerAction = async ({ request }: { request: Request }) => {
           "Content-Type": "application/json",
         },
         method: "POST",
-        mode: "cors",
-
         body: JSON.stringify({
           email: submission.email,
           password: submission.password,
@@ -109,7 +107,7 @@ export const registerAction = async ({ request }: { request: Request }) => {
       console.log(error);
     }
   };
-  fetchAddUser();
+  await fetchAddUser();
   return redirect("/");
 };
 export default RegisterForm;

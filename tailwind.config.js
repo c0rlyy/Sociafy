@@ -14,6 +14,7 @@ export const theme = {
     },
     gridTemplateColumns: {
       landing: `minmax(0,20rem) minmax(0,1fr) minmax(0,1fr) minmax(0,20rem)`,
+      postColumns: `minmax(0,50%) minmax(17rem,40rem) minmax(0,50%)`,
     },
   },
 };

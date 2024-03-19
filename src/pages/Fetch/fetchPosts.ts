@@ -1,17 +1,27 @@
 import { Cookies } from "react-cookie";
-
-const fetchPosts = async () => {
+export type CurrentUserPostProps = {
+  post_title: string;
+  post_id: number;
+  post_description: string;
+  profile_id: number;
+  user_id: number;
+};
+export type CurrentUserPost = {
+  posts: CurrentUserPost[];
+};
+const fetchPosts = async (): Promise<CurrentUserPostProps[]> => {
   try {
     const cookies = new Cookies();
-    const response = await fetch("http://localhost:8000/users/me", {
-      method: "POST",
+    const response = await fetch("http://127.0.0.1:8000/me/posts", {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
         token: cookies.get("token"),
-      }),
+      },
     });
+    if (!response.ok) {
+      console.log("Something went wrong");
+    }
     const data = await response.json();
     console.log(data);
     return data;

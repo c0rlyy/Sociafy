@@ -19,27 +19,11 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
     const imageURL = URL.createObjectURL(file);
     setSelectedImage(imageURL);
   };
-  async function FetchUsers() {
-    const response = await fetch("http://localhost:3000/api/posts", {
-      method: "POST",
-      body: JSON.stringify({
-        createdBy: localStorage.getItem("email"),
-        content: postDesc,
-        contentPic: selectedImage,
-        title: "Post",
-      }),
-    });
-    return response.json();
-    ("");
-  }
   function NextStepPost() {
-    useEffect(() => {
-      FetchUsers();
-    }, []);
     return (
       <>
         <AddPostModal>
-          <div className="flex ">
+          <div className=" ">
             <div className="w-1/2 h-1/2 border border-slate-500">
               <img className="w-full h-full" src={selectedImage} alt="" />
             </div>

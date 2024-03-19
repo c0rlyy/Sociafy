@@ -2,15 +2,14 @@ import { useState } from "react";
 import ChooseImg from "./ChooseImg";
 import "./UserProfile.css";
 import { useLoaderData } from "react-router-dom";
-type UserUpperMenuProps = {
-  chooseImg: React.FC;
-};
+import { UserProfileProps } from "../Fetch/fetchUsers";
 const UserUpperMenu = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const openModalHandler = () => {
     setIsOpenModal(true);
   };
   const userData = useLoaderData();
+  const userName = (userData as UserProfileProps).user_name;
   return (
     <div className="flex items-center justify-around p-5">
       <div className="flex items-center gap-5">
@@ -27,7 +26,7 @@ const UserUpperMenu = () => {
           </div>
           {isOpenModal ? <ChooseImg /> : ""}
         </div>
-        <h1 className="font-bold">{userData.user_name}</h1>
+        <h1 className="font-bold">{userName}</h1>
       </div>
 
       <div className="flex items-center gap-5 ">

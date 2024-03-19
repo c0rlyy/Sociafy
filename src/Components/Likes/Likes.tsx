@@ -11,7 +11,7 @@ const Likes = forwardRef(function (props, ref) {
   return (
     <Modal>
       <div className="flex items-center gap-2">
-        <div className="w-16 h-auto  flex justify-end ">
+        <div className="w-16 h-auto flex justify-end ">
           <img
             className="w-full rounded-full self-end"
             src={postCtx.posts[0].authorImg}
@@ -20,7 +20,7 @@ const Likes = forwardRef(function (props, ref) {
         </div>
         <div className=" w-1/2">
           <p className="text-postUser">
-            {postCtx.posts[0].author} lubi Twoje zdjęcie{" "}
+            {postCtx.posts[0].author} lubi Twoje zdjęcie
           </p>
         </div>
       </div>

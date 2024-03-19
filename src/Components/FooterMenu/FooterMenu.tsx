@@ -35,11 +35,11 @@ function FooterMenu() {
   const lg = useMediaQuery({
     query: "(min-width:1500px)",
   });
-  const noPhotoDiv = (
-    <div className=" bg-gray-200 hover:bg-gray-400 relative w-full h-full rounded-full">
-      <div className="content"></div>
-    </div>
-  );
+  // const noPhotoDiv = (
+  //   <div className=" bg-gray-200 hover:bg-gray-400 relative w-full h-full rounded-full">
+  //     <div className="content"></div>
+  //   </div>
+  // );
   const [openedSearch, setOpenedSearch] = useState(false);
   const searchBarHandler = () => {
     setOpenedSearch((prev: boolean) => !prev);
@@ -48,7 +48,7 @@ function FooterMenu() {
   return (
     <footer
       role="navigation"
-      className={`order-1 bottom-0 sticky bg-white w-screen  border-r flex sm:h-screen  sm:sticky sm:top-0 sm:w-[5vw] sm:flex sm:flex-col p-2 items-center justify-center  gap-5`}
+      className={`order-1 bottom-0  bg-white w-screen  border-r flex sm:h-screen sticky sm:absolute sm:top-0 sm:w-[5vw] sm:flex sm:flex-col p-2 items-center justify-center  gap-5`}
     >
       <IoMdHome size={`${lg ? "3rem" : "2rem"}`} />
       <IoIosAddCircleOutline

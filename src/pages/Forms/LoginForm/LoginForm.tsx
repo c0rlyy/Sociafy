@@ -1,26 +1,10 @@
 import classes from "./LoginForm.module.css";
-import {
-  Link,
-  Form,
-  redirect,
-  useActionData,
-  useNavigation,
-} from "react-router-dom";
+import { Link, Form, redirect } from "react-router-dom";
 import { Cookies } from "react-cookie";
-import useInputs from "../../../CustomHooks/useInputs";
-import Loader from "../../Loader/Loader";
-type LoginFormProps = {
+type loginFormScreen = {
   mdScreen: boolean;
-  email?: string;
-  password?: string;
 };
-function LoginForm({ mdScreen }: LoginFormProps) {
-  const { inputs, inputHandler } = useInputs({
-    email: "",
-    password: "",
-  });
-  const loginData = useActionData();
-  const loginDataReload = useNavigation();
+const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
   // const [inputs, setInputs] = useState({
   //   email: "",
   //   password: "",
@@ -62,25 +46,16 @@ function LoginForm({ mdScreen }: LoginFormProps) {
       >
         <h1 className="font-logoFont text-center text-3xl">InstaClone</h1>
         <div className={classes.field}>
-          <input
-            onChange={inputHandler}
-            className={classes.login}
-            type="text"
-            name="email"
-            id=""
-            value={inputs.email}
-          />
+          <input className={classes.login} type="text" name="email" id="" />
           <label htmlFor="username" className={classes.label}>
             Login
           </label>
         </div>
         <div className={classes.field}>
           <input
-            onChange={inputHandler}
             className={classes.password}
             type="password"
             name="password"
-            value={inputs.password}
             id=""
           />
           <label className={classes.label} htmlFor="">
@@ -107,17 +82,16 @@ function LoginForm({ mdScreen }: LoginFormProps) {
           </button>
         </div>
       </Form>
-      {loginData && loginData.error && <p>{loginData.error}</p>}
     </div>
   );
-}
+};
 // eslint-disable-next-line react-refresh/only-export-components
 export const loginAction = async ({ request }: { request: Request }) => {
-  const data = await request.formData();
+  const data = Object.fromEntries(await request.formData());
 
   const submission = {
-    email: data?.get("email") || "",
-    password: data?.get("password") || "",
+    email: data.email,
+    password: data.password,
   };
   // Post request
   // const handleSuccess = async (response: Response) => {
@@ -133,14 +107,13 @@ export const loginAction = async ({ request }: { request: Request }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        mode: "cors",
         body: JSON.stringify({
           email: submission.email,
           password: submission.password,
         }),
       });
       const data = await response.json();
-      console.log(data);
+      console.log(data.token);
       if (response.ok) {
         const cookies = new Cookies();
         cookies.set("token", data.token, {
@@ -156,10 +129,6 @@ export const loginAction = async ({ request }: { request: Request }) => {
   console.log(submission);
 
   const fetchValidationResult = await fetchValidation();
-
-  if (submission.email.length < 10) {
-    return { error: "No i co, nie działa xD" };
-  }
 
   if (fetchValidationResult) {
     return redirect("/MainPage");
