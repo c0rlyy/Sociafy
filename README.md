@@ -28,6 +28,7 @@ Python packages:
 - uvicorn[standard]
 - python-dotenv
 - python-multipart
+- aiofiles
 
 ## Set Up
 

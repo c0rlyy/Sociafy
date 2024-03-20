@@ -11,10 +11,10 @@ class Post(Base):
     post_id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     profile_id = Column(Integer, ForeignKey("profiles.profile_id"))
-    file_id = Column(Integer, ForeignKey("files.file_id"))
+    # file_id = Column(Integer, ForeignKey("files.file_id"))
 
     post_title = Column(String, nullable=False)
     post_description = Column(String)
 
     post_profile = relationship("Profile", back_populates="posts", uselist=False)
-    post_file = relationship("File", back_populates="file_post", uselist=False)
+    post_file = relationship("File", back_populates="file_post", uselist=True)

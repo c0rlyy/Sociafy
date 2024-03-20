@@ -15,7 +15,15 @@ class FileAllInfo(BaseModel):
 
 
 class FileBase(BaseModel):
-    user_id: int
     file_name: str
+    path: str
+    file_type: str
+
+
+class FileCreate(FileBase):
+    pass
+
+
+class FileOut(BaseModel):
     path: str
     file_type: str

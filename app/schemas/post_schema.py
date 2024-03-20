@@ -33,5 +33,8 @@ class PostOut(Post):
     post_id: int
 
 
-# class PostWithFile(Post):
-#     file: file_schema.FileAllInfo
+from fastapi import Depends, FastAPI, HTTPException, Path, Header, UploadFile, File
+
+
+class PostFiles(PostCreate):
+    file: UploadFile

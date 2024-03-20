@@ -1,14 +1,15 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_, update
 from sqlalchemy.sql import text
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 
 
+from models.file_model import File as FileModel
 from models.post_model import Post as PostModel
 from schemas.token_schema import TokenBase
 from service.web_token import encode, decode
 
-from schemas import post_schema
+from schemas import post_schema, file_schema
 
 # TODO
 # delete post []
@@ -19,10 +20,7 @@ from schemas import post_schema
 
 
 def create_post(db: Session, post_data: post_schema.PostCreate, token: str) -> PostModel:
-    # dunno how i shgould handle the errors logic since in the example starting project FastAPi devs did not use any try except for stuff like this
-    # but i think it would make sense from frontend perspecvie(they need to know what happend on server side)
-    # and also maybe it can provie more usfull inromation to user
-    # like for example not  500 error but session expired log in again
+
     if token is None:
         raise HTTPException(status_code=403, detail="no token was given")
     try:
@@ -30,13 +28,36 @@ def create_post(db: Session, post_data: post_schema.PostCreate, token: str) -> P
     except Exception as e:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
-    # TODO:
-    # thinking wheaher i should add aditional safe guard to make sure the right user is assinged to user_id
-    # finsih post despcritopn stuff
-
-    # cannot use .modelDump if i want to have descrition optional
-    # coz sql querries dont adapt to that
     post = PostModel(
+        post_description=post_data.post_description,
+        post_title=post_data.post_title,
+        profile_id=user_info["profile_id"],
+        user_id=user_info["user_id"],
+    )
+    db.add(post)
+    db.commit()
+    return post
+
+
+def create_post_optional_file(db: Session, post_data: post_schema.PostCreate, token: str, file: file_schema.FileCreate | None = None) -> PostModel:
+
+    if token is None:
+        raise HTTPException(status_code=403, detail="no token was given")
+    try:
+        user_info: dict = decode(token=token)
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+    if file is None:
+        post_without_file: PostModel = create_post(db, post_data, token)
+        return post_without_file
+
+    db_file = FileModel(user_id=user_info["user_id"], file_name=file.file_name, path=file.path, file_type=file.file_type)
+    db.add(db_file)
+    db.commit()
+
+    post = PostModel(
+        db_file.file_id,
         post_description=post_data.post_description,
         post_title=post_data.post_title,
         profile_id=user_info["profile_id"],
