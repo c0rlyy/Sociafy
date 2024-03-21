@@ -1,26 +1,31 @@
-from fastapi import Depends, FastAPI, Form, HTTPException, Path, Header, UploadFile, File
-from typing import Annotated, Any, Generator, Optional
-from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel, ValidationError
-from sqlalchemy.orm import Session
-from sqlalchemy import or_
-from service.web_token import decode, encode
+from typing import Annotated
+from pydantic import ValidationError
+
+from fastapi import Depends, FastAPI, Form, HTTPException, Header, UploadFile, File
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.concurrency import run_in_threadpool
 from fastapi.responses import FileResponse
+from fastapi.encoders import jsonable_encoder
+
+from sqlalchemy.orm import Session
+from sqlalchemy import or_
+
+from service.web_token import decode, encode
 from service.file_utils import validate_file_type, change_file_name_and_get_extension, get_file_path, saving_file
-import aiofiles
 
 
 from controllers import user_controller, profile_controller, post_controller, file_controler
 
 from models.user_model import User as UserModel
 from models import user_model, profile_model, post_model, file_model
-from schemas import user_schema, profile_schema, token_schema, post_schema
 from models.post_model import Post as PostModel
 from models.profile_model import Profile as ProfileModel
+from models.file_model import File as FileModel
 
+from schemas import user_schema, profile_schema, token_schema, post_schema
+
+from dependencies.db import get_db
+from dependencies.form_checker import Checker, post_checker
 
 from dbConfig.database import SessionLocal, engine
 
@@ -31,14 +36,6 @@ file_model.Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
-
-
-def get_db() -> Generator[Session, Any, None]:
-    db: Session = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 origins: list[str] = ["*"]  # "http://localhost:5173" i love CORS
@@ -52,80 +49,34 @@ app.add_middleware(
 )
 
 
-@app.post("/file-upload/", response_class=FileResponse)
-async def uploading_file(uploaded_file: UploadFile = File(...), db: Session = Depends(get_db)):
-
+@app.post("/file-upload/", response_model=post_schema.PostAllInfo)
+async def uploading_file(
+    token: Annotated[str, Header()],
+    uploaded_file: UploadFile = File(...),
+    db: Session = Depends(get_db),
+    post: post_schema.PostCreate = Depends(post_checker),
+):
     # this can raise exception
+    # make a list[file] and if len() >3 raise an error?
     validate_file_type(uploaded_file.content_type)  # type:ignore
 
     new_file_name, extension = change_file_name_and_get_extension(uploaded_file.filename)  # type: ignore
     uploaded_file.filename = new_file_name
     file_path: str = get_file_path(extension, uploaded_file.filename)
 
+    # can raise an exception
     await saving_file(uploaded_file, file_path)
-    return file_path
 
-
-@app.post("/file-test/", response_class=FileResponse)
-async def uploading_files(uploaded_file: UploadFile, db: Session = Depends(get_db), base: post_schema.PostCreate = Depends()):
-
-    # this can raise exception
-    validate_file_type(uploaded_file.content_type)  # type:ignore
-
-    new_file_name, extension = change_file_name_and_get_extension(uploaded_file.filename)  # type: ignore
-    uploaded_file.filename = new_file_name
-    file_path: str = get_file_path(extension, uploaded_file.filename)
-
-    await saving_file(uploaded_file, file_path)
-    # retyrbs a binary string, frontend can process this as blob
-    return file_path
-
-
-def checker(data: str = Form(...)):
-    try:
-        return post_schema.PostCreate.model_validate_json(data)
-    except ValidationError as e:
-        raise HTTPException(
-            detail=jsonable_encoder(e.errors()),
-            status_code=401,
-        )
-
-
-@app.post("/submit")
-def submit(base: post_schema.PostCreate = Depends(checker), file: UploadFile = File(...)):
-    return {"postData": base, "Filenames": file.filename}
-
-
-@app.post("post/file")
-async def post_uploading_file(uploaded_file: UploadFile = File(...), db: Session = Depends(get_db)) -> dict[str, str]:
-    MAX_FILE_SIZE = 186646528
-
-    # this function can raise an exception
-    validate_file_type(uploaded_file.content_type)  # type: ignore
-
-    new_file_name, extension = change_file_name_and_get_extension(uploaded_file.filename)  # type: ignore
-    uploaded_file.filename = new_file_name
-    file_path: str = get_file_path(extension, uploaded_file.filename)
-
-    # this needs to be fiexed coz i procces all of the file before i save it but still it takes time
-    contents: bytes = await uploaded_file.read()
-    if len(contents) > MAX_FILE_SIZE:
-        raise HTTPException(status_code=400, detail="File is to big max size is 178 mb")
-
-    try:
-        async with aiofiles.open(file_path, "wb") as f:
-            await f.write(contents)
-    except Exception:
-        raise HTTPException(status_code=500, detail="error while saving the file formaty")
-    # post_controller.create_post_optional_file(db,)
-
-    return {"succes": "image was added succesfully, it only took 20000000000h to get workign :)"}
+    full_post = post_controller.create_post_optional_file(db, post, token, {"file_name": new_file_name, "path": file_path, "file_type": extension})
+    return full_post
 
 
 @app.get("/file-retrive/", response_class=FileResponse)
-async def read_file():
-    # this will return the path stored in file model in db
-    return f"../fileStorage/images/test.png"
+async def read_file(post_id: int, db: Session = Depends(get_db)):
+    db_file: FileModel | None = file_controler.get_post_files(db, post_id)
+    if db_file is None:
+        raise HTTPException(status_code=404, detail="no file with that post id was found")
+    return f"{db_file.path}"
 
 
 @app.get("/me/posts", response_model=list[post_schema.PostAllInfo])

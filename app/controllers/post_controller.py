@@ -39,7 +39,7 @@ def create_post(db: Session, post_data: post_schema.PostCreate, token: str) -> P
     return post
 
 
-def create_post_optional_file(db: Session, post_data: post_schema.PostCreate, token: str, file: file_schema.FileCreate | None = None) -> PostModel:
+def create_post_optional_file(db: Session, post_data: post_schema.PostCreate, token: str, file: dict | None = None) -> PostModel:
 
     if token is None:
         raise HTTPException(status_code=403, detail="no token was given")
@@ -52,18 +52,13 @@ def create_post_optional_file(db: Session, post_data: post_schema.PostCreate, to
         post_without_file: PostModel = create_post(db, post_data, token)
         return post_without_file
 
-    db_file = FileModel(user_id=user_info["user_id"], file_name=file.file_name, path=file.path, file_type=file.file_type)
-    db.add(db_file)
-    db.commit()
-
-    post = PostModel(
-        db_file.file_id,
-        post_description=post_data.post_description,
-        post_title=post_data.post_title,
-        profile_id=user_info["profile_id"],
-        user_id=user_info["user_id"],
-    )
+    post = create_post(db, post_data, token)
     db.add(post)
+    db.commit()
+    db_file = FileModel(
+        user_id=user_info["user_id"], file_name=file["file_name"], path=file["path"], file_type=file["file_type"], post_id=post.post_id
+    )
+    db.add(db_file)
     db.commit()
     return post
 

@@ -6,6 +6,7 @@ app/__pycache__/
 
 app/controllers/__pycache__
 app/dbConfig/__pycache__
+app/dependencies/__pycache__
 app/models/__pycache__
 app/schemas/__pycache__
 app/service/__pycache__

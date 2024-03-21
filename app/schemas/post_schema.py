@@ -1,12 +1,13 @@
 from typing import Optional
 from pydantic import BaseModel
+from schemas.file_schema import FileOut
 
 # from schemas import file_schema
 
 
 class PostBase(BaseModel):
     post_title: str
-    post_description: str | None = "best web app ever really"
+    post_description: str | None = "congratulations you are using the best web app out there"
 
     class Config:
         from_attributes = True
@@ -17,17 +18,23 @@ class PostAllInfo(PostBase):
     post_description: str | None
     profile_id: int
     user_id: int
+    post_files: list[FileOut]
 
     class Config:
         from_attributes = True
 
 
-class PostCreate(PostBase):
-    pass
+class PostCreate(BaseModel):
+    post_title: str
+    post_description: str | None = "congratulations you are using the best web app out there"
+
+    class Config:
+        from_attributes = True
 
 
 class Post(PostBase):
-    post_description: Optional[str] = "best web App i ever used"
+    pass
+    # post_description: Optional[str] = "best web App i ever used"
 
 
 class PostOut(Post):

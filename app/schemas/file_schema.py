@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from schemas.post_schema import PostAllInfo
 
 
 class FileAllInfo(BaseModel):
@@ -7,7 +6,6 @@ class FileAllInfo(BaseModel):
     user_id: int
     file_name: str
     path: str
-    file_post: PostAllInfo
     file_type: str
 
     class Config:

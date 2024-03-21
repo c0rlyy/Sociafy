@@ -37,7 +37,11 @@ Follow these steps to set up the project:
 1. **Add Directory `db`:**
    - Create a directory named `db` in the root directory of the project.
 
-2. **Create `.env` File:**
+2. **Add Directory `fileStorage`:**
+   - Create a directory named `fileStorage` in the root directory of the project.
+   - next create 2 directories inside `video` and `images`
+
+3. **Create `.env` File:**
    - In the `app` directory, create a file named `.env`.
    - Define the following environment variables in the `.env` file:
 
