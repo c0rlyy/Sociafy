@@ -23,11 +23,11 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
     return (
       <>
         <AddPostModal>
-          <div className=" ">
+          <div className="grid grid-cols-fileUploaderLayout">
             <div className="w-1/2 h-1/2 border border-slate-500">
               <img className="w-full h-full" src={selectedImage} alt="" />
             </div>
-            <div className="border border-slate-500 w-1/2 flex flex-col items-center">
+            <div className="border border-slate-500">
               <input
                 className="h-full w-full"
                 onChange={descriptionHandler}
@@ -50,8 +50,12 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
   }
   return (
     <AddPostModal>
-      <IoMdClose className="absolute top-0 left-3 " onClick={onClose} />
-      <div className="w-1/2 flex self-center border border-slate-500">
+      <IoMdClose
+        size={"2rem"}
+        className="absolute top-0 left-3 "
+        onClick={onClose}
+      />
+      <div className=" flex self-center">
         <CiImageOn size={"100%"} />
       </div>
       <FileUploader setFile={setFile} />

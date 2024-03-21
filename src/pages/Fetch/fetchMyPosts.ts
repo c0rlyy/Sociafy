@@ -1,13 +1,13 @@
 import { Cookies } from "react-cookie";
 
-export type current = {
+export type CurrentUserProfilePosts = {
   post_title: string;
   post_id: number;
   post_description: string;
   profile_id: number;
-  user_id: 0;
+  user_id: number;
 };
-const fetchMyPost = async (): Promise<fetchUserNameProps> => {
+const FetchMyPosts = async (): Promise<CurrentUserProfilePosts> => {
   const cookies = new Cookies();
   try {
     const resp = await fetch(`http://127.0.0.1:8000/me/posts`, {
@@ -17,12 +17,13 @@ const fetchMyPost = async (): Promise<fetchUserNameProps> => {
       },
     });
     const data = await resp.json();
+    console.log(data);
     if (!resp.ok) {
       console.log("Something went wrong");
     }
     return data;
   } catch (error) {
-    console.log(error.message);
+    console.log(error);
   }
 };
-export default fetchMyPost;
+export default FetchMyPosts;

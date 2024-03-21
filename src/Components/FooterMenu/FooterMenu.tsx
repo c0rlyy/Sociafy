@@ -10,6 +10,7 @@ import { CiLogout } from "react-icons/ci";
 import { SlMagnifier } from "react-icons/sl";
 import FooterSearchBar from "./FooterSearchBar";
 import { useState } from "react";
+import { MdOutlineDarkMode } from "react-icons/md";
 import { Cookies } from "react-cookie";
 function FooterMenu() {
   // const postCtx = useContext(PostContext);
@@ -48,39 +49,57 @@ function FooterMenu() {
   return (
     <footer
       role="navigation"
-      className={`order-1 bottom-0  bg-white w-screen  border-r flex sm:h-screen sticky sm:absolute sm:top-0 sm:w-[5vw] sm:flex sm:flex-col p-2 items-center justify-center  gap-5`}
+      className={` grid col-start-1 col-end-2 row-start-1 row-end-1 bg-white border-r place-items-center grid-rows-footer`}
     >
-      <IoMdHome size={`${lg ? "3rem" : "2rem"}`} />
-      <IoIosAddCircleOutline
-        size={`${lg ? "3rem" : "2rem"}`}
-        onClick={openPostHandler}
-      />
-
-      {openPost && <AddPost onClose={closePostHandler} />}
-      <SlMagnifier
-        onClick={searchBarHandler}
-        size={`${lg ? "3rem" : "2rem"}`}
-      />
-      {openedSearch && (
-        <FooterSearchBar
-          openedSearch={openedSearch}
-          searchHandler={searchBarHandler}
-        />
-      )}
-      <IoIosSend size={`${lg ? "3rem" : "2rem"}`} />
-      <Link to={"/"}>
-        <div>
-          <CiLogout onClick={logoutHandler} size={mdScreen ? "3rem" : "2rem"} />
-        </div>
-      </Link>
-      <div className="lg:w-17 lg:h-17 md:w-10 md:h-10 overflow-hidden rounded-full border border-emerald-500 ">
-        <Link to={"/User"}>
-          {/* {!localStorage.getItem("userImage") ? noPhotoDiv : ""} */}
-          <img
-            className="rounded-full border hover:bg-slate-200 max-w-10 object-cover w-full h-full "
-            alt=""
-          />
+      <div className="flex items-center gap-2 tracking-wide">
+        <h1
+          className={`text-xl md:text-3xl
+         text-black  font-logoFont`}
+        >
+          Sociafy
+        </h1>
+      </div>
+      <div className="flex flex-col gap-3">
+        <Link to={"/MainPage"}>
+          <IoMdHome size={`${lg ? "3rem" : "2rem"}`} />
         </Link>
+        <IoIosAddCircleOutline
+          size={`${lg ? "3rem" : "2rem"}`}
+          onClick={openPostHandler}
+        />
+
+        {openPost && <AddPost onClose={closePostHandler} />}
+        <SlMagnifier
+          onClick={searchBarHandler}
+          size={`${lg ? "3rem" : "2rem"}`}
+        />
+        {openedSearch && (
+          <FooterSearchBar
+            openedSearch={openedSearch}
+            searchHandler={searchBarHandler}
+          />
+        )}
+        <IoIosSend size={`${lg ? "3rem" : "2rem"}`} />
+        <Link to={"/"}>
+          <div>
+            <CiLogout
+              onClick={logoutHandler}
+              size={mdScreen ? "3rem" : "2rem"}
+            />
+          </div>
+        </Link>
+        <div className="lg:w-17 lg:h-17 md:w-10 md:h-10 overflow-hidden rounded-full border border-emerald-500 ">
+          <Link to={"/User"}>
+            {/* {!localStorage.getItem("userImage") ? noPhotoDiv : ""} */}
+            <img
+              className="rounded-full border hover:bg-slate-200 max-w-10 object-cover w-full h-full "
+              alt=""
+            />
+          </Link>
+        </div>
+      </div>
+      <div>
+        <MdOutlineDarkMode size={"3rem"} />
       </div>
     </footer>
   );

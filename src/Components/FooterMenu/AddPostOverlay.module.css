@@ -29,11 +29,11 @@
 
 @media (min-width: 768px) {
   .modal {
-    width: 35%;
-    left: calc(50% - 20rem);
+    /* width: 35%; */
+    /* left: calc(50% - 20rem); */
     flex-direction: column;
     display: flex;
-    align-content: center;
+    place-items: center;
     justify-content: center;
   }
 }

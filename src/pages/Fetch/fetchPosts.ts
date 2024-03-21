@@ -1,4 +1,5 @@
 import { Cookies } from "react-cookie";
+import fetchReels from "./fetchReels";
 export type CurrentUserPostProps = {
   post_title: string;
   post_id: number;
@@ -24,6 +25,7 @@ const fetchPosts = async (): Promise<CurrentUserPostProps[]> => {
     }
     const data = await response.json();
     console.log(data);
+    await fetchReels();
     return data;
   } catch (error) {
     throw new Error("Cos sie wyjebalo");

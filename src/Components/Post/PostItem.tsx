@@ -1,3 +1,5 @@
+import Buttons from "./Buttons/Buttons";
+
 type postItemProps = {
   postTITLE: string;
   postID: number;
@@ -20,42 +22,31 @@ const PostItem = ({
   };
   return (
     <div
-      post-id={postID}
-      className=" col-start-2 col-end-3 grid grid-cols-subgrid w-full"
+      datapostid={postID}
+      dataprofileid={profileID}
+      datauserid={userID}
+      className=" grid grid-rows-postCard grid-cols-PostCardColumns mt-8  border-black border h-full  "
     >
-      <div>
-        <div className="h-1/4 flex justify-start items-center gap-2  ">
-          {/* <img
-            className="w-1/12 lg:w-10 h-1/4 rounded-full"
-            src={authorImg}
-            alt=""
-          /> */}
-          <h1 className="font-bold text-postUser ">{userID}</h1>
+      <div className="grid col-start-2 col-end-3 grid-cols-subgrid grid-rows-subgrid row-span-4">
+        <div className="flex items-center gap-2">
+          <picture className="flex justify-center items-center h-10 w-10 rounded-full overflow-hidden border border-gray-300">
+            <img
+              className="object-cover h-full w-full"
+              src={`userImage`}
+              alt="Your Image"
+            />
+          </picture>
+          <h1>{postID}</h1>
         </div>
-      </div>
-      <div>
-        <span
-          className={`${
-            postStyling === "colorful"
-              ? "text-center text-postCont bg-gradient-to-r from-purple-600 to-pink-300 text-white font-bold p-4"
-              : "text-center text-postCont bg-white text-black font-bold p-3"
-          } items-center flex border border-slate-300 gap-2`}
-        >
-          {postDESC}
-        </span>
-        <h3 className="font-semibold text-postTitle">
-          {userID}: {postTITLE}
-        </h3>
-      </div>
-      <ul className="flex items-center">
-        {/* {buttons.map((button, index) => (
-          <li key={index} className="text-xl">
-            {button}
-          </li>
-        ))} */}
-      </ul>
-      <div className="flex items-center gap-2">
-        <h1 className="font-bold text-postUser">{`Likes: ${0}`}</h1>
+        <Buttons />
+        <div>
+          <h1>{`Likes: ${1133}`}</h1>
+        </div>
+        <div>
+          <span className="text-bold">
+            {userID}:<p>{postDESC}</p>
+          </span>
+        </div>
       </div>
     </div>
   );

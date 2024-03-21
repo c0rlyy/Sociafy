@@ -12,12 +12,10 @@ import RegisterForm, {
 // import useLoading from "./customHooks/useLoading";
 // import Loader from "./pages/Loader";
 import UserProfile from "./pages/UserProfile/UserProfile";
-import fetchUsers from "./pages/Fetch/fetchUsers";
 import { loginAction } from "./pages/Forms/LoginForm/LoginForm";
 import fetchPosts from "./pages/Fetch/fetchPosts";
 import React from "react";
-import fetchMyPost from "./pages/Fetch/fetchMyPosts";
-
+import fetchMyPosts from "./pages/Fetch/fetchMyPosts";
 function App() {
   const router = createBrowserRouter([
     {
@@ -34,7 +32,7 @@ function App() {
     {
       path: "/User",
       element: <UserProfile />,
-      loader: fetchMyPost,
+      loader: fetchMyPosts,
     },
   ]);
   return <RouterProvider router={router}></RouterProvider>;

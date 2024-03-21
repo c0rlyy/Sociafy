@@ -93,13 +93,8 @@ export const loginAction = async ({ request }: { request: Request }) => {
     email: data.email,
     password: data.password,
   };
-  // Post request
-  // const handleSuccess = async (response: Response) => {
-  //   const userValid = await response.json();
 
-  //   console.log("Success!");
-  // };
-  const fetchValidation = async () => {
+  const fetchValidation = async (): Promise<true | false | undefined> => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     try {
       const response = await fetch("http://localhost:8000/login", {
@@ -121,6 +116,8 @@ export const loginAction = async ({ request }: { request: Request }) => {
           secure: true,
         });
         return true;
+      } else {
+        return false;
       }
     } catch (error) {
       console.log(error);
@@ -129,10 +126,10 @@ export const loginAction = async ({ request }: { request: Request }) => {
   console.log(submission);
 
   const fetchValidationResult = await fetchValidation();
-
   if (fetchValidationResult) {
     return redirect("/MainPage");
   } else {
+    alert("Niepoprawne dane logowania");
     return { error: "Login failed" };
   }
 };

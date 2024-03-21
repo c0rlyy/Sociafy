@@ -8,7 +8,7 @@ const Header = () => {
 
   return (
     <header
-      className={`p-4 md:p-7 border border-b flex justify-around items-center`}
+      className={` hidden p-4 md:p-7 border border-b flex justify-around items-center`}
       role={"menubar"}
     >
       <HeaderLogo mdScreen={mdScreen} />

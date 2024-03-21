@@ -1,8 +1,7 @@
 import { type } from "@testing-library/user-event/dist/type";
 import { HTMLAttributeAnchorTarget, useRef } from "react";
-import classes from "./AddPost.module.css";
 interface FileUploaderType {
-  setFile: Function;
+  setFile: () => {};
 }
 const FileUploader: React.FC<FileUploaderType> = ({ setFile }) => {
   const fileRef = useRef<HTMLInputElement>(null);
@@ -18,9 +17,9 @@ const FileUploader: React.FC<FileUploaderType> = ({ setFile }) => {
     }
   };
   return (
-    <div className=" border-slate-500 border flex justify-center">
+    <div>
       <button
-        className="bg-[rgb(77,181,249)] rounded-lg px-2 py-2 text-white"
+        className=" w-full justify-center bg-[rgb(77,181,249)] rounded-lg px-2 py-2 text-white"
         onClick={handleClick}
       >
         Choose files from device
