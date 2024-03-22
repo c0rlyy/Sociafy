@@ -5,13 +5,12 @@ from fastapi import Depends, FastAPI, Form, HTTPException, Header, UploadFile, F
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
-from fastapi.encoders import jsonable_encoder
 
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 
 from service.web_token import decode, encode
-from service.file_utils import validate_file_type, change_file_name_and_get_extension, get_file_path, saving_file, save_files_and_validate
+from service.file_utils import FileProccesor
 
 
 from controllers import user_controller, profile_controller, post_controller, file_controler
@@ -56,7 +55,6 @@ async def uploading_file(
     db: Session = Depends(get_db),
     uploaded_files: Annotated[list[UploadFile], File(...)] = None,  # type: ignore #if i make it list[type],None ... it brakes the docs, but works
 ) -> PostModel:
-    # uploaded_file: UploadFile = File(None),
 
     if uploaded_files is None:
         db_post: PostModel = post_controller.create_post(db, post, token)
@@ -65,30 +63,34 @@ async def uploading_file(
     if len(uploaded_files) > 3:
         raise HTTPException(status_code=400, detail="exceeded limit of files attached to post")
 
-    # file_list = []
-    # for file in uploaded_files:
-    #     validate_file_type(file.content_type)  # type:ignore
-    #     new_file_name, extension = change_file_name_and_get_extension(file.filename)  # type: ignore
-    #     file.filename = new_file_name
-    #     file_path: str = get_file_path(extension, file.filename)  # type: ignore
-    #     # can raise an exception
-    #     await saving_file(file, file_path)
-    #     file_info: dict[str, str] = {"file_name": new_file_name, "path": file_path, "file_type": extension}
-    #     file_list.append(file_info)
+    file_processor = FileProccesor(uploaded_files)
+    files_meta_data: list[dict[str, str]] = await file_processor.process_and_validate_all_files()
 
-    files = await save_files_and_validate(uploaded_files)
-    print(files)
-
-    full_post: PostModel = post_controller.create_post_with_files(db, post, token, files)
+    full_post: PostModel = post_controller.create_post_with_files(db, post, token, files_meta_data)
     return full_post
 
 
-@app.get("/posts/{post_id}/files/", response_class=FileResponse)
-async def read_file(post_id: int, db: Session = Depends(get_db)):
-    db_file: FileModel | None = file_controler.get_post_files(db, post_id)
+@app.get("/file-retrive/{file_id}/", response_class=FileResponse)
+async def read_file(file_id: int, db: Session = Depends(get_db)):
+    db_file: FileModel | None = file_controler.get_file_by_id(db, file_id)
     if db_file is None:
-        raise HTTPException(status_code=404, detail="no file with that post id was found")
+        raise HTTPException(status_code=404, detail="no file with that id was found")
+    # file = db_file.path
+    # if file is None
+    # error
     return db_file.path
+
+
+@app.get("/posts/{post_id}/files/", response_model=dict[str, list[int]])
+async def get_files_id(post_id: int, db: Session = Depends(get_db)):
+    db_files: list[FileModel] | None = file_controler.get_post_files(db, post_id)
+    if db_files is None:
+        raise HTTPException(status_code=404, detail="no file with that post id was found")
+    file_id_list: list[int] = []
+    for file in db_files:
+        file_id_list.append(file.file_id)  # type: ignore
+
+    return {"post's files id's": file_id_list}
 
 
 @app.get("/me/posts", response_model=list[post_schema.PostAllInfo])
@@ -217,3 +219,11 @@ def create_post(post_data: post_schema.PostCreate, token: Annotated[str, Header(
 def read_posts(skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[PostModel]:
     posts: list[PostModel] = post_controller.get_posts(skip=skip, limit=limit, db=db)
     return posts
+
+
+@app.get("/posts/{post_id}/", response_model=post_schema.PostAllInfo)
+def read_post(post_id: int, db: Session = Depends(get_db)) -> list[PostModel]:
+    post: PostModel = post_controller.get_post(db, post_id)
+    if post is None:
+        raise HTTPException(status_code=404, detail="no post was found, golang is the way")
+    return post

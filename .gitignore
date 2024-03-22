@@ -15,5 +15,7 @@ app/.env
 fileStorage/images
 fileStorage/video
 
+oldFunctionality
+
 Todo.todo
 

@@ -39,7 +39,9 @@ def create_post(db: Session, post_data: post_schema.PostCreate, token: str) -> P
     return post
 
 
-def create_post_with_files(db: Session, post_data: post_schema.PostCreate, token: str, files: list[dict[str, str]] | None = None) -> PostModel:
+def create_post_with_files(
+    db: Session, post_data: post_schema.PostCreate, token: str, files_meta_data: list[dict[str, str]] | None = None
+) -> PostModel:
 
     if token is None:
         raise HTTPException(status_code=403, detail="no token was given")
@@ -48,16 +50,20 @@ def create_post_with_files(db: Session, post_data: post_schema.PostCreate, token
     except Exception as e:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
-    if files is None:
+    if files_meta_data is None:
         post_without_file: PostModel = create_post(db, post_data, token)
         return post_without_file
 
     post: PostModel = create_post(db, post_data, token)
     db.add(post)
 
-    for file in files:
+    for file_data in files_meta_data:
         db_file = FileModel(
-            user_id=user_info["user_id"], file_name=file["file_name"], path=file["path"], file_type=file["file_type"], post_id=post.post_id
+            user_id=user_info["user_id"],
+            file_name=file_data["file_name"],
+            path=file_data["path"],
+            file_type=file_data["file_type"],
+            post_id=post.post_id,
         )
         db.add(db_file)
     db.commit()
@@ -68,8 +74,12 @@ def get_posts(db: Session, skip: int | None = 0, limit: int = 100) -> list[PostM
     return db.query(PostModel).offset(skip).limit(limit).all()
 
 
-def get_post(db: Session, user_id: int, skip: int | None = 0, limit: int = 100) -> PostModel | None:
+def get_user_post(db: Session, user_id: int) -> PostModel | None:
     return db.query(PostModel).filter(PostModel.user_id == user_id).first()
+
+
+def get_post(db: Session, post_id: int) -> PostModel | None:
+    return db.query(PostModel).filter(PostModel.post_id == post_id).first()
 
 
 def get_current_user_posts(db: Session, token: str, skip: int | None = 0, limit: int = 100) -> list[PostModel] | None:

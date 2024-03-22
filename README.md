@@ -39,7 +39,7 @@ Follow these steps to set up the project:
 
 2. **Add Directory `fileStorage`:**
    - Create a directory named `fileStorage` in the root directory of the project.
-   - next create 2 directories inside `video` and `images`
+   - next create 2 directories inside of `fileSotrage` named `video` and `images`
 
 3. **Create `.env` File:**
    - In the `app` directory, create a file named `.env`.

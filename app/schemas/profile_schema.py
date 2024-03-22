@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from schemas.post_schema import PostOut
+from schemas.post_schema import PostAllInfo, PostOut
 
 
 # circullar dependency error fix
@@ -34,4 +34,4 @@ class ProfileWithUser(ProfileBase):
 
 
 class ProfileWithPost(ProfileOut):
-    posts: list[PostOut]
+    posts: list[PostAllInfo]
