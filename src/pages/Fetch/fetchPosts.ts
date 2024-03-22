@@ -25,10 +25,10 @@ const fetchPosts = async (): Promise<CurrentUserPostProps[]> => {
     }
     const data = await response.json();
     console.log(data);
-    await fetchReels();
+    // await fetchReels();
     return data;
   } catch (error) {
-    throw new Error("Cos sie wyjebalo");
+    console.log(error);
   }
 };
 export default fetchPosts;

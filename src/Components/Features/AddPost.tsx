@@ -6,6 +6,7 @@ import { IoMdClose } from "react-icons/io";
 import { CiImageOn } from "react-icons/ci";
 import { useState, useEffect, MouseEventHandler } from "react";
 import FileUploader from "./FileUploader";
+import Modal from "../Modal/Modal";
 interface AddPostType {
   onClose: MouseEventHandler<SVGAElement>;
 }
@@ -22,7 +23,7 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
   function NextStepPost() {
     return (
       <>
-        <AddPostModal>
+        <Modal>
           <div className="grid grid-cols-fileUploaderLayout">
             <div className="w-1/2 h-1/2 border border-slate-500">
               <img className="w-full h-full" src={selectedImage} alt="" />
@@ -44,7 +45,7 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
               </button>
             </div>
           </div>
-        </AddPostModal>
+        </Modal>
       </>
     );
   }

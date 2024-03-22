@@ -12,6 +12,7 @@ import FooterSearchBar from "./FooterSearchBar";
 import { useState } from "react";
 import { MdOutlineDarkMode } from "react-icons/md";
 import { Cookies } from "react-cookie";
+import SociafyIcon from "../../assets/3x/Obszar roboczy 1@3x.png";
 function FooterMenu() {
   // const postCtx = useContext(PostContext);
   const [, setIsLogout] = useState(false);
@@ -52,12 +53,13 @@ function FooterMenu() {
       className={` grid col-start-1 col-end-2 row-start-1 row-end-1 bg-white border-r place-items-center grid-rows-footer`}
     >
       <div className="flex items-center gap-2 tracking-wide">
-        <h1
+        {/* <h1
           className={`text-xl md:text-3xl
          text-black  font-logoFont`}
         >
           Sociafy
-        </h1>
+        </h1> */}
+        <img src={`${SociafyIcon}`} alt="" />
       </div>
       <div className="flex flex-col gap-3">
         <Link to={"/MainPage"}>

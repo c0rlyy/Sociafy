@@ -27,7 +27,7 @@ function App() {
     {
       path: "/MainPage",
       element: <MainPage />,
-      loader: async () => await fetchPosts(),
+      loader: fetchPosts,
     },
     {
       path: "/User",
