@@ -31,15 +31,16 @@ def get_file_path(file_extension: str, file_name: str) -> str:
     raise HTTPException(status_code=400, detail="error while trying to save the file, make sure the file extenison is correct")
 
 
-async def saving_file(uploaded_file: UploadFile, file_path):
+async def saving_file(uploaded_file: UploadFile, file_path: str) -> str:
     """
-    this fucntion saves file if its not to big.
+    this fucntion saves file,
+    raises and excpetion if its too big.
     """
     MAX_FILE_SIZE = 186646528
 
     contents: bytes = await uploaded_file.read()
     if len(contents) > MAX_FILE_SIZE:
-        raise HTTPException(status_code=400, detail="File is to big max size is 178 mb")
+        raise HTTPException(status_code=400, detail="File is to big, max size is 178 mb")
 
     try:
         async with aiofiles.open(file_path, "wb") as f:
@@ -48,3 +49,20 @@ async def saving_file(uploaded_file: UploadFile, file_path):
         raise HTTPException(status_code=500, detail="error while saving the file format")
 
     return file_path
+
+
+async def save_files_and_validate(files_list: list[UploadFile]):
+    files_data_list: list = []
+    for file in files_list:
+        # can raise an exception
+        validate_file_type(file.content_type)  # type:ignore
+        new_file_name, extension = change_file_name_and_get_extension(file.filename)  # type: ignore
+        file.filename = new_file_name
+        file_path: str = get_file_path(extension, file.filename)  # type: ignore
+        # can raise an exception
+        await saving_file(file, file_path)
+        file_info: dict[str, str] = {"file_name": new_file_name, "path": file_path, "file_type": extension}
+        print(file_info)
+        files_data_list.append(file_info)
+
+    return files_data_list

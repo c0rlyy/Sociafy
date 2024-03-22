@@ -39,7 +39,7 @@ def create_post(db: Session, post_data: post_schema.PostCreate, token: str) -> P
     return post
 
 
-def create_post_optional_file(db: Session, post_data: post_schema.PostCreate, token: str, file: dict | None = None) -> PostModel:
+def create_post_with_files(db: Session, post_data: post_schema.PostCreate, token: str, files: list[dict[str, str]] | None = None) -> PostModel:
 
     if token is None:
         raise HTTPException(status_code=403, detail="no token was given")
@@ -48,17 +48,18 @@ def create_post_optional_file(db: Session, post_data: post_schema.PostCreate, to
     except Exception as e:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
-    if file is None:
+    if files is None:
         post_without_file: PostModel = create_post(db, post_data, token)
         return post_without_file
 
-    post = create_post(db, post_data, token)
+    post: PostModel = create_post(db, post_data, token)
     db.add(post)
-    db.commit()
-    db_file = FileModel(
-        user_id=user_info["user_id"], file_name=file["file_name"], path=file["path"], file_type=file["file_type"], post_id=post.post_id
-    )
-    db.add(db_file)
+
+    for file in files:
+        db_file = FileModel(
+            user_id=user_info["user_id"], file_name=file["file_name"], path=file["path"], file_type=file["file_type"], post_id=post.post_id
+        )
+        db.add(db_file)
     db.commit()
     return post
 

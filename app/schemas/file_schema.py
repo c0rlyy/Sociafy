@@ -25,3 +25,4 @@ class FileCreate(FileBase):
 class FileOut(BaseModel):
     path: str
     file_type: str
+    file_id: int

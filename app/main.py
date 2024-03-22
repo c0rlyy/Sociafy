@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 
 from service.web_token import decode, encode
-from service.file_utils import validate_file_type, change_file_name_and_get_extension, get_file_path, saving_file
+from service.file_utils import validate_file_type, change_file_name_and_get_extension, get_file_path, saving_file, save_files_and_validate
 
 
 from controllers import user_controller, profile_controller, post_controller, file_controler
@@ -49,34 +49,46 @@ app.add_middleware(
 )
 
 
-@app.post("/file-upload/", response_model=post_schema.PostAllInfo)
+@app.post("/posts/create-optional-file/", response_model=post_schema.PostAllInfo)
 async def uploading_file(
     token: Annotated[str, Header()],
-    uploaded_file: UploadFile = File(...),
+    post: Annotated[post_schema.PostCreate, Depends(post_checker)],
     db: Session = Depends(get_db),
-    post: post_schema.PostCreate = Depends(post_checker),
-):
-    # this can raise exception
-    # make a list[file] and if len() >3 raise an error?
-    validate_file_type(uploaded_file.content_type)  # type:ignore
+    uploaded_files: Annotated[list[UploadFile], File(...)] = None,  # type: ignore #if i make it list[type],None ... it brakes the docs, but works
+) -> PostModel:
+    # uploaded_file: UploadFile = File(None),
 
-    new_file_name, extension = change_file_name_and_get_extension(uploaded_file.filename)  # type: ignore
-    uploaded_file.filename = new_file_name
-    file_path: str = get_file_path(extension, uploaded_file.filename)
+    if uploaded_files is None:
+        db_post: PostModel = post_controller.create_post(db, post, token)
+        return db_post
 
-    # can raise an exception
-    await saving_file(uploaded_file, file_path)
+    if len(uploaded_files) > 3:
+        raise HTTPException(status_code=400, detail="exceeded limit of files attached to post")
 
-    full_post = post_controller.create_post_optional_file(db, post, token, {"file_name": new_file_name, "path": file_path, "file_type": extension})
+    # file_list = []
+    # for file in uploaded_files:
+    #     validate_file_type(file.content_type)  # type:ignore
+    #     new_file_name, extension = change_file_name_and_get_extension(file.filename)  # type: ignore
+    #     file.filename = new_file_name
+    #     file_path: str = get_file_path(extension, file.filename)  # type: ignore
+    #     # can raise an exception
+    #     await saving_file(file, file_path)
+    #     file_info: dict[str, str] = {"file_name": new_file_name, "path": file_path, "file_type": extension}
+    #     file_list.append(file_info)
+
+    files = await save_files_and_validate(uploaded_files)
+    print(files)
+
+    full_post: PostModel = post_controller.create_post_with_files(db, post, token, files)
     return full_post
 
 
-@app.get("/file-retrive/", response_class=FileResponse)
+@app.get("/posts/{post_id}/files/", response_class=FileResponse)
 async def read_file(post_id: int, db: Session = Depends(get_db)):
     db_file: FileModel | None = file_controler.get_post_files(db, post_id)
     if db_file is None:
         raise HTTPException(status_code=404, detail="no file with that post id was found")
-    return f"{db_file.path}"
+    return db_file.path
 
 
 @app.get("/me/posts", response_model=list[post_schema.PostAllInfo])
@@ -193,7 +205,7 @@ def read_profile_and_posts(profile_id: int, db: Session = Depends(get_db)) -> Pr
     return profile_with_posts
 
 
-@app.post("/posts/", response_model=post_schema.PostBase)
+@app.post("/posts-create-old/", response_model=post_schema.PostBase)
 def create_post(post_data: post_schema.PostCreate, token: Annotated[str, Header()], db: Session = Depends(get_db)) -> PostModel:
     new_post: PostModel | None = post_controller.create_post(db, post_data=post_data, token=token)
     if new_post is None:
