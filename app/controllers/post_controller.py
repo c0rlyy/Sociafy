@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, and_, update
+from sqlalchemy import Column, or_, and_, update
 from sqlalchemy.sql import text
 from fastapi import HTTPException, UploadFile
 
@@ -74,8 +74,8 @@ def get_posts(db: Session, skip: int | None = 0, limit: int = 100) -> list[PostM
     return db.query(PostModel).offset(skip).limit(limit).all()
 
 
-def get_user_post(db: Session, user_id: int) -> PostModel | None:
-    return db.query(PostModel).filter(PostModel.user_id == user_id).first()
+def get_user_posts(db: Session, user_id: int) -> list[PostModel] | None:
+    return db.query(PostModel).filter(PostModel.user_id == user_id).all()
 
 
 def get_post(db: Session, post_id: int) -> PostModel | None:
@@ -87,8 +87,22 @@ def get_current_user_posts(db: Session, token: str, skip: int | None = 0, limit:
         raise HTTPException(status_code=403, detail="no token was given")
     try:
         user_info: dict = decode(token=token)
-    except Exception as e:
+    except:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     user_post: list[PostModel] | None = db.query(PostModel).filter(PostModel.user_id == user_info["user_id"]).offset(skip).limit(limit).all()
     return user_post
+
+
+def delete_post(db: Session, post_id: int, token: dict):
+
+    post_to_delete: PostModel | None = db.query(PostModel).filter(PostModel.post_id == post_id).first()
+
+    if post_to_delete is None:
+        raise HTTPException(status_code=404, detail="no post with that id was found")
+
+    if token["user_id"] != post_to_delete.user_id:
+        raise HTTPException(status_code=403, detail="Unauthorized acces")
+
+    db.delete(post_to_delete)
+    db.commit()

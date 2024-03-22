@@ -14,4 +14,4 @@ class Profile(Base):
     profile_pic = Column(LargeBinary)
 
     user = relationship("User", back_populates="profile")
-    posts = relationship("Post", back_populates="post_profile")
+    posts = relationship("Post", back_populates="post_profile", cascade="all, delete-orphan")

@@ -71,9 +71,7 @@ def deleting_user(db: Session, user: UserCredentials, token: str) -> bool:
     except Exception as e:
         raise HTTPException(status_code=401, detail=f":) {e}")
     if db_user and verify_password(user.password, db_user.password) and decoded_token["user_id"] == db_user.id:  # type: ignore
-        profile = db.query(ProfileModel).filter(ProfileModel.profile_id == db_user.profile.profile_id).first()
         db.delete(db_user)
-        db.delete(profile)
         db.commit()
         return True
     else:

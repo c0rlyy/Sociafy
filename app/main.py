@@ -1,7 +1,6 @@
-from typing import Annotated
-from pydantic import ValidationError
+from typing import Annotated, List
 
-from fastapi import Depends, FastAPI, Form, HTTPException, Header, UploadFile, File
+from fastapi import BackgroundTasks, Depends, FastAPI, Form, HTTPException, Header, UploadFile, File
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
@@ -48,52 +47,7 @@ app.add_middleware(
 )
 
 
-@app.post("/posts/create-optional-file/", response_model=post_schema.PostAllInfo)
-async def uploading_file(
-    token: Annotated[str, Header()],
-    post: Annotated[post_schema.PostCreate, Depends(post_checker)],
-    db: Session = Depends(get_db),
-    uploaded_files: Annotated[list[UploadFile], File(...)] = None,  # type: ignore #if i make it list[type],None ... it brakes the docs, but works
-) -> PostModel:
-
-    if uploaded_files is None:
-        db_post: PostModel = post_controller.create_post(db, post, token)
-        return db_post
-
-    if len(uploaded_files) > 3:
-        raise HTTPException(status_code=400, detail="exceeded limit of files attached to post")
-
-    file_processor = FileProccesor(uploaded_files)
-    files_meta_data: list[dict[str, str]] = await file_processor.process_and_validate_all_files()
-
-    full_post: PostModel = post_controller.create_post_with_files(db, post, token, files_meta_data)
-    return full_post
-
-
-@app.get("/file-retrive/{file_id}/", response_class=FileResponse)
-async def read_file(file_id: int, db: Session = Depends(get_db)):
-    db_file: FileModel | None = file_controler.get_file_by_id(db, file_id)
-    if db_file is None:
-        raise HTTPException(status_code=404, detail="no file with that id was found")
-    # file = db_file.path
-    # if file is None
-    # error
-    return db_file.path
-
-
-@app.get("/posts/{post_id}/files/", response_model=dict[str, list[int]])
-async def get_files_id(post_id: int, db: Session = Depends(get_db)):
-    db_files: list[FileModel] | None = file_controler.get_post_files(db, post_id)
-    if db_files is None:
-        raise HTTPException(status_code=404, detail="no file with that post id was found")
-    file_id_list: list[int] = []
-    for file in db_files:
-        file_id_list.append(file.file_id)  # type: ignore
-
-    return {"post's files id's": file_id_list}
-
-
-@app.get("/me/posts", response_model=list[post_schema.PostAllInfo])
+@app.get("/me/posts/", response_model=list[post_schema.PostAllInfo])
 def read_posts_me(token: Annotated[str, Header()], skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[PostModel]:
     user_me_posts: list[PostModel] | None = post_controller.get_current_user_posts(db, token=token, skip=skip, limit=limit)
     if user_me_posts is None:
@@ -101,18 +55,7 @@ def read_posts_me(token: Annotated[str, Header()], skip: int | None = 0, limit: 
     return user_me_posts
 
 
-@app.get("/me/user/refresh-token", response_model=dict[str, str])
-async def refresh_token(token: Annotated[str, Header()]) -> dict:
-    try:
-        old_token: dict = decode(token)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail="Unauthorized! expired or incorect token")
-
-    new_token: str = encode({"user_id": old_token["user_id"], "profile_id": old_token["profile_id"], "user_name": old_token["user_name"]})
-    return {"refreshed token:": new_token}
-
-
-@app.get("/me/user", response_model=token_schema.TokenGetUser)
+@app.get("/me/user/", response_model=token_schema.TokenGetUser)
 async def read_user_me(token: Annotated[str, Header()]) -> dict:
     try:
         user_info: dict = decode(token)
@@ -159,19 +102,27 @@ def create_user_with_profile(user: user_schema.UserCreate, db: Session = Depends
     return {"token": token}
 
 
-@app.post("/login", response_model=dict[str, str] | user_schema.UserOut)
-def log_in(user: user_schema.UserCredentials, db: Session = Depends(get_db)) -> dict[str, str]:
-    token = user_controller.log_in(db, user=user)
-    if token is None:
-        raise HTTPException(status_code=401, detail="Wrong Password or email and yes i love react")
-    return {"token": token}
-
-
 @app.delete("/users/", response_model=dict[str, str])
-def delete_user_with_profile(user: user_schema.UserCredentials, token: Annotated[str, Header()], db: Session = Depends(get_db)) -> dict[str, str]:
+async def delete_user_all(
+    user: user_schema.UserCredentials, token: Annotated[str, Header()], background_tasks: BackgroundTasks, db: Session = Depends(get_db)
+) -> dict[str, str]:
+    # to be fixed later temp solution
+    try:
+        user_info = decode(token)
+    except:
+        raise HTTPException(status_code=401, detail="Incorrect or expired token !!!!")
+
+    user_files: list[FileModel] | None = file_controler.get_all_user_files(db, user_info["user_id"])
     user_to_delete: bool = user_controller.deleting_user(db, user, token=token)
+
     if not user_to_delete:
         raise HTTPException(status_code=401, detail="Try Again, wrong credentials")
+    if user_files is None:
+        raise HTTPException(status_code=401, detail="asdasdasdasd asdasdasd, wrong credentials")
+
+    file_processor = FileProccesor()
+    background_tasks.add_task(file_processor.delete_file_from_storage, user_files)
+
     return {"msg": "Sucesfully deleted the User"}
 
 
@@ -190,7 +141,23 @@ def update_user_model(
     return user_updated
 
 
-@app.get("/profile/{user_id}", response_model=profile_schema.ProfileWithUser)
+@app.get("/user/posts/{user_id}/", response_model=list[post_schema.PostAllInfo])
+def read_user_posts(user_id: int, db: Session = Depends(get_db)) -> list[PostModel]:
+    posts: list[PostModel] | None = post_controller.get_user_posts(db, user_id)
+    if posts is None:
+        raise HTTPException(status_code=404, detail="no post were found")
+    return posts
+
+
+@app.post("/login/", response_model=dict[str, str] | user_schema.UserOut)
+def log_in(user: user_schema.UserCredentials, db: Session = Depends(get_db)) -> dict[str, str]:
+    token = user_controller.log_in(db, user=user)
+    if token is None:
+        raise HTTPException(status_code=401, detail="Wrong Password or email and yes i love react")
+    return {"token": token}
+
+
+@app.get("/profile/{user_id}/", response_model=profile_schema.ProfileWithUser)
 def read_profile(user_id: int, db: Session = Depends(get_db)) -> user_controller.ProfileModel:
     user_profile: user_controller.ProfileModel | None = profile_controller.get_profile(db, user_id)
     if user_profile is None:
@@ -198,7 +165,7 @@ def read_profile(user_id: int, db: Session = Depends(get_db)) -> user_controller
     return user_profile
 
 
-@app.get("/profile/{profile_id}/posts", response_model=profile_schema.ProfileWithPost)
+@app.get("/profile/{profile_id}/posts/", response_model=profile_schema.ProfileWithPost)
 def read_profile_and_posts(profile_id: int, db: Session = Depends(get_db)) -> ProfileModel:
     profile_with_posts: ProfileModel | None = profile_controller.get_profile_with_posts(db, profile_id)
     if profile_with_posts is None:
@@ -207,6 +174,41 @@ def read_profile_and_posts(profile_id: int, db: Session = Depends(get_db)) -> Pr
     return profile_with_posts
 
 
+@app.post("/posts/create-optional-file/", response_model=post_schema.PostAllInfo)
+async def uploading_file_with_post(
+    token: Annotated[str, Header()],
+    post: Annotated[post_schema.PostCreate, Depends(post_checker)],
+    db: Session = Depends(get_db),
+    uploaded_files: Annotated[list[UploadFile], File(...)] = None,  # type: ignore #if i make it list[type],None ... it brakes the docs, but works
+) -> PostModel:
+
+    if uploaded_files is None:
+        db_post: PostModel = post_controller.create_post(db, post, token)
+        return db_post
+
+    if len(uploaded_files) > 3:
+        raise HTTPException(status_code=400, detail="exceeded limit of files attached to post")
+
+    file_processor = FileProccesor(uploaded_files)
+    files_meta_data: list[dict[str, str]] = await file_processor.process_and_validate_all_files()
+
+    full_post: PostModel = post_controller.create_post_with_files(db, post, token, files_meta_data)
+    return full_post
+
+
+@app.get("/posts/{post_id}/files/", response_model=dict[str, list[int]])
+async def get_files_id(post_id: int, db: Session = Depends(get_db)):
+    db_files: list[FileModel] | None = file_controler.get_post_files(db, post_id)
+    if db_files is None:
+        raise HTTPException(status_code=404, detail="no file with that post id was found")
+    file_id_list: list[int] = []
+    for file in db_files:
+        file_id_list.append(file.file_id)  # type: ignore
+
+    return {"post's files id's": file_id_list}
+
+
+# no need to use this one
 @app.post("/posts-create-old/", response_model=post_schema.PostBase)
 def create_post(post_data: post_schema.PostCreate, token: Annotated[str, Header()], db: Session = Depends(get_db)) -> PostModel:
     new_post: PostModel | None = post_controller.create_post(db, post_data=post_data, token=token)
@@ -215,7 +217,7 @@ def create_post(post_data: post_schema.PostCreate, token: Annotated[str, Header(
     return new_post
 
 
-@app.get("/posts", response_model=list[post_schema.PostAllInfo])
+@app.get("/posts/", response_model=list[post_schema.PostAllInfo])
 def read_posts(skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[PostModel]:
     posts: list[PostModel] = post_controller.get_posts(skip=skip, limit=limit, db=db)
     return posts
@@ -227,3 +229,36 @@ def read_post(post_id: int, db: Session = Depends(get_db)) -> list[PostModel]:
     if post is None:
         raise HTTPException(status_code=404, detail="no post was found, golang is the way")
     return post
+
+
+################################## fix deleteing post
+@app.delete("/posts/{post_id}}/", response_model=dict)
+def delete_post(post_id: int, token: Annotated[str, Header()], background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    try:
+        user_info = decode(token)
+    except:
+        raise HTTPException(status_code=401, detail="incorrect or expiered token")
+
+    post_files: list[FileModel] | None = file_controler.get_post_files(db, post_id)
+    if len(post_files) == 0:  # type: ignore
+        raise HTTPException(status_code=404, detail="no post were found with that id")
+    if post_files[0].user_id != user_info["user_id"]:  # type: ignore
+        raise HTTPException(status_code=403, detail="Frobiden!! no acces ")
+    # post_controller.get_post(db,)
+    file_processor = FileProccesor()
+    background_tasks.add_task(file_processor.delete_file_from_storage, post_files)  # type: ignore
+
+    post_controller.delete_post(db, post_id, user_info)
+
+    return {"deleted post id ": post_id}
+
+
+@app.get("/file-retrive/{file_id}/", response_class=FileResponse)
+async def read_file(file_id: int, db: Session = Depends(get_db)):
+    db_file: FileModel | None = file_controler.get_file_by_id(db, file_id)
+    if db_file is None:
+        raise HTTPException(status_code=404, detail="no file with that id was found")
+    # file = db_file.path
+    # if file is None
+    # error
+    return db_file.path

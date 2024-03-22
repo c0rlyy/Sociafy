@@ -17,4 +17,4 @@ class Post(Base):
     post_description = Column(String)
 
     post_profile = relationship("Profile", back_populates="posts", uselist=False)
-    post_files = relationship("File", back_populates="file_post", uselist=True)
+    post_files = relationship("File", back_populates="file_post", uselist=True, cascade="all, delete-orphan")

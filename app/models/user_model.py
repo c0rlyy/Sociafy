@@ -14,4 +14,4 @@ class User(Base):
     password = Column(String, nullable=False)
     # is_active = Column(Boolean, default=True)
 
-    profile = relationship("Profile", back_populates="user", uselist=False)
+    profile = relationship("Profile", back_populates="user", uselist=False, cascade="all, delete-orphan")

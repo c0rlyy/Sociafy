@@ -1,6 +1,13 @@
 import aiofiles
-from fastapi import Depends, HTTPException, UploadFile, File
+from fastapi import HTTPException, UploadFile
 import uuid
+import os
+
+from starlette.background import BackgroundTasks
+
+from aiofiles import os as aios
+
+from models.file_model import File as FileModel
 
 
 # def validate_file_type(file_type: str) -> None:
@@ -53,7 +60,7 @@ import uuid
 # async def save_files_and_validate(files_list: list[UploadFile]):
 #     files_data_list: list = []
 #     for file in files_list:
-#         # can raise an exception
+#         # can raise an exceptionaios
 #         validate_file_type(file.content_type)  # type:ignore
 #         new_file_name, extension = change_file_name_and_get_extension(file.filename)  # type: ignore
 #         file.filename = new_file_name
@@ -76,8 +83,8 @@ class FileProccesor:
     supports async operations
     """
 
-    def __init__(self, uploaded_files: list[UploadFile]):
-        self.uploaded_files: list[UploadFile] = uploaded_files
+    def __init__(self, uploaded_files: list[UploadFile] | None = None):
+        self.uploaded_files: list[UploadFile] | None = uploaded_files
         self.__file_metadata: list[dict] = []
 
     def _validate_file_type(self, file_type: str) -> None:
@@ -140,9 +147,19 @@ class FileProccesor:
         return file_metadata
 
     async def process_and_validate_all_files(self) -> list[dict[str, str]]:
-        for uploaded_file in self.uploaded_files:
-            # Process and validate each uploaded file
+        if self.uploaded_files is None:
+            raise Exception("no list containtg files was added")
+
+        for uploaded_file in self.uploaded_files:  # type:ignore
+            # Process and validate all uploaded files
             file_metadata: dict[str, str] = await self._process_single_file(uploaded_file)
             self.__file_metadata.append(file_metadata)
 
         return self.__file_metadata
+
+    def delete_file_from_storage(self, files: list[FileModel]):
+        # await aios.remove(path=path)
+        # [files]
+        for file in files:
+            print(file)
+            os.remove(path=file.path)  # type: ignore

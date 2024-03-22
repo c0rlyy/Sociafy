@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import UploadFile, File
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_, update
@@ -17,3 +18,8 @@ def get_file_by_id(db: Session, file_id: int):
 def get_post_files(db: Session, post_id: int):
     db_files: list[FileModel] | None = db.query(FileModel).filter(FileModel.post_id == post_id).all()
     return db_files
+
+
+def get_all_user_files(db: Session, user_id: int) -> list[FileModel] | None:
+    user_files: list[FileModel] | None = db.query(FileModel).filter(FileModel.user_id == user_id).all()
+    return user_files
