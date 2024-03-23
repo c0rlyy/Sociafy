@@ -1,14 +1,25 @@
 import { motion } from "framer-motion";
-import { ChangeEvent, FC, useContext, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import PostContext from "../../store/post-context";
 import User from "./User";
 type FooterSearchBar = {
   openedSearch: boolean;
   searchHandler: any;
 };
+// Abort Controller here
+
 function FooterSearchBar({ openedSearch, searchHandler }: FooterSearchBar) {
   const [searchInput, setSearchInput] = useState("");
+  const [results, setResult] = useState([]);
   const [validation, setValidation] = useState(false);
+  const controllerRef = useRef<AbortController>();
   const pstCtx = useContext(PostContext);
   const users = pstCtx.posts.map((postItem) => (
     <User
@@ -18,19 +29,20 @@ function FooterSearchBar({ openedSearch, searchHandler }: FooterSearchBar) {
       userEmail={postItem.email}
     />
   ));
-  const searchInputChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(e.target.value);
-  };
-  useEffect(() => {
-    const identifier = setTimeout(() => {
-      setValidation(searchInput.length > 0);
-      console.log("validating");
-    }, 500);
-    return () => {
-      console.log("CleanUp");
-      clearTimeout(identifier);
+  async function searchInputChangeHandler(e: ChangeEvent<HTMLInputElement>) {
+    const target = e.target as typeof e.target & {
+      value: string;
     };
-  }, [searchInput]);
+    setSearchInput(target.value);
+    setResult(undefined);
+    if (controllerRef) {
+      controllerRef.current?.abort();
+    }
+    controllerRef.current = new AbortController();
+    const signal = controllerRef.current?.signal;
+    // Fetching here
+  }
+
   return (
     <motion.div
       animate={`${openedSearch ? { x: 100 } : ""}`}

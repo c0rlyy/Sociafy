@@ -23,8 +23,8 @@ const Post: React.FC<CurrentUserPost> = () => {
     <>
       <div className=" mt-10 grid col-start-2 col-end-2 grid-rows-mainPageCenterContainer grid-cols-mainPageCenterContainer  ">
         <div className="flex col-start-2 col-end-3 gap-4 font-bold">
-          <h1>Dla Ciebie</h1>
-          <span>Obserwowani</span>
+          <h1>For you</h1>
+          <span>Following</span>
         </div>
         <Reels />
         <div className="col-start-2 col-end-3 grid-cols-postColumns grid-rows-postPageRows">

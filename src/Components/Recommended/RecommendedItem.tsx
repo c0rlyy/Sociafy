@@ -16,7 +16,7 @@ const RecommendedItem: React.FC<RecommendedUserProps> = ({
         </div>
       </div>
       <div>
-        <button>Obserwuj +</button>
+        <button>Follow +</button>
       </div>
     </>
   );

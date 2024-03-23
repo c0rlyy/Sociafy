@@ -16,8 +16,8 @@ function TypeAnimation({ mdScreen }: typeAnimationProp) {
     >
       <h1 className={"anim-type anim-text"}>
         c0rly and rovgart presents{" "}
-        <span className="italic bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 inline-block text-transparent bg-clip-text">
-          InstaClone
+        <span className="italic bg-gradient-to-r from-blue-500 via-blue-300 to-lime-300 inline-block text-transparent bg-clip-text">
+          Sociafy
         </span>
       </h1>
       <div className="flex items-center gap-5 anim-github rounded-xl  text-white px-2 py-3 relative">

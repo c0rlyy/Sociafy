@@ -1,14 +1,16 @@
 import React from "react";
 import SociafyLogo from "../../assets/3x/Obszar roboczy 1@3x.png";
+import { useRouteError } from "react-router-dom";
 type ErrorProps = {
-  errorName: string;
+  error: Error;
 };
 
-const Error: React.FC<ErrorProps> = ({ errorName }) => {
+const Error: React.FC<ErrorProps> = () => {
+  let error = useRouteError();
   return (
     <main className="flex flex-col items-center justify-center">
       <img src={`${SociafyLogo}`} alt="" />
-      <h1>{errorName}</h1>
+      <h1>{error}</h1>
     </main>
   );
 };

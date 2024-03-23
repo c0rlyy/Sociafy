@@ -62,9 +62,9 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
             Password
           </label>
         </div>
-        <div className="flex gap-3 self-center justify-center  w-1/2">
+        <div className="flex gap-3 self-center justify-center text-white  w-1/2">
           <button
-            className={`${classes["signIn"]} py-1 px-1 rounded-lg`}
+            className="bg-blue-400 px-2 py-1 rounded-md w-full"
             type="submit"
             value="Sign In"
           >

@@ -37,7 +37,7 @@ const Recommended = () => {
     <div className="grid grid-rows-recommendedContainer ">
       <div className="row-start-2 row-end-3 grid-cols-2 grid">
         <h1 className="font-bold col-start-1 col-end-4">
-          Propozycje dla Ciebie
+          People you might know
         </h1>
         {recommendedUsers.map((recommend) => (
           <RecommendedItem

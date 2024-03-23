@@ -12,20 +12,17 @@ export type CurrentUserPost = {
 };
 const fetchPosts = async (): Promise<CurrentUserPostProps[]> => {
   try {
-    const cookies = new Cookies();
     const response = await fetch("http://127.0.0.1:8000/posts", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        token: cookies.get("token"),
       },
     });
     if (!response.ok) {
-      console.log("Something went wrong");
+      throw new Error({ message: "Posts hadn't been fetched." });
     }
     const data = await response.json();
     console.log(data);
-    // await fetchReels();
     return data;
   } catch (error) {
     console.log(error);
