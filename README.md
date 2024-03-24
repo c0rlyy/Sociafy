@@ -2,7 +2,7 @@
 
 Sociafy is a social media platform crafted to replicate the features commonly found in popular social networking apps.
 
-## Installation
+## Runing The App
 
 Navigate to the `app` directory and run the following command in your terminal:
 
@@ -12,6 +12,8 @@ unicorn main:app --reload
 ```
 
 The `--reload` flag is optional; it restarts the server on every saved change.
+
+you can acces the API docs by adding /docs to the localhost path
 
 ## Dependencies
 
