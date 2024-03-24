@@ -6,7 +6,7 @@ from schemas.post_schema import PostCreate
 
 class Checker:
     def __init__(self, model: BaseModel):
-        self.model = model
+        self.model: BaseModel = model
 
     def __call__(self, data: str = Form(...)):
         try:

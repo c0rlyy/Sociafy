@@ -3,10 +3,6 @@ from fastapi import HTTPException, UploadFile
 import uuid
 import os
 
-from starlette.background import BackgroundTasks
-
-from aiofiles import os as aios
-
 from models.file_model import File as FileModel
 
 
@@ -161,5 +157,5 @@ class FileProccesor:
         # await aios.remove(path=path)
         # [files]
         for file in files:
-            print(file)
+
             os.remove(path=file.path)  # type: ignore

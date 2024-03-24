@@ -9,7 +9,7 @@ class Profile(Base):
     __tablename__ = "profiles"
 
     profile_id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey("users.id"), unique=True)
+    user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
     description = Column(String)
     profile_pic = Column(LargeBinary)
 

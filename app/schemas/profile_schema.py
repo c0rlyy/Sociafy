@@ -2,15 +2,8 @@ from pydantic import BaseModel
 from schemas.post_schema import PostAllInfo, PostOut
 
 
-# circullar dependency error fix
-# def import_post_base():
-#     from schemas.post_schema import Post
-
-#     return Post
-
-
 class ProfileBase(BaseModel):
-    description: str | None = None
+    description: str | None = "i want my PHP lambo"
 
     class Config:
         from_attributes = True

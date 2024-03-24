@@ -15,7 +15,7 @@ def get_file_by_id(db: Session, file_id: int):
     return db_file
 
 
-def get_post_files(db: Session, post_id: int):
+def get_post_files(db: Session, post_id: int) -> List[FileModel] | None:
     db_files: list[FileModel] | None = db.query(FileModel).filter(FileModel.post_id == post_id).all()
     return db_files
 

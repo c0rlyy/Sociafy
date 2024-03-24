@@ -1,15 +1,12 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import Column, or_, and_, update
-from sqlalchemy.sql import text
-from fastapi import HTTPException, UploadFile
+from fastapi import HTTPException
 
 
 from models.file_model import File as FileModel
 from models.post_model import Post as PostModel
-from schemas.token_schema import TokenBase
 from service.web_token import encode, decode
 
-from schemas import post_schema, file_schema
+from schemas import post_schema
 
 # TODO
 # delete post []
@@ -54,8 +51,14 @@ def create_post_with_files(
         post_without_file: PostModel = create_post(db, post_data, token)
         return post_without_file
 
-    post: PostModel = create_post(db, post_data, token)
+    post: PostModel = PostModel(
+        post_description=post_data.post_description,
+        post_title=post_data.post_title,
+        profile_id=user_info["profile_id"],
+        user_id=user_info["user_id"],
+    )
     db.add(post)
+    db.flush()
 
     for file_data in files_meta_data:
         db_file = FileModel(

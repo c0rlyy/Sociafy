@@ -12,3 +12,7 @@ class TokenGetUser(BaseModel):
     profile_id: int
     user_name: str
     exp: int | float
+
+
+class TokenOut(TokenBase):
+    msg: dict[str, str]

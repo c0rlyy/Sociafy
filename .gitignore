@@ -10,8 +10,8 @@ app/dependencies/__pycache__
 app/models/__pycache__
 app/schemas/__pycache__
 app/service/__pycache__
+app/routers/__pycache__
 app/.env
-
 fileStorage/images
 fileStorage/video
 
