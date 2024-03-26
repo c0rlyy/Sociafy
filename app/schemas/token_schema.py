@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from schemas import profile_schema
 
 
 class TokenBase(BaseModel):
@@ -14,5 +13,10 @@ class TokenGetUser(BaseModel):
     exp: int | float
 
 
-class TokenOut(TokenBase):
-    msg: dict[str, str]
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    username: str | None = None

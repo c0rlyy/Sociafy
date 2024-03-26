@@ -12,11 +12,10 @@ class UserCreate(UserBase):
 
 
 class User(UserBase):
-    id: int
-    # is_active: bool
+    # id: int
     user_name: str
     password: str
-    profile: profile_schema.ProfileOut
+    email: str
 
     class Config:
         from_attributes = True

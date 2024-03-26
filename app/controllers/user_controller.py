@@ -1,3 +1,4 @@
+from typing import Literal
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_, update
 from sqlalchemy.sql import text
@@ -21,6 +22,14 @@ def get_user_by_email_or_username(db: Session, email: str, username: str) -> Use
     return db.query(UserModel).filter(or_(UserModel.email == email, UserModel.user_name == username)).first()
 
 
+def get_user_by_username(db: Session, username: str) -> UserModel | None:
+    return db.query(UserModel).filter(UserModel.user_name == username).first()
+
+
+def get_user_by_email(db: Session, email: str) -> UserModel | None:
+    return db.query(UserModel).filter(UserModel.email == email).first()
+
+
 def get_users(db: Session, skip: int | None = 0, limit: int = 100) -> list[UserModel]:
     return db.query(UserModel).offset(skip).limit(limit).all()
 
@@ -40,7 +49,7 @@ def create_user_and_profile(db: Session, user_data: UserCreateSchema) -> UserMod
 def log_in(db: Session, login_credentials: UserCredentials) -> str | None:
     db_user: UserModel | None = db.query(UserModel).filter(UserModel.email == login_credentials.email).first()
 
-    if db_user is None:
+    if not db_user:
         return None
     if not verify_password(login_credentials.password, db_user.password):  # type: ignore
         return None
@@ -70,7 +79,7 @@ def deleting_user(db: Session, credentials: UserCredentials, token: str) -> bool
     return True
 
 
-def update_user(db: Session, user_credentials: UserCredentials, updated_user_data: UserUpdate, token: str) -> UserModel | None:
+def update_user(db: Session, user_credentials: UserCredentials, updated_user_data: UserUpdate, token: str) -> UserModel | Literal[False]:
     try:
         current_user: dict = decode(token)
     except Exception as e:
@@ -78,12 +87,12 @@ def update_user(db: Session, user_credentials: UserCredentials, updated_user_dat
 
     db_user: UserModel | None = db.query(UserModel).filter(UserModel.id == current_user["user_id"]).first()
 
-    if db_user is None:
-        return None
+    if not db_user:
+        return False
     if not verify_password(user_credentials.password, db_user.password):  # type: ignore
-        return None
+        return False
     if user_credentials.email != db_user.email:
-        return None
+        return False
 
     user_info_dict = updated_user_data.model_dump()
     if user_info_dict:
@@ -96,4 +105,4 @@ def update_user(db: Session, user_credentials: UserCredentials, updated_user_dat
         db.refresh(db_user)
         return db_user
 
-    return None
+    return False

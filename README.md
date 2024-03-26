@@ -26,7 +26,7 @@ Python packages:
 - bcrypt 
 - fastapi
 - sqlAlchemy
-- pyjwt
+- python-jose[cryptography]
 - uvicorn[standard]
 - python-dotenv
 - python-multipart

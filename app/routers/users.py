@@ -1,39 +1,29 @@
 from typing import Annotated
 
-from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Header, UploadFile, File, APIRouter
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi import BackgroundTasks, Depends, HTTPException, Header, APIRouter
 
 from sqlalchemy.orm import Session
 
 from service.web_token import decode
 from service.file_utils import FileProccesor
+from service.web_token import decode, encode
 
-from controllers import user_controller, profile_controller, post_controller, file_controler
+from controllers import user_controller, post_controller, file_controler
 
 from models.user_model import User as UserModel
-from models import user_model, profile_model, post_model, file_model
 from models.post_model import Post as PostModel
-from models.profile_model import Profile as ProfileModel
 from models.file_model import File as FileModel
 
-from schemas import user_schema, profile_schema, token_schema, post_schema
-
-from dependencies.db import get_db
-from dependencies.form_checker import Checker, post_checker
+from schemas import user_schema, token_schema, post_schema
 from dependencies.user_dependency import get_current_user
+from dependencies.db import get_db
 
 router = APIRouter(tags=["user"])
 
 
-@router.get("/users/me", response_model=token_schema.TokenGetUser)
-async def read_user_me(token: Annotated[str, Header()]) -> dict:
-    try:
-        user_info: dict = decode(token)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail="Unauthorized! expired or incorect token")
-    return user_info
+@router.get("/users/me", response_model=user_schema.UserOut)
+async def read_user_me(current_user: Annotated[UserModel, Depends(get_current_user)]):
+    return current_user
 
 
 @router.get("/users", response_model=list[user_schema.UserOut])
@@ -64,8 +54,8 @@ def create_user_with_profile(user_data: user_schema.UserCreate, db: Session = De
     if created_user is None:
         raise HTTPException(status_code=500, detail="creating the account failed, try again")
 
-    # token: str = encode({"user_id": created_user.id, "profile_id": created_user.profile.profile_id, "user_name": created_user.user_name})
-    return {f"{created_user.id}": created_user.profile.user_id}
+    token: str = encode({"user_id": created_user.id, "profile_id": created_user.profile.profile_id, "user_name": created_user.user_name})
+    return {"acces Token": token}
 
 
 @router.delete("/users", response_model=dict[str, str])
@@ -106,14 +96,6 @@ def update_user_model(
     if user_updated is None:
         raise HTTPException(status_code=401, detail="incorrect Credentials")
     return user_updated
-
-
-@router.post("/login", response_model=dict[str, str] | user_schema.UserOut)
-def log_in(credentials: user_schema.UserCredentials, db: Session = Depends(get_db)) -> dict[str, str]:
-    token: str | None = user_controller.log_in(db, login_credentials=credentials)
-    if token is None:
-        raise HTTPException(status_code=401, detail="Wrong Password or email and yes i love react")
-    return {"token": token}
 
 
 @router.get("/user/posts/{user_id}", response_model=list[post_schema.PostAllInfo])

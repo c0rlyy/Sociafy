@@ -109,3 +109,4 @@ def delete_post(db: Session, post_id: int, token: dict):
 
     db.delete(post_to_delete)
     db.commit()
+    return True

@@ -1,25 +1,48 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+
+from jose import JWTError
+from sqlalchemy.orm import Session
 
 from service.web_token import decode
 
-from schemas.token_schema import TokenGetUser
+from schemas.token_schema import TokenData
+from schemas.token_schema import TokenData
 
+from controllers.user_controller import get_user_by_username
+
+from dependencies.db import get_db
+
+from models.user_model import User as UserModel
+
+## redirect to "/token" endpoint
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-def decode_token(token: str) -> TokenGetUser:
+##### this functions is sendiong the token to token endpoint and then returning the user from that endpoint alll of him
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)) -> UserModel:
+
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
     try:
-        payload = decode(token)
-    except:
-        raise HTTPException(status_code=401, detail="unathorized acces JWT")
+        payload: dict = decode(token)
+        username: str = payload.get("sub")  # type: ignore
 
-    return TokenGetUser(user_id=payload["user_id"], profile_id=payload["profile_id"], user_name=payload["user_name"], exp=payload["exp"])
+        if username is None:
+            raise credentials_exception
 
+        token_data = TokenData(username=username)
+    except JWTError:
+        raise credentials_exception
 
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]) -> TokenGetUser:
+    user: UserModel | None = get_user_by_username(db, token_data.username)  # type: ignore
+    if user is None:
+        raise credentials_exception
 
-    current_user: TokenGetUser = decode_token(token)
-    return current_user
+    return user
