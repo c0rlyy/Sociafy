@@ -1,12 +1,8 @@
-Front:
+TODO:Ogarnac registerForm(layout)
+TODO:Disable widocznosc i dostęp do routów
 
-1. Redirect do MainPage
-2. Przechowywać JWT najlepiej w headerze requestu
-3. Abort Controller ogarnąć 
-
-FIXME: 
-useSubmit wykorzystam do automatycznego wylogowania usera po kilku minutach nieaktywności
-Dodawanie tokena do localStorage
-Usuniecie tokena z localStorage podczas wylogowania
-Dodawnie chwilowego czekania na załadowanie kontentu (useNavigation)
-TODO: FIXME
+TODO: Modal w dodaj post jest zjebany
+TODO:Search Bar not responsive
+TODO: Dodać do searchbara abort controller
+TODO: Ogarnąć Sending Messages(layout) i poczytać o websocketsa
+TODO:Dark mode

@@ -7,6 +7,10 @@ import { CiImageOn } from "react-icons/ci";
 import { useState, useEffect, MouseEventHandler } from "react";
 import FileUploader from "./FileUploader";
 import Modal from "../Modal/Modal";
+import PostModal from "../Post/PostModal/PostModal";
+import PostModalModule from "../Post/PostModal/PostModal.module.css";
+import { Cookies } from "react-cookie";
+import PostSuccess from "./PostSuccess/PostSuccess";
 interface AddPostType {
   onClose: MouseEventHandler<SVGAElement>;
 }
@@ -23,29 +27,32 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
   function NextStepPost() {
     return (
       <>
-        <Modal>
-          <div className="grid grid-cols-fileUploaderLayout">
-            <div className="w-1/2 h-1/2 border border-slate-500">
-              <img className="w-full h-full" src={selectedImage} alt="" />
-            </div>
-            <div className="border border-slate-500">
-              <input
-                className="h-full w-full"
-                onChange={descriptionHandler}
-                type="text"
-                name=""
-                id=""
-                placeholder="Wstaw tytul"
-              />
-              <button
-                className="bg-[rgb(77,181,249)] rounded-lg px-2 py-2 text-white w-full"
-                type="submit"
-              >
-                Add
-              </button>
-            </div>
-          </div>
-        </Modal>
+        <PostModal>
+          <picture className={PostModalModule.addPostImageContainer}>
+            <img
+              className={PostModalModule.addPostImage}
+              src={selectedImage}
+              alt=""
+            />
+          </picture>
+          <form className={PostModalModule.addPostForm}>
+            <textarea
+              className={PostModalModule.textarea}
+              onChange={descriptionHandler}
+              type="text"
+              name="textarea"
+              id=""
+              placeholder="Wstaw tytul"
+            ></textarea>
+            <button
+              className="bg-[rgb(77,181,249)] self-start rounded-lg px-2 py-2 text-white w-1/2 h-1/4 md:self-center md:justify-self-center"
+              type="submit"
+              name="submitB"
+            >
+              Add
+            </button>
+          </form>
+        </PostModal>
       </>
     );
   }
@@ -63,5 +70,42 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
       {selectedImage ? <NextStepPost /> : ""}
     </AddPostModal>
   );
+};
+export const CreatePostAction = async ({ request }: { request: Request }) => {
+  const addPostData = Object.entries(await request.formData());
+  const submission = {
+    uploaded_file: addPostData?.textarea,
+  };
+  const createPost = async (): Promise<boolean | undefined> => {
+    try {
+      const cookies = new Cookies();
+      const response = await fetch(
+        "http://localhost:8000/posts/create-optional-file",
+        {
+          headers: {
+            multipart: "form-data",
+            token: cookies.get("token"),
+          },
+          body: JSON.stringify({
+            uploaded_file: submission.uploaded_file,
+          }),
+        }
+      );
+      if (!response.ok) {
+        alert("Your post cannot be added. Try again ");
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const createPostValid = await createPost();
+  if (createPostValid) {
+    setInterval(() => {
+      return <PostSuccess />;
+    }, 3000);
+  }
 };
 export default AddPost;

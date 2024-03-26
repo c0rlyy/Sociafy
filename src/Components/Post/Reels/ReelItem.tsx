@@ -1,20 +1,26 @@
 import React from "react";
+import Reel from "./Reel.module.css";
+import ReelModal from "../../Modal/ReelModal/ReelModal";
 type ReelItemProps = {
   reelUserPhoto: string;
   reelUser: string;
+  reel: string;
 };
-const ReelItem: React.FC<ReelItemProps> = ({ reelUserPhoto, reelUser }) => {
+const ReelItem: React.FC<ReelItemProps> = ({
+  reelUserPhoto,
+  reelUser,
+  reel,
+}) => {
   return (
-    <div className="flex flex-col">
-      <picture className="flex justify-center items-center h-14 w-14 rounded-full overflow-hidden border-2 border-[#0093E9] border-[linear-gradient(195deg,#0093E9_0%,#80D0C7_100%)]">
-        <img
-          className="object-cover h-full w-full"
-          src={`${reelUserPhoto}`}
-          alt=""
-        />
-      </picture>
-      <span>{(reelUser = "Jaca")}</span>
-    </div>
+    <>
+      <div className={Reel.user}>
+        <picture className={Reel.userImageBox}>
+          <img className={Reel.userImage} src={`${reelUserPhoto}`} alt="" />
+        </picture>
+        <span>{reelUser}</span>
+      </div>
+      <div className={Reel.content}>{reel}</div>
+    </>
   );
 };
 

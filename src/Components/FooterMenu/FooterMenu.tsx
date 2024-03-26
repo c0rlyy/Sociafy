@@ -52,15 +52,9 @@ function FooterMenu() {
       role="navigation"
       className={` grid col-start-1 col-end-2 row-start-1 row-end-1 bg-white border-r place-items-center grid-rows-footer`}
     >
-      <div className="flex items-center gap-2 tracking-wide">
-        {/* <h1
-          className={`text-xl md:text-3xl
-         text-black  font-logoFont`}
-        >
-          Sociafy
-        </h1> */}
+      <picture className="w-1/2 justify-self-center m-0 m-auto">
         <img src={`${SociafyIcon}`} alt="" />
-      </div>
+      </picture>
       <div className="flex flex-col gap-3">
         <Link to={"/MainPage"}>
           <IoMdHome size={`${lg ? "3rem" : "2rem"}`} />

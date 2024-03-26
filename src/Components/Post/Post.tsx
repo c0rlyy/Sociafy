@@ -21,12 +21,13 @@ const Post: React.FC<CurrentUserPost> = () => {
   const posts = useLoaderData() as CurrentUserPostProps[];
   return (
     <>
-      <div className=" mt-10 grid col-start-2 col-end-2 grid-rows-mainPageCenterContainer grid-cols-mainPageCenterContainer  ">
-        <div className="flex col-start-2 col-end-3 gap-4 font-bold">
+      <div className=" mt-10 grid col-start-2 col-end-2 grid-rows-mainPageCentreContainer grid-cols-mainPageCenterContainer">
+        <div className="flex md:col-[2/3] col-[1/3] row-[1/2] gap-4 font-bold self-center">
           <h1>For you</h1>
           <span>Following</span>
         </div>
         <Reels />
+
         <div className="col-start-2 col-end-3 grid-cols-postColumns grid-rows-postPageRows">
           {posts.map((postItem) => (
             <PostItem

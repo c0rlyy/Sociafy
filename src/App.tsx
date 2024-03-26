@@ -3,7 +3,7 @@ import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LandingPage from "./pages/LandingPage/LandingPage";
 
-import MainPage from "./pages/ContentPage/MainPage";
+import MainPage from "./pages/MainPage/MainPage";
 // import styled, { ThemeProvider } from "styled-components";
 // import { useState } from "react";
 import RegisterForm, {
@@ -16,6 +16,7 @@ import { loginAction } from "./pages/Forms/LoginForm/LoginForm";
 import fetchPosts from "./pages/Fetch/fetchPosts";
 import React from "react";
 import fetchMyPosts from "./pages/Fetch/fetchMyPosts";
+import SignUp from "./pages/SignUp/SignUp";
 function App() {
   const router = createBrowserRouter([
     {
@@ -23,7 +24,7 @@ function App() {
       element: <LandingPage />,
       action: loginAction,
     },
-    { path: "/Register", element: <RegisterForm />, action: registerAction },
+    { path: "/Register", element: <SignUp />, action: registerAction },
     {
       path: "/MainPage",
       element: <MainPage />,

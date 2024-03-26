@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { Form, redirect } from "react-router-dom";
-import classes from "../LoginForm/LoginForm.module.css";
+import React, { useEffect, useState } from "react";
+import { Form, Link, redirect } from "react-router-dom";
+import register from "../SignUp/RegisterForm.module.css";
+import buttons from "../FormButtons/FormButtons.module.css";
+import SociafyLogo from "../../../assets/3x/Obszar roboczy 1@3x.png";
 type RegisterState = {
   email?: string;
   username?: string;
@@ -19,63 +21,68 @@ const RegisterForm: React.FC<RegisterState> = () => {
     };
     setUserForm(nextState);
   };
-
-  // const FormRegisterSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   fetchAddUser();
-  //   console.log(userForm);
-  // };
+  const [userValid, setUserValid] = useState<boolean>(false);
+  useEffect(() => {
+    const identifier = setTimeout(() => {
+      console.log("TYPING...");
+      if (userForm.email.includes("@")) {
+        setUserValid(true);
+      } else {
+        setUserValid(false);
+      }
+    }, 500);
+    return () => {
+      console.log("CLEANUP");
+      clearTimeout(identifier);
+    };
+  }, [userForm.email]);
+  const emailMessage = <p className="text-sm text-red">Wrong Email</p>;
   return (
-    <div className="flex flex-col border-slate-500 border  items-center w-1/6 mx-auto m-0 gap-4 p-3 lg:h-screen">
-      <h1 className="text-3xl font-logoFont">InstaClone</h1>
-      <Form
-        className="flex flex-col gap-2 p-2"
-        method="POST"
-        action="/Register"
-      >
-        <div className={classes.field}>
+    <div className={register.registerFormLayout}>
+      <div className={register.registerLogo}>
+        <img src={`${SociafyLogo}`} alt="" />
+      </div>
+      <Form className={register.registerForm} method="POST" action="/Register">
+        <div className={register.registerField}>
           <input
+            className={register.registerInput}
             type="email"
             onChange={inputChangeHandler}
             value={userForm.email}
             name="email"
             id=""
-            placeholder="email"
           />
           <label htmlFor="email">Email</label>
+          {!userValid ? <p className="text-red-500">Wrong Email</p> : ""}
         </div>
-        <div className={classes.field}>
+        <div className={register.registerField}>
           <input
+            className={register.registerInput}
             type="text"
             onChange={inputChangeHandler}
             name="username"
             value={userForm.username}
             id=""
-            placeholder="username"
           />
           <label htmlFor="username">Username</label>
         </div>
-        <div className={classes.field}>
+        <div className={register.registerField}>
           <input
+            className={register.registerInput}
             type="password"
             onChange={inputChangeHandler}
             name="password"
             value={userForm.password}
-            id=""
-            placeholder="password"
           />
-          <label className={classes.label} htmlFor="password">
-            Password
-          </label>
+          <label htmlFor="password">Password</label>
         </div>
-        <input className={classes["signIn"]} type="submit" value="Next" />
-        <div className="text-sm mt-5 text-center text-gray-400">
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolorem,
-          iure quo? Voluptatibus perferendis itaque autem laborum. Animi aperiam
-          incidunt tempora temporibus molestiae delectus quidem doloremque sequi
-          veniam, officia debitis nobis provident sed.
-        </div>
+        <input className={buttons.registerSubmit} type="submit" value="Next" />
       </Form>
+      <div className="text-sm mt-5 text-center text-gray-400 row-[-2/-1] ">
+        <span>
+          Already have an account ? <Link to={"/"}>Click</Link>
+        </span>
+      </div>
     </div>
   );
 };

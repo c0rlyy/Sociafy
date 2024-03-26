@@ -1,6 +1,9 @@
-import classes from "./LoginForm.module.css";
+import login from "../LoginForm/LoginForm.module.css";
 import { Link, Form, redirect } from "react-router-dom";
 import { Cookies } from "react-cookie";
+import buttons from "../FormButtons/FormButtons.module.css";
+import React from "react";
+import SociafyLogo from "../../../assets/SVG/Obszar roboczy 1.svg";
 type loginFormScreen = {
   mdScreen: boolean;
 };
@@ -40,48 +43,56 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
     >
       <Form
         // onSubmit={formSubmitHandler}
-        className="  lg:shadow-sm lg:w-full lg:h-auto lg:p-7 flex flex-col gap-4 mt-2"
+        className={login.loginForm}
         action={"/"}
         method="post"
       >
-        <h1 className="font-logoFont text-center text-3xl">InstaClone</h1>
-        <div className={classes.field}>
-          <input className={classes.login} type="text" name="email" id="" />
-          <label htmlFor="username" className={classes.label}>
-            Login
-          </label>
-        </div>
-        <div className={classes.field}>
-          <input
-            className={classes.password}
-            type="password"
-            name="password"
-            id=""
-          />
-          <label className={classes.label} htmlFor="">
-            Password
-          </label>
-        </div>
-        <div className="flex gap-3 self-center justify-center text-white  w-1/2">
-          <button
-            className="bg-blue-400 px-2 py-1 rounded-md w-full"
-            type="submit"
-            value="Sign In"
-          >
-            Sign In
-          </button>
-        </div>
-        <div className="flex justify-center items-center self-center w-full ">
-          <div className={classes.line} />
-          <p className="">OR</p>
-          <div className={classes.line} />
-        </div>
-        <div className="flex justify-center self-center w-1/2 text-white font-normal">
-          <button className=" bg-red-400 px-2 py-1 rounded-md w-full">
-            <Link to={"/Register"}>Sign Up</Link>
-          </button>
+        <picture className={login.logoContainer}>
+          <img className={login.logo} src={`${SociafyLogo}`} alt="" />
+        </picture>
+        <div className={login.inputs}>
+          <div className={login.loginField}>
+            <input
+              className={login.loginInput}
+              type="text"
+              name="email"
+              id=""
+            />
+            <label htmlFor="email" className={login.label}>
+              Email
+            </label>
+          </div>
+          <div className={login.loginField}>
+            <input
+              className={login.loginInput}
+              type="password"
+              name="password"
+              id=""
+            />
+            <label className={login.label} htmlFor="password">
+              Password
+            </label>
+          </div>
+          <div className={login.loginButtonsContainer}>
+            <input
+              className={buttons.loginSubmit}
+              type="submit"
+              value="Sign In"
+            />
+          </div>
         </div>
       </Form>
+      <div className={login.loginButtonsContainer}>
+        <Link to={"/Register"}>
+          <button
+            type="submit"
+            className={buttons.signUpRedirect}
+            value={"Sign Up"}
+          >
+            Sign Up
+          </button>
+        </Link>
+      </div>
     </div>
   );
 };

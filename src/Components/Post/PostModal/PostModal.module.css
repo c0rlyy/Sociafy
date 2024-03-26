@@ -1,0 +1,52 @@
+.postModal {
+  position: absolute;
+  top: 25vh;
+  right: 0;
+  left: 0;
+  width: 45%;
+  height: 50%;
+  background-color: white;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 30000;
+  animation: slide-down 300ms ease-out forwards;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.postContent {
+  display: grid;
+  grid-template-columns: minmax(0, 25vw) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+}
+.addPostImageContainer {
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+  grid-row: 1;
+  grid-column: 1 / 3;
+}
+.addPostImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.addPostForm {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 25ch);
+  grid-column: 1 / 3;
+  grid-row: 2;
+}
+.textarea {
+  resize: none;
+  justify-self: center;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .addPostImageContainer {
+    grid-column: 1/2;
+  }
+  .addPostForm {
+    grid-column: 2/3;
+    grid-row: 1;
+  }
+}

@@ -6,7 +6,7 @@ function MainPage() {
   const [isDark] = useState(false);
   return (
     <div className={`${isDark ? "dark-mode" : ""} grid grid-cols-layout`}>
-      <Post />
+      <Post posts={[]} />
       <FooterMenu />
       <Recommended />
     </div>

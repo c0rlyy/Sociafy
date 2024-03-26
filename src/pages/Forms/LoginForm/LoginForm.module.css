@@ -3,6 +3,27 @@
   border: 0.5px solid black;
   position: relative;
 }
+.loginForm {
+  display: grid;
+  grid-template-rows: minmax(0, 20ch) minmax(0, 20ch) minmax(0, 12ch) minmax(
+      0,
+      1fr
+    );
+  place-items: center;
+}
+.logoContainer {
+  width: 100%;
+}
+.logo {
+  grid-row: 1/2;
+  place-self: center;
+}
+.inputs {
+  grid-row: 2 / 3;
+  justify-self: center;
+  align-self: center;
+  align-content: center;
+}
 .login::before {
   position: absolute;
   content: "login";
@@ -26,7 +47,7 @@ label {
   padding-top: 2px;
   z-index: 10000;
 }
-.field {
+.loginField {
   margin: 10px 0;
   position: relative;
   font-size: 14px;
@@ -57,24 +78,37 @@ input::-moz-placeholder,
 textarea::-moz-placeholder {
   color: transparent;
 }
-input[type="text"],
-input[type="email"],
-input[type="password"] {
+.loginInput {
   padding: 0.5rem 1rem;
   font-size: 12px;
   outline: none;
-  background: #fafafa;
   border-radius: 3px;
-  border: 1px solid #efefef;
+  border-bottom: 1px solid #efefef;
 }
 .signIn {
+  display: grid;
+  place-self: center;
   width: 100%;
-  background-color: rgb(77, 181, 249);
-  /* color: white; */
+  border: 1px solid black;
+  text-decoration: none;
+  background: #04aa6d; /* Green */
+  border: 1px solid black;
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
 }
 
 .line {
   height: 1px;
   width: 40%;
   background-color: #dbdbdb;
+}
+.loginButtonsContainer {
+  display: flex;
+  gap: 1.25rem;
+  place-self: center;
+  justify-content: center;
 }

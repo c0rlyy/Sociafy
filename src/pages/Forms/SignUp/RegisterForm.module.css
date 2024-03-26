@@ -1,0 +1,79 @@
+.registerField {
+  margin: 10px 0;
+  position: relative;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  /* place-self: center; */
+}
+label {
+  position: absolute;
+  pointer-events: none;
+  left: 10px;
+  padding-bottom: 10px;
+  transform: translateY(10px);
+  line-height: 6px;
+  transition: all ease-out 0.1s;
+  font-size: 14px;
+  color: #999;
+  padding-top: 2px;
+  z-index: 10000;
+}
+.registerInput {
+  padding: 0.5rem 1rem;
+  font-size: 1.3em;
+  outline: none;
+  border-radius: 3px;
+  border-bottom: 1px solid #efefef;
+  width: 100%;
+}
+/* label final position */
+input:not(:placeholder-shown) + label {
+  transform: translateY(0);
+  font-size: 11px;
+}
+
+/* input padding increases if placeholder is not shown */
+input:not(:placeholder-shown) {
+  padding-top: 23px;
+  padding-bottom: 10px;
+}
+
+input::placeholder {
+  visibility: hidden;
+}
+input::placeholder {
+  visibility: hidden;
+}
+
+/* hiding  placeholder in mozilla */
+input::-moz-placeholder,
+textarea::-moz-placeholder {
+  color: transparent;
+}
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.25rem;
+  width: 100%;
+  place-self: center;
+}
+.registerFormLayout {
+  display: grid;
+  grid-template-rows: minmax(0, 15rem) minmax(0, 40ch) minmax(0, 10ch) minmax(
+      0,
+      1fr
+    );
+  -webkit-box-shadow: 10px 10px 9px -14px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 10px 10px 9px -14px rgba(0, 0, 0, 0.75);
+  box-shadow: 10px 10px 9px -14px rgba(0, 0, 0, 0.75);
+  grid-column: 1/2;
+  height: 100vh;
+  gap: 1.25rem;
+  place-items: center;
+}
+.registerLogo {
+  display: flex;
+  justify-self: center;
+  align-self: center;
+}

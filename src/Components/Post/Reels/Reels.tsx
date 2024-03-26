@@ -2,8 +2,8 @@ import React from "react";
 import ReelItem from "./ReelItem";
 const Reels = () => {
   return (
-    <div className="col-start-2 col-end-3 pt-4 pl-2">
-      <ReelItem reelUserPhoto={""} reelUser={""} />
+    <div className="md:col-[2/3] md:row-[2/3] col-[1/3]">
+      <ReelItem reelUserPhoto={""} reelUser={""} reel={""} />
     </div>
   );
 };
