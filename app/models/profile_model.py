@@ -11,7 +11,8 @@ class Profile(Base):
     profile_id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), unique=True, nullable=False)
     description = Column(String)
-    profile_pic = Column(LargeBinary)
+    picture_id = Column(Integer, ForeignKey("files.file_id"), unique=True)
 
     user = relationship("User", back_populates="profile")
     posts = relationship("Post", back_populates="post_profile", cascade="all, delete-orphan")
+    # file = relationship("File", back_populates="profile", cascade="all, delete-orphan",uselist=False)

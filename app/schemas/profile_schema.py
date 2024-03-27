@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from schemas.post_schema import PostAllInfo, PostOut
+from schemas.file_schema import FileOut
 
 
 class ProfileBase(BaseModel):
@@ -15,11 +16,10 @@ class ProfileCreate(ProfileBase):
 
 class ProfileOut(ProfileBase):
     profile_id: int
-    user_id: int
 
 
 class Profile(ProfileOut):
-    profile_pic: str | None
+    picture_id: int | None
 
 
 class ProfileWithUser(ProfileBase):

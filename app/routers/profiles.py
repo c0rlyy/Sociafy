@@ -1,15 +1,21 @@
+from typing import Annotated
 from fastapi import Depends, HTTPException, APIRouter
 
 from sqlalchemy.orm import Session
+from fastapi import BackgroundTasks, Depends, HTTPException, Header, UploadFile, File, APIRouter
 
 
-from controllers import user_controller, profile_controller
+from controllers import user_controller, profile_controller, file_controler
 
 from models.profile_model import Profile as ProfileModel
+from models.file_model import File as FileModel
+from models.user_model import User as UserModel
+from dependencies.user_dependency import get_current_user
 
 from schemas import profile_schema
 
 from dependencies.db import get_db
+from service.file_utils import FileProccesor
 
 
 router = APIRouter(tags=["profile"])
@@ -30,3 +36,27 @@ def read_profile_and_posts(profile_id: int, db: Session = Depends(get_db)) -> Pr
         raise HTTPException(status_code=404, detail="wrong id, try again")
 
     return profile_with_posts
+
+
+@router.patch("/profile/add-profile-pic")
+async def add_profile_pic(
+    current_user: Annotated[UserModel, Depends(get_current_user)],
+    profile_pic: Annotated[list[UploadFile], File(description="photo sent from FORM object in js")],
+    db: Session = Depends(get_db),
+):
+
+    if len(profile_pic) > 1:
+        raise HTTPException(status_code=400, detail="to many files, max allowed is 1")
+
+    file_processor = FileProccesor(profile_pic)
+    file_meta_data: list[dict[str, str]] = await file_processor.process_and_validate_all_files()
+    db_file: list[FileModel] = file_controler.upload_files(db, current_user, file_meta_data)
+
+    if len(db_file) == 0:
+        raise HTTPException(status_code=500, detail="error while trying to add picture try again")
+
+    profile_pic_data = db_file[0]
+
+    db.query(ProfileModel).filter(ProfileModel.user_id == current_user.id).update({"picture_id": profile_pic_data.file_id})
+    db.commit()
+    return {"message": "Profile picture updated successfully.", "profile": current_user.profile}

@@ -4,7 +4,7 @@ db/app.db
 
 app/__pycache__/
 
-app/controllers/__pycache__
+app/crud/__pycache__
 app/dbConfig/__pycache__
 app/dependencies/__pycache__
 app/models/__pycache__

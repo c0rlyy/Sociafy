@@ -79,13 +79,9 @@ def deleting_user(db: Session, credentials: UserCredentials, token: str) -> bool
     return True
 
 
-def update_user(db: Session, user_credentials: UserCredentials, updated_user_data: UserUpdate, token: str) -> UserModel | Literal[False]:
-    try:
-        current_user: dict = decode(token)
-    except Exception as e:
-        raise HTTPException(status_code=401, detail=f"{e}")
+def update_user(db: Session, user_credentials: UserCredentials, updated_user_data: UserUpdate, current_user: UserModel) -> UserModel | Literal[False]:
 
-    db_user: UserModel | None = db.query(UserModel).filter(UserModel.id == current_user["user_id"]).first()
+    db_user: UserModel | None = db.query(UserModel).filter(UserModel.id == current_user.id).first()
 
     if not db_user:
         return False

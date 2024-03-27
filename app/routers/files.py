@@ -24,4 +24,6 @@ async def read_file(file_id: int, db: Session = Depends(get_db)):
     # this returns a binary chunk from reading file and its async
     # wow im so smart i read the source code and understood it
     # catch FileNotFoundError
+    # os.stat
+
     return db_file.path

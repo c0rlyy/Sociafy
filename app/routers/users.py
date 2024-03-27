@@ -15,6 +15,7 @@ from models.post_model import Post as PostModel
 from models.file_model import File as FileModel
 
 from schemas import user_schema, token_schema, post_schema
+from schemas.token_schema import TokenResponse
 from dependencies.user_dependency import get_current_user
 from dependencies.db import get_db
 
@@ -40,8 +41,8 @@ def read_user(user_id: int, db: Session = Depends(get_db)) -> UserModel:
     return db_user
 
 
-@router.post("/users", response_model=dict)
-def create_user_with_profile(user_data: user_schema.UserCreate, db: Session = Depends(get_db)) -> dict[str, str]:
+@router.post("/users", response_model=TokenResponse)
+def create_user_with_profile(user_data: user_schema.UserCreate, db: Session = Depends(get_db)) -> TokenResponse:
     is_user_data_in_db: UserModel | None = user_controller.get_user_by_email_or_username(db, user_data.email, user_data.user_name)
     if is_user_data_in_db:
         if is_user_data_in_db.email == user_data.email:  # type: ignore
@@ -51,11 +52,14 @@ def create_user_with_profile(user_data: user_schema.UserCreate, db: Session = De
 
     created_user: UserModel | None = user_controller.create_user_and_profile(db=db, user_data=user_data)
 
-    if created_user is None:
+    if not created_user:
         raise HTTPException(status_code=500, detail="creating the account failed, try again")
 
-    token: str = encode({"user_id": created_user.id, "profile_id": created_user.profile.profile_id, "user_name": created_user.user_name})
-    return {"acces Token": token}
+    data = {"id": created_user.id, "sub": created_user.user_name, "email": created_user.email, "profile_id": created_user.profile.profile_id}
+    access_token: str = encode(data=data)
+
+    token_reponse = TokenResponse(access_token=access_token, token_type="bearer")
+    return token_reponse
 
 
 @router.delete("/users", response_model=dict[str, str])
@@ -83,16 +87,15 @@ async def delete_user_all(
     return {"msg": "succesfully deleted the User"}
 
 
-@router.put("/users", response_model=user_schema.UserOut)
+@router.patch("/users", response_model=user_schema.UserOut)
 def update_user_model(
     user_credentials: user_schema.UserCredentials,
     updated_user_data: user_schema.UserUpdate,
-    token: Annotated[str, Header()],
+    current_user: Annotated[UserModel, Depends(get_current_user)],
     db: Session = Depends(get_db),
 ) -> UserModel:
-    user_updated: UserModel | None = user_controller.update_user(db, user_credentials, updated_user_data, token)
-    # i know its None if it wont update but i find it more readable this way
-    # other way it reads if user_updated raise excetioon
+    user_updated: UserModel | None = user_controller.update_user(db, user_credentials, updated_user_data, current_user)
+
     if user_updated is None:
         raise HTTPException(status_code=401, detail="incorrect Credentials")
     return user_updated

@@ -25,7 +25,7 @@ class UserOut(UserBase):
     user_name: str
     id: int
     # is_active: bool
-    profile: profile_schema.ProfileOut
+    profile: profile_schema.Profile
 
     class Config:
         from_attributes = True

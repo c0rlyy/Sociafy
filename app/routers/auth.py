@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from service.authentication import authenticate_user
-from service.web_token import encode
+from service.web_token import encode, decode
 
 
 from models.user_model import User as UserModel
@@ -36,10 +36,12 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
     return token_reponse
 
 
+##### this dont make no sense
 @router.post("/login", response_model=TokenResponse)
 def log_in(token: Annotated[str, Depends(oauth2_scheme)]) -> TokenResponse:
     if token is None:
         raise HTTPException(status_code=401, detail="Wrong Password or email and yes i love react")
 
     token_reponse = TokenResponse(access_token=token, token_type="bearer")
+    print(decode(token))
     return token_reponse
