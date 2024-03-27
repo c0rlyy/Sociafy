@@ -1,0 +1,33 @@
+.navigation {
+  display: none;
+}
+@media (width<650px) {
+  .navigation {
+    display: flex;
+    flex-direction: row;
+    grid-row: 1;
+    grid-column: 1/-1;
+    justify-content: start;
+    padding-inline: 1.3rem;
+    gap: min(3rem);
+    place-items: center;
+    background-color: rgb(24, 163, 228);
+    overflow: hidden;
+    h1 {
+      font-family: "Arial";
+      font-weight: bolder;
+      font-size: clamp(1.5rem, 2.5vw, 3rem);
+      color: white;
+    }
+    .searchBarContainer {
+      display: flex;
+      input[name="searchBar"] {
+        background-color: rgba(237, 233, 233, 0.914);
+        border-radius: 6px;
+        padding: 0.3rem 0.7rem;
+        color: black;
+        font-size: clamp(1rem, 2vw, 1.3rem);
+      }
+    }
+  }
+}

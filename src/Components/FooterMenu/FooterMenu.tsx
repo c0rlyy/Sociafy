@@ -13,6 +13,8 @@ import { useState } from "react";
 import { MdOutlineDarkMode } from "react-icons/md";
 import { Cookies } from "react-cookie";
 import SociafyIcon from "../../assets/3x/Obszar roboczy 1@3x.png";
+import SociafyIconSmaller from "../../../public/sociafy_1.svg";
+
 function FooterMenu() {
   // const postCtx = useContext(PostContext);
   const [, setIsLogout] = useState(false);
@@ -50,12 +52,23 @@ function FooterMenu() {
   return (
     <footer
       role="navigation"
-      className={` grid col-start-1 col-end-2 row-start-1 row-end-1 bg-white border-r place-items-center grid-rows-footer`}
+      className={`justify-items-start extraSm:justify-items-center grid row-[3/4] col-[1/-1] sm:col-[1] sm:row-[2/3] sm:w-full sm:border-r sm:place-items-center`}
     >
-      <picture className="w-1/2 justify-self-center m-0 m-auto">
-        <img src={`${SociafyIcon}`} alt="" />
+      <picture className=" hidden sm:grid sm:w-1/2  border border-slate-500">
+        <img
+          className={`${
+            !mdScreen ? "hidden" : "block"
+          } max-w-full object-cover`}
+          src={`${SociafyIcon}`}
+          alt=""
+        />
+        <img
+          className={`${mdScreen ? "hidden" : "block"}`}
+          src={`${SociafyIconSmaller}`}
+          alt=""
+        />
       </picture>
-      <div className="flex flex-col gap-3">
+      <div className="flex sm:flex-col flex-row sm:gap-4 gap-16 sm:justify-content-center">
         <Link to={"/MainPage"}>
           <IoMdHome size={`${lg ? "3rem" : "2rem"}`} />
         </Link>
@@ -63,11 +76,11 @@ function FooterMenu() {
           size={`${lg ? "3rem" : "2rem"}`}
           onClick={openPostHandler}
         />
-
         {openPost && <AddPost onClose={closePostHandler} />}
         <SlMagnifier
           onClick={searchBarHandler}
           size={`${lg ? "3rem" : "2rem"}`}
+          className="hidden sm:flex"
         />
         {openedSearch && (
           <FooterSearchBar
@@ -84,7 +97,7 @@ function FooterMenu() {
             />
           </div>
         </Link>
-        <div className="lg:w-17 lg:h-17 md:w-10 md:h-10 overflow-hidden rounded-full border border-emerald-500 ">
+        <div className=" sm:block hidden lg:w-17 lg:h-17 w-10 h-10 overflow-hidden rounded-full border border-emerald-500 ">
           <Link to={"/User"}>
             {/* {!localStorage.getItem("userImage") ? noPhotoDiv : ""} */}
             <img
@@ -93,9 +106,9 @@ function FooterMenu() {
             />
           </Link>
         </div>
-      </div>
-      <div>
-        <MdOutlineDarkMode size={"3rem"} />
+        <div className="hidden sm:block">
+          <MdOutlineDarkMode size={mdScreen ? "3rem" : "2rem"} />
+        </div>
       </div>
     </footer>
   );

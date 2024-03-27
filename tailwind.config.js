@@ -16,7 +16,7 @@ export const theme = {
       landing: `minmax(0,20rem) minmax(0,1fr) minmax(0,1fr) minmax(0,20rem)`,
       postColumns: `minmax(0,50%) minmax(17rem,40rem) minmax(0,50%)`,
       userProfile: `minmax(5rem,30rem) minmax(5rem,30rem) minmax(5rem,30rem)`,
-      layout: `minmax(0,18%) minmax(30rem,1fr) minmax(0,40ch)`,
+      layout: `minmax(min-content,18%) minmax(30rem,1fr) minmax(0,40ch)`,
       PostCardColumns: `minmax(0,5ch) minmax(10rem, 1fr) minmax(0,30ch)`,
       userProfileLayout: `minmax(0,30ch) minmax(0,1fr)`,
       userProfileUpperMenu: `minmax(0,15ch) minmax(0,1fr)`,
@@ -31,8 +31,9 @@ export const theme = {
       userProfileContainerRows: `minmax(0,20rem) minmax(0,1fr)`,
       PostPageRows: `minmax(5rem,15rem)`,
       postCard: `minmax(10ch, 15ch) minmax(0,1fr) minmax(5ch, 10ch) minmax(5ch, 15ch)`,
-      footer: `minmax(0,15ch) minmax(0,30rem) minmax(0,5ch)`,
-      mainPageCentreContainer: `minmax(2ch,8ch) minmax(4rem, 15ch) minmax(0,1fr)`,
+      footer: `minmax(15ch,30ch) minmax(0,1fr)`,
+      layout: ` minmax(5ch, 8ch)minmax(0,1fr) 5ch`,
+      mainPageCentreContainer: `minmax(1.5rem, 3rem) minmax(0,1fr)`,
       recommendedContainer: `minmax(5rem,10rem) minmax(0,10rem) minmax(0,1fr)`,
       fileUploaderRows: `minmax(0,15rem) minmax(5ch, 10ch) minmax(0,1fr)`,
       signUpRows: `minmax(0,15rem) minmax(0,40ch) minmax(0,10ch) minmax(0,1fr)`,
@@ -45,6 +46,9 @@ export const theme = {
     },
     gridAutoRows: {
       userProfileRows: `minmax(10rem,25rem)`,
+    },
+    screens: {
+      extraSm: "400px",
     },
   },
 };

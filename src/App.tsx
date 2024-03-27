@@ -17,6 +17,7 @@ import fetchPosts from "./pages/Fetch/fetchPosts";
 import React from "react";
 import fetchMyPosts from "./pages/Fetch/fetchMyPosts";
 import SignUp from "./pages/SignUp/SignUp";
+import { CreatePostAction } from "./Components/Features/AddPost";
 function App() {
   const router = createBrowserRouter([
     {
@@ -29,6 +30,7 @@ function App() {
       path: "/MainPage",
       element: <MainPage />,
       loader: fetchPosts,
+      action: CreatePostAction,
     },
     {
       path: "/User",

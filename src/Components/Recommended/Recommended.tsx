@@ -34,8 +34,8 @@ const Recommended = () => {
   }, []);
 
   return (
-    <div className="grid grid-rows-recommendedContainer ">
-      <div className="row-start-2 row-end-3 grid-cols-2 grid">
+    <div className="md:grid grid-rows-recommendedContainer hidden col-[3/4 row-[2/3]  ">
+      <div className="md:row[2/3] md:grid-cols-2 grid ">
         <h1 className="font-bold col-start-1 col-end-4">
           People you might know
         </h1>
