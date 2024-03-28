@@ -38,8 +38,8 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
   return (
     <div
       className={` ${
-        mdScreen ? "col-start-3 col-end-4" : "col-start-2 col-end-4"
-      } items-center h-full lg:h-auto w-screen lg:w-3/4 shadow-black shadow-sm lg:justify-start  gap-3 flex flex-col p-3 `}
+        mdScreen ? "col-[3/4]" : "col-[1/-1]"
+      } items-center h-full lg:h-auto w-screen lg:w-3/4 rounded-lg shadow-[#329CE5] shadow-md lg:justify-start bg-[#F3F4F6]  gap-3 flex flex-col p-3 `}
     >
       <Form
         // onSubmit={formSubmitHandler}
@@ -73,12 +73,14 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
               Password
             </label>
           </div>
-          <div className={login.loginButtonsContainer}>
-            <input
-              className={buttons.loginSubmit}
+          <div className="self-center justify-self-center">
+            <button
+              className="w-full p-2 font-bold text-white bg-[#009fe3]"
               type="submit"
               value="Sign In"
-            />
+            >
+              Sign In
+            </button>
           </div>
         </div>
       </Form>
@@ -86,7 +88,7 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
         <Link to={"/Register"}>
           <button
             type="submit"
-            className={buttons.signUpRedirect}
+            className="bg-[#BFBFBF] text-center cursor-pointer w-full p-2 font-bold rounded-md text-[clamp(.8rem,1.3vw,1rem)] text-white"
             value={"Sign Up"}
           >
             Sign Up

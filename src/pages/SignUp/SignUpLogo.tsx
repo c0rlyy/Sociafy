@@ -1,7 +1,7 @@
 import React from "react";
 const SignUpLogo = () => {
   return (
-    <div className="col-[2/3] w-1/2 grid self-center justify-self-center">
+    <div className="col-[2/3] w-1/2 grid self-center justify-self-center max-[500px]:hidden">
       <svg
         id="Warstwa_1"
         data-name="Warstwa 1"

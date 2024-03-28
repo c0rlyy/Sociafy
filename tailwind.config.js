@@ -13,7 +13,7 @@ export const theme = {
       account: `clamp(.8rem,1vw,2rem)`,
     },
     gridTemplateColumns: {
-      landing: `minmax(0,20rem) minmax(0,1fr) minmax(0,1fr) minmax(0,20rem)`,
+      landing: `minmax(0,20rem) minmax(20ch,70ch) minmax(20ch,60ch) minmax(0,5rem)`,
       postColumns: `minmax(0,50%) minmax(17rem,40rem) minmax(0,50%)`,
       userProfile: `minmax(5rem,30rem) minmax(5rem,30rem) minmax(5rem,30rem)`,
       layout: `minmax(min-content,18%) minmax(30rem,1fr) minmax(0,40ch)`,

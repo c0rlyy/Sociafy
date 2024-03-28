@@ -1,0 +1,17 @@
+.backdrop {
+  background-color: black;
+  opacity: 0.25;
+  width: 100vw;
+  height: 100vh;
+}
+.modal {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50vw;
+  width: 50%;
+  height: 50%;
+  border: 1px solid black;
+  border-radius: 12px;
+  background-color: white;
+}

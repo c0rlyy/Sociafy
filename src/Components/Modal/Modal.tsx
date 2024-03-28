@@ -11,7 +11,9 @@ interface ModalProps {
   children: ReactNode;
 }
 const overlays = document.getElementById("overlays") as HTMLElement;
-
+const Backdrop: React.FC = () => {
+  return <div className={classes.backdrop}></div>;
+};
 const Overlay: React.FC<OverlayProps> = ({ children }) => {
   return (
     <div className={classes.modal}>
@@ -21,7 +23,10 @@ const Overlay: React.FC<OverlayProps> = ({ children }) => {
 };
 const Modal: React.FC<ModalProps> = ({ children }) => {
   return (
-    <div>{ReactDOM.createPortal(<Overlay>{children}</Overlay>, overlays)}</div>
+    <div>
+      {ReactDOM.createPortal(<Backdrop />, overlays)}
+      {ReactDOM.createPortal(<Overlay>{children}</Overlay>, overlays)}
+    </div>
   );
 };
 export default Modal;

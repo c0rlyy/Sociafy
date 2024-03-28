@@ -5,11 +5,7 @@
 }
 .loginForm {
   display: grid;
-  grid-template-rows: minmax(0, 20ch) minmax(0, 20ch) minmax(0, 12ch) minmax(
-      0,
-      1fr
-    );
-  place-items: center;
+  grid-template-rows: minmax(0, 20ch) minmax(0, 1fr) minmax(0, 5ch);
 }
 .logoContainer {
   width: 100%;
@@ -22,7 +18,6 @@
   grid-row: 2 / 3;
   justify-self: center;
   align-self: center;
-  align-content: center;
 }
 .login::before {
   position: absolute;
@@ -84,6 +79,10 @@ textarea::-moz-placeholder {
   outline: none;
   border-radius: 3px;
   border-bottom: 1px solid #efefef;
+  background-color: #f3f4f6;
+}
+.loginInput:focus {
+  outline: none;
 }
 .signIn {
   display: grid;
@@ -107,8 +106,4 @@ textarea::-moz-placeholder {
   background-color: #dbdbdb;
 }
 .loginButtonsContainer {
-  display: flex;
-  gap: 1.25rem;
-  place-self: center;
-  justify-content: center;
 }

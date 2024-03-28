@@ -9,6 +9,7 @@
   overflow: hidden;
   width: 100%;
   padding: 10px 5px 5px 10px;
+  color: white;
 }
 .anim-type {
   animation: TypeWriter steps(55) 3s normal both,
@@ -16,6 +17,9 @@
 }
 .anim-github {
   animation: positionChange 500ms 3s ease-in both;
+}
+.logo-anim {
+  animation: revealLogo 1s ease-in 4s normal both;
 }
 .github-item {
   position: relative;
@@ -77,5 +81,13 @@
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+@keyframes revealLogo {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

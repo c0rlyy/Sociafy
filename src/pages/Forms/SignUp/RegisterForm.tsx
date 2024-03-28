@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Link, redirect } from "react-router-dom";
 import register from "../SignUp/RegisterForm.module.css";
-import buttons from "../FormButtons/FormButtons.module.css";
+import classes from "../FormButtons/FormButtons.module.css";
 import SociafyLogo from "../../../assets/3x/Obszar roboczy 1@3x.png";
 type RegisterState = {
   email?: string;
@@ -76,7 +76,11 @@ const RegisterForm: React.FC<RegisterState> = () => {
           />
           <label htmlFor="password">Password</label>
         </div>
-        <input className={buttons.registerSubmit} type="submit" value="Next" />
+        <input
+          className="bg-sky-600 text-white rounded-sm"
+          type="submit"
+          value="Next"
+        />
       </Form>
       <div className="text-sm mt-5 text-center text-gray-400 row-[-2/-1] ">
         <span>

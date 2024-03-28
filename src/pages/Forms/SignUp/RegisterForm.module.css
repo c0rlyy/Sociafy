@@ -26,6 +26,9 @@ label {
   border-bottom: 1px solid #efefef;
   width: 100%;
 }
+.registerInput:focus {
+  outline: none;
+}
 /* label final position */
 input:not(:placeholder-shown) + label {
   transform: translateY(0);
@@ -54,7 +57,7 @@ textarea::-moz-placeholder {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 0.25rem;
+  padding: 3.5rem;
   width: 100%;
   place-self: center;
 }
@@ -76,4 +79,9 @@ textarea::-moz-placeholder {
   display: flex;
   justify-self: center;
   align-self: center;
+}
+@media (width<500px) {
+  .registerFormLayout {
+    grid-column: 1/-1;
+  }
 }
