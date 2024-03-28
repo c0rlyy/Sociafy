@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 from fastapi import BackgroundTasks, Depends, HTTPException, Header, UploadFile, File, APIRouter
 
 
-from controllers import user_controller, profile_controller, file_controler
+from crud import file_crud, profile_crud
+from crud import user_crud
 
 from models.profile_model import Profile as ProfileModel
 from models.file_model import File as FileModel
@@ -22,8 +23,8 @@ router = APIRouter(tags=["profile"])
 
 
 @router.get("/profile/{user_id}", response_model=profile_schema.ProfileWithUser)
-def read_profile(user_id: int, db: Session = Depends(get_db)) -> user_controller.ProfileModel:
-    user_profile: user_controller.ProfileModel | None = profile_controller.get_profile(db, user_id)
+def read_profile(user_id: int, db: Session = Depends(get_db)) -> user_crud.ProfileModel:
+    user_profile: user_crud.ProfileModel | None = profile_crud.get_profile(db, user_id)
     if user_profile is None:
         raise HTTPException(status_code=404, detail="No profile was found try again")
     return user_profile
@@ -31,7 +32,7 @@ def read_profile(user_id: int, db: Session = Depends(get_db)) -> user_controller
 
 @router.get("/profile/{profile_id}/posts", response_model=profile_schema.ProfileWithPost)
 def read_profile_and_posts(profile_id: int, db: Session = Depends(get_db)) -> ProfileModel:
-    profile_with_posts: ProfileModel | None = profile_controller.get_profile_with_posts(db, profile_id)
+    profile_with_posts: ProfileModel | None = profile_crud.get_profile_with_posts(db, profile_id)
     if profile_with_posts is None:
         raise HTTPException(status_code=404, detail="wrong id, try again")
 
@@ -50,7 +51,7 @@ async def add_profile_pic(
 
     file_processor = FileProccesor(profile_pic)
     file_meta_data: list[dict[str, str]] = await file_processor.process_and_validate_all_files()
-    db_file: list[FileModel] = file_controler.upload_files(db, current_user, file_meta_data)
+    db_file: list[FileModel] = file_crud.upload_files(db, current_user, file_meta_data)
 
     if len(db_file) == 0:
         raise HTTPException(status_code=500, detail="error while trying to add picture try again")

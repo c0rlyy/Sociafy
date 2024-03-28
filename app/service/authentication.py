@@ -2,7 +2,7 @@ from typing import Literal
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_
 
-from controllers.user_controller import get_user_by_username
+from crud.user_crud import get_user_by_username
 from service.password_hash import hash_password, verify_password
 
 from models.user_model import User as UserModel

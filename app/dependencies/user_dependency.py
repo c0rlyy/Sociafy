@@ -11,7 +11,7 @@ from service.web_token import decode
 from schemas.token_schema import TokenData
 from schemas.token_schema import TokenData
 
-from controllers.user_controller import get_user_by_username
+from crud.user_crud import get_user_by_username
 
 from dependencies.db import get_db
 
@@ -21,7 +21,7 @@ from models.user_model import User as UserModel
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-##### this functions is sendiong the token to token endpoint and then returning the user from that endpoint alll of him
+##### this functions is doinf magic, it gets token from token endpoit and then u retyrb yser frin ut
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)], db: Session = Depends(get_db)) -> UserModel:
 
     credentials_exception = HTTPException(

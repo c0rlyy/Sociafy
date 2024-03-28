@@ -58,20 +58,13 @@ def log_in(db: Session, login_credentials: UserCredentials) -> str | None:
     return token
 
 
-def deleting_user(db: Session, credentials: UserCredentials, token: str) -> bool:
-    db_user: UserModel | None = db.query(UserModel).filter(UserModel.email == credentials.email).first()
-    try:
-        decoded_token = decode(token)
-    except Exception as e:
-        raise HTTPException(status_code=401, detail=f":) {e}")
+def deleting_user(db: Session, credentials: UserCredentials, current_user: UserModel) -> bool:
+    db_user: UserModel | None = db.query(UserModel).filter(UserModel.email == current_user.email).first()
 
     if db_user is None:
         return False
 
     if not verify_password(credentials.password, db_user.password):  # type: ignore
-        return False
-
-    if decoded_token["user_id"] != db_user.id:
         return False
 
     db.delete(db_user)

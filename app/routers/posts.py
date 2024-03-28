@@ -4,10 +4,11 @@ from fastapi import BackgroundTasks, Depends, HTTPException, Header, UploadFile,
 
 from sqlalchemy.orm import Session
 
+from crud import file_crud
 from service.web_token import decode
 from service.file_utils import FileProccesor
 
-from crud import post_controller, file_controler
+from crud import post_crud
 
 from models.post_model import Post as PostModel
 from models.file_model import File as FileModel
@@ -26,7 +27,7 @@ router = APIRouter(tags=["post"])
 def read_posts_me(
     current_user: Annotated[UserModel, Depends(get_current_user)], skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)
 ) -> list[PostModel]:
-    user_me_posts: list[PostModel] | None = post_controller.get_current_user_posts(db, current_user, skip=skip, limit=limit)
+    user_me_posts: list[PostModel] | None = post_crud.get_current_user_posts(db, current_user, skip=skip, limit=limit)
     if not user_me_posts:
         raise HTTPException(status_code=404, detail="no user posts were found")
     return user_me_posts
@@ -41,7 +42,7 @@ async def uploading_file_with_post(
 ) -> PostModel:
 
     if not uploaded_files:
-        db_post: PostModel = post_controller.create_post(db, post, current_user)
+        db_post: PostModel = post_crud.create_post(db, post, current_user)
         return db_post
 
     if len(uploaded_files) > 3:
@@ -50,13 +51,13 @@ async def uploading_file_with_post(
     file_processor = FileProccesor(uploaded_files)
     files_meta_data: list[dict[str, str]] = await file_processor.process_and_validate_all_files()
 
-    full_post: PostModel = post_controller.create_post_with_files(db, post, current_user, files_meta_data)
+    full_post: PostModel = post_crud.create_post_with_files(db, post, current_user, files_meta_data)
     return full_post
 
 
 @router.get("/posts/{post_id}/files", response_model=dict[str, list[int]])
 async def get_files_id(post_id: int, db: Session = Depends(get_db)):
-    db_files: list[FileModel] | None = file_controler.get_post_files(db, post_id)
+    db_files: list[FileModel] | None = file_crud.get_post_files(db, post_id)
     if not db_files:
         raise HTTPException(status_code=404, detail="no file with that post id was found")
     file_id_list: list[int] = []
@@ -77,7 +78,7 @@ async def get_files_id(post_id: int, db: Session = Depends(get_db)):
 
 @router.get("/posts", response_model=list[post_schema.PostAllInfo])
 def read_posts(skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[PostModel]:
-    posts: list[PostModel] = post_controller.get_posts(skip=skip, limit=limit, db=db)
+    posts: list[PostModel] = post_crud.get_posts(skip=skip, limit=limit, db=db)
     if not posts:
         raise HTTPException(status_code=404, detail="no post were found")
     return posts
@@ -85,7 +86,7 @@ def read_posts(skip: int | None = 0, limit: int = 100, db: Session = Depends(get
 
 @router.get("/posts/{post_id}", response_model=post_schema.PostAllInfo)
 def read_post(post_id: int, db: Session = Depends(get_db)) -> list[PostModel]:
-    post: PostModel = post_controller.get_post(db, post_id)
+    post: PostModel = post_crud.get_post(db, post_id)
     if not post:
         raise HTTPException(status_code=404, detail="no post was found, golang is the way")
     return post
@@ -96,10 +97,10 @@ def delete_post(
     post_id: int, curerent_user: Annotated[UserModel, Depends(get_current_user)], background_tasks: BackgroundTasks, db: Session = Depends(get_db)
 ):
 
-    post_files: list[FileModel] | None = file_controler.get_post_files(db, post_id)
+    post_files: list[FileModel] | None = file_crud.get_post_files(db, post_id)
 
     if not post_files:
-        is_deleted = post_controller.delete_post(db, post_id, curerent_user)
+        is_deleted = post_crud.delete_post(db, post_id, curerent_user)
 
         if not is_deleted:
             raise HTTPException(status_code=500, detail="Error while trying to delete the post")
@@ -109,7 +110,7 @@ def delete_post(
     if post_files[0].user_id != curerent_user.id:  # type: ignore
         raise HTTPException(status_code=403, detail="Frobiden!! no acces ")
 
-    is_deleted = post_controller.delete_post(db, post_id, curerent_user)
+    is_deleted = post_crud.delete_post(db, post_id, curerent_user)
 
     if not is_deleted:
         raise HTTPException(status_code=500, detail="Error while trying to delete the post try again")
