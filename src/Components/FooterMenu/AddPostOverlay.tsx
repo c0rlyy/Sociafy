@@ -1,5 +1,6 @@
 import { forwardRef, ReactNode, Ref } from "react";
 import ReactDOM from "react-dom";
+import ThemeProvider, { useTheme } from "../../store/themeContext";
 import classes from "./AddPostOverlay.module.css";
 type OverlayPropsTypes = {
   children: ReactNode;
@@ -18,17 +19,24 @@ const Overlay = forwardRef(
   }
 );
 function AddPostModal({ children }: OverlayPropsTypes) {
+  const { theme } = useTheme();
   return (
-    <div>
-      {ReactDOM.createPortal(
-        <Backdrop />,
-        document.getElementById("overlays") as Element
-      )}
-      {ReactDOM.createPortal(
-        <Overlay>{children}</Overlay>,
-        document.getElementById("overlays") as Element
-      )}
-    </div>
+    <ThemeProvider>
+      <div
+        className={`${
+          theme === "dark" ? "bg-black text-white" : "bg-white text-black"
+        }`}
+      >
+        {ReactDOM.createPortal(
+          <Backdrop />,
+          document.getElementById("overlays") as Element
+        )}
+        {ReactDOM.createPortal(
+          <Overlay>{children}</Overlay>,
+          document.getElementById("overlays") as Element
+        )}
+      </div>
+    </ThemeProvider>
   );
 }
 

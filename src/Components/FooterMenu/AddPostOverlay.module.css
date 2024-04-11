@@ -13,28 +13,58 @@
   top: 15%;
   right: 25%;
   width: 50%;
-  height: 75%;
+  height: min(50%);
   background-color: white;
-  padding: 1rem;
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   z-index: 30000;
   animation: slide-down 300ms ease-out forwards;
   margin: 0 auto;
   overflow: hidden;
+}
+.content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: minmax(10%, 500px);
+  padding-left: 5rem;
+}
+.form {
+  grid-template-rows: minmax(0, 8ch) minmax(0, 20ch) minmax(10%, 30%);
+  padding: 1.5rem;
+}
+.textField {
+  grid-row: 2;
+  grid-column: 1/-1;
+  resize: none;
+}
+.textField:focus {
+  outline: none;
+}
+.user__container {
   display: flex;
-  /* border: 5px solid green; */
-  justify-content: center;
+  gap: 0.5rem;
 }
 
 @media (min-width: 768px) {
-  .modal {
-    /* width: 35%; */
-    /* left: calc(50% - 20rem); */
-    flex-direction: column;
-    display: flex;
-    place-items: center;
-    justify-content: center;
+  .form {
+    grid-column: 2;
+    grid-row: 1/-1;
+    display: grid;
+  }
+  .textField {
+    grid-column: 1/-1;
+    grid-row: 2;
+  }
+  .addPostImage {
+    max-width: 100%;
+    height: 100%;
+    object-fit: cover;
+    justify-self: center;
+  }
+  .user__container {
+    justify-self: start;
+    align-self: center;
+    font-weight: bold;
   }
 }
 

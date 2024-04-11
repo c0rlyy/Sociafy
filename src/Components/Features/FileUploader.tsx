@@ -11,15 +11,11 @@ const FileUploader: React.FC<FileUploaderType> = ({ setFile }) => {
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const selectedFile = e.target.files?.[0];
     console.log(selectedFile);
-
-    if (setFile) {
-      setFile(selectedFile);
-    }
   };
   return (
     <div>
       <button
-        className=" w-full justify-center bg-[rgb(77,181,249)] rounded-lg px-2 py-2 text-white"
+        className=" w-full justify-center rounded-lg bg-[rgb(77,181,249)] px-2 py-2 text-white"
         onClick={handleClick}
       >
         Choose files from device
@@ -29,7 +25,7 @@ const FileUploader: React.FC<FileUploaderType> = ({ setFile }) => {
         className=" "
         type="file"
         ref={fileRef}
-        name=""
+        name="image"
         id="file-upload"
         style={{ display: "none" }}
       />

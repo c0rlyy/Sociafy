@@ -3,7 +3,7 @@ import PostModal from "../../Post/PostModal/PostModal";
 import { GrStatusGood } from "react-icons/gr";
 type Props = {};
 
-const PostSuccess: React.FC<Props> = ({ children }) => {
+const PostSuccess: React.FC<Props> = () => {
   return (
     <PostModal>
       <div className="flex items-center justify-items-center">

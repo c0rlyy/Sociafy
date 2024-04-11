@@ -1,11 +1,15 @@
 import login from "../LoginForm/LoginForm.module.css";
 import { Link, Form, redirect } from "react-router-dom";
 import { Cookies } from "react-cookie";
-import buttons from "../FormButtons/FormButtons.module.css";
 import React from "react";
 import SociafyLogo from "../../../assets/SVG/Obszar roboczy 1.svg";
+import { useAuth } from "../../../store/AuthContext";
 type loginFormScreen = {
   mdScreen: boolean;
+};
+export type LoginProps = {
+  access_token: string;
+  token_type: string;
 };
 const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
   // const [inputs, setInputs] = useState({
@@ -35,11 +39,12 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
   //     console.log("CLEANUP");
   //   };
   // }, [inputs.email, inputs.password, email, password]);
+  const { storeInLS } = useAuth();
   return (
     <div
       className={` ${
         mdScreen ? "col-[3/4]" : "col-[1/-1]"
-      } items-center h-full lg:h-auto w-screen lg:w-3/4 rounded-lg shadow-[#329CE5] shadow-md lg:justify-start bg-[#F3F4F6]  gap-3 flex flex-col p-3 `}
+      } flex h-full w-screen flex-col items-center gap-3 rounded-lg bg-[#F3F4F6] p-3 shadow-md  shadow-[#329CE5] lg:h-auto lg:w-3/4 lg:justify-start `}
     >
       <Form
         // onSubmit={formSubmitHandler}
@@ -55,7 +60,7 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
             <input
               className={login.loginInput}
               type="text"
-              name="email"
+              name="username"
               id=""
             />
             <label htmlFor="email" className={login.label}>
@@ -75,7 +80,7 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
           </div>
           <div className="self-center justify-self-center">
             <button
-              className="w-full p-2 font-bold text-white bg-[#009fe3]"
+              className="w-full bg-[#009fe3] p-2 font-bold text-white"
               type="submit"
               value="Sign In"
             >
@@ -88,7 +93,7 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
         <Link to={"/Register"}>
           <button
             type="submit"
-            className="bg-[#BFBFBF] text-center cursor-pointer w-full p-2 font-bold rounded-md text-[clamp(.8rem,1.3vw,1rem)] text-white"
+            className="w-full cursor-pointer rounded-md bg-[#BFBFBF] p-2 text-center text-[clamp(.8rem,1.3vw,1rem)] font-bold text-white"
             value={"Sign Up"}
           >
             Sign Up
@@ -103,34 +108,41 @@ export const loginAction = async ({ request }: { request: Request }) => {
   const data = Object.fromEntries(await request.formData());
 
   const submission = {
-    email: data.email,
-    password: data.password,
+    username: data?.username,
+    password: data?.password,
   };
 
-  const fetchValidation = async (): Promise<true | false | undefined> => {
+  const fetchValidation = async (): Promise<LoginProps | undefined> => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     try {
-      const response = await fetch("http://localhost:8000/login", {
+      const response = await fetch("http://localhost:8000/token", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: JSON.stringify({
-          email: submission.email,
-          password: submission.password,
+        body: new URLSearchParams({
+          username: `${submission.username}`,
+          password: `${submission.password}`,
         }),
       });
       const data = await response.json();
-      console.log(data.token);
+      console.log(data);
+      const result = {
+        access_token: data?.access_token,
+        token_type: data?.token_type,
+      };
       if (response.ok) {
-        const cookies = new Cookies();
-        cookies.set("token", data.token, {
-          sameSite: "lax",
-          secure: true,
-        });
-        return true;
+        localStorage.setItem("access_token", result.access_token);
+        localStorage.setItem("token_type", result.token_type);
+
+        console.log("Request working");
+        return result.access_token, result.token_type;
+      }
+      if (data.acces_token) {
+        return result;
       } else {
-        return false;
+        return undefined;
       }
     } catch (error) {
       console.log(error);
@@ -143,7 +155,7 @@ export const loginAction = async ({ request }: { request: Request }) => {
     return redirect("/MainPage");
   } else {
     alert("Niepoprawne dane logowania");
-    return { error: "Login failed" };
+    return null;
   }
 };
 export default LoginForm;

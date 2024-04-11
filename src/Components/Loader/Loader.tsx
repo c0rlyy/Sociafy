@@ -1,9 +1,4 @@
-import React from "react";
-import loader from "./Loader.module.css";
-import sociafyLogo from "../../../public/sociafy_1.svg";
-import { motion } from "framer-motion";
-import Modal from "../Modal/Modal";
-import { Audio, Circles, LineWave } from "react-loader-spinner";
+import { LineWave } from "react-loader-spinner";
 import LoaderModal from "../Modal/LoaderModal/LoaderModal";
 
 function Loader() {

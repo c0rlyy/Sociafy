@@ -3,7 +3,7 @@ import RegisterForm from "../Forms/SignUp/RegisterForm";
 import SignUpLogo from "./SignUpLogo";
 const SignUp = () => {
   return (
-    <div className="grid grid-cols-SignUpLayout overflow-hidden h-[100vh] ">
+    <div className="grid h-[100vh] grid-cols-SignUpLayout overflow-hidden ">
       <RegisterForm />
       <SignUpLogo />
     </div>

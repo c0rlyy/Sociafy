@@ -23,11 +23,16 @@
   margin: 0 auto;
   overflow: hidden;
 }
-
+.content {
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+}
 @media (min-width: 768px) {
   .modal {
     width: 40rem;
-    left: calc(50% - 20rem);
+    top: 10vw;
+    right: 30vw;
   }
 }
 

@@ -2,16 +2,17 @@ import { createContext } from "react";
 import kubaPng from "../assets/kubus.jpg";
 import rafalPng from "../assets/rafal.jpg";
 import ja_wyciety from "../assets/Ja_wyciety.png";
+import kampus from "../assets/kampus.jpg";
 type PostType = "colorful" | "default";
 type Post = {
-  id: string;
+  id: number;
   author: string;
   email: string;
-  authorImg: unknown;
+  authorImg: string;
   postTitle: string;
   postContent: string;
   likes: number;
-  postType: PostType;
+  postImage: string;
 };
 type PostContextTypes = {
   posts: Post[];
@@ -19,18 +20,18 @@ type PostContextTypes = {
 const PostContext = createContext<PostContextTypes>({
   posts: [
     {
-      id: "1",
+      id: 1,
       author: "dundunek1",
       email: "dundunek1@yahoo.com",
       authorImg: kubaPng,
+      postImage: kampus,
       postTitle: "Dlaczego uwielbiam ćwiczyć o 8.00 rano",
-      postContent:
-        "WSiZ jako jedna z najlepszych uczelni w Polsce oferuje atrakcyjną jakoś kształcenia pod względem Wychowania Fizycznego, umożliwiając studentom rozwinięcie swoich zdolności fizycznych jak np chodzenie na czworaka.",
+      postContent: "Such a beautifull landscapes",
       likes: 1000,
-      postType: "default",
     },
     {
-      id: "2",
+      postImage: rafalPng,
+      id: 2,
       author: "rafalstawarz69",
       email: "rafalstawarz69@interia.pl",
       authorImg: rafalPng,
@@ -38,17 +39,16 @@ const PostContext = createContext<PostContextTypes>({
       postContent:
         "Jestem bardzo punktualnym studentem, polecam również Tobie.",
       likes: 578,
-      postType: "default",
     },
     {
-      id: "3",
+      postImage: ja_wyciety,
+      id: 3,
       author: "rovgart",
       authorImg: ja_wyciety,
       email: "rovgarth@onet.pl",
       postTitle: "Kocham naszą uczelnie",
       postContent: "Kocham Wsiz",
       likes: 1,
-      postType: "default",
     },
   ],
 });

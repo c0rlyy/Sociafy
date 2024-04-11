@@ -7,21 +7,27 @@ export type CurrentUserProfilePosts = {
   profile_id: number;
   user_id: number;
 };
-const FetchMyPosts = async (): Promise<CurrentUserProfilePosts> => {
-  const cookies = new Cookies();
+const FetchMyPosts = async (): Promise<CurrentUserProfilePosts | null> => {
   try {
-    const resp = await fetch(`http://127.0.0.1:8000/me/posts`, {
-      headers: {
-        "Content-Type": "application/json",
-        token: cookies.get("token"),
-      },
-    });
+    const resp = await fetch(
+      `http://localhost:8000/posts/me?skip=0&limit=100`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      }
+    );
     const data = await resp.json();
     console.log(data);
     if (!resp.ok) {
       console.log("Something went wrong");
     }
-    return data;
+    if (data) {
+      return data;
+    } else {
+      return null;
+    }
   } catch (error) {
     console.log(error);
   }

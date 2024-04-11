@@ -1,21 +1,20 @@
-import Post from "../../Components/Post/Post";
+import Post from "../../Components/Post/PostLayout/Post";
 import FooterMenu from "../../Components/FooterMenu/FooterMenu";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Recommended from "../../Components/Recommended/Recommended";
 import HeaderNavigation from "../../Components/FooterMenu/HeaderNavigation/HeaderNavigation";
-function MainPage() {
-  const [isDark] = useState(false);
+import React from "react";
+import Layout from "../../Components/Layout/Layout";
+import { useTheme } from "../../store/themeContext";
+const MainPage: React.FC = () => {
+  const { theme } = useTheme();
   return (
-    <div
-      className={`${
-        isDark ? "dark-mode" : ""
-      } grid grid-cols-layout grid-rows-layout h-[100vh] overflow-hidden`}
-    >
-      <HeaderNavigation />
-      <Post posts={[]} />
+    <Layout>
+      <HeaderNavigation children={undefined} />
+      <Post theme={theme} posts={[]} />
       <FooterMenu />
       <Recommended />
-    </div>
+    </Layout>
   );
-}
+};
 export default MainPage;

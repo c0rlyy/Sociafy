@@ -10,7 +10,6 @@ const Error: React.FC<ErrorProps> = () => {
   return (
     <main className="flex flex-col items-center justify-center">
       <img src={`${SociafyLogo}`} alt="" />
-      <h1>{error}</h1>
     </main>
   );
 };

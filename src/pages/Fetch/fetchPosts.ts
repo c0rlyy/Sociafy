@@ -6,26 +6,40 @@ export type CurrentUserPostProps = {
   post_description: string;
   profile_id: number;
   user_id: number;
+  post_files: PostFilesProps[];
+};
+type PostFilesProps = {
+  path: string;
+  file_type: string;
+  file_id: number;
 };
 export type CurrentUserPost = {
   posts: CurrentUserPost[];
+  theme: string;
+  darkProps: string;
+  lightProps: string;
 };
-const fetchPosts = async (): Promise<CurrentUserPostProps[]> => {
+const fetchPosts = async (): Promise<CurrentUserPost | null> => {
   try {
-    const response = await fetch("http://127.0.0.1:8000/posts", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (!response.ok) {
-      throw new Error({ message: "Posts hadn't been fetched." });
-    }
+    const response = await fetch(
+      "http://localhost:8000/posts?skip=0&limit=100",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     const data = await response.json();
-    console.log(data);
-    return data;
+    if (response.ok) {
+      console.log("Successfully posts loaded");
+      console.log(data);
+      return data;
+    } else {
+      return new Error("Error occured");
+    }
   } catch (error) {
-    console.log(error);
+    console.log(error?.message);
   }
 };
 export default fetchPosts;

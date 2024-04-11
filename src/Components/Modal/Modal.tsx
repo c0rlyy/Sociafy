@@ -1,8 +1,6 @@
-import createPortal from "react-dom";
-import PostContext from "../../store/post-context";
 import classes from "./Modal.module.css";
 import ReactDOM from "react-dom";
-import { forwardRef, ReactNode } from "react";
+import { ReactNode } from "react";
 interface OverlayProps {
   children: ReactNode;
 }

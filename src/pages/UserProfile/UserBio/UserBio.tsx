@@ -1,14 +1,11 @@
 import React from "react";
-
-const UserBio: React.FC = () => {
+type UserBioProps = {
+  desc: string | null;
+};
+const UserBio: React.FC<UserBioProps> = ({ desc }) => {
   return (
-    <div>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae
-        veniam, laborum animi odit ab ad repellat ducimus quam voluptates dolor,
-        voluptas esse repudiandae velit cupiditate? Eius deserunt magni neque,
-        maxime aperiam laborum.
-      </p>
+    <div className=" col-[2/3] row-[3]">
+      <p>{desc === null ? "Write something about you" : desc}</p>
     </div>
   );
 };

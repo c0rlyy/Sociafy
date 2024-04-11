@@ -6,18 +6,15 @@ import LandingPage from "./pages/LandingPage/LandingPage";
 import MainPage from "./pages/MainPage/MainPage";
 // import styled, { ThemeProvider } from "styled-components";
 // import { useState } from "react";
-import RegisterForm, {
-  registerAction,
-} from "./pages/Forms/SignUp/RegisterForm";
+import { registerAction } from "./pages/Forms/SignUp/RegisterForm";
 // import useLoading from "./customHooks/useLoading";
 // import Loader from "./pages/Loader";
 import UserProfile from "./pages/UserProfile/UserProfile";
 import { loginAction } from "./pages/Forms/LoginForm/LoginForm";
 import fetchPosts from "./pages/Fetch/fetchPosts";
-import React from "react";
-import fetchMyPosts from "./pages/Fetch/fetchMyPosts";
 import SignUp from "./pages/SignUp/SignUp";
-import { CreatePostAction } from "./Components/Features/AddPost";
+import ThemeProvider from "./store/themeContext";
+import fetchMe from "./pages/Fetch/fetchMe";
 function App() {
   const router = createBrowserRouter([
     {
@@ -30,15 +27,18 @@ function App() {
       path: "/MainPage",
       element: <MainPage />,
       loader: fetchPosts,
-      action: CreatePostAction,
     },
     {
       path: "/User",
       element: <UserProfile />,
-      loader: fetchMyPosts,
+      loader: fetchMe,
     },
   ]);
-  return <RouterProvider router={router}></RouterProvider>;
+  return (
+    <ThemeProvider>
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  );
 }
 
 export default App;

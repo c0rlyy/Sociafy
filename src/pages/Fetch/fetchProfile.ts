@@ -1,14 +1,19 @@
 import { Cookies } from "react-cookie";
 import FetchMyPosts from "./fetchMyPosts";
 
-export type ProfileProps = {
-  user_id: number;
-  profile_id: number;
+export type UserProps = {
+  email: string;
   user_name: string;
-  exp: number;
+  id: number;
+  profile: ProfileProps[];
+};
+type ProfileProps = {
+  description: string;
+  profile_id: number;
+  picture_id: number;
 };
 
-const fetchProfile = async (): Promise<ProfileProps> => {
+const fetchProfile = async (): Promise<UserProps> => {
   const cookies = new Cookies();
   try {
     const response = await fetch("https://localhost:8000/me/user", {
@@ -21,7 +26,6 @@ const fetchProfile = async (): Promise<ProfileProps> => {
     if (!response.ok) {
       throw new Error("Something went wrong");
     } else {
-      await FetchMyPosts();
       return data;
     }
   } catch (error) {

@@ -32,7 +32,7 @@
 }
 .addPostForm {
   display: grid;
-  grid-template-rows: minmax(0, 1fr) minmax(0, 25ch);
+  grid-template-rows: minmax(0, 20ch) minmax(0, 25ch);
   grid-column: 1 / 3;
   grid-row: 2;
 }
