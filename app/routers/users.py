@@ -23,18 +23,18 @@ from dependencies.db import get_db
 router = APIRouter(tags=["user"])
 
 
-@router.get("/users/me", response_model=user_schema.UserOut)
+@router.get("/api/v1/users/me", response_model=user_schema.UserOut)
 async def read_user_me(current_user: Annotated[UserModel, Depends(get_current_user)]):
     return current_user
 
 
-@router.get("/users", response_model=list[user_schema.UserOut])
+@router.get("/api/v1/users", response_model=list[user_schema.UserOut])
 def read_users(skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[UserModel]:
     users: list[UserModel] = user_crud.get_users(db, skip=skip, limit=limit)
     return users
 
 
-@router.get("/users{user_id}", response_model=user_schema.UserOut)
+@router.get("/api/v1/users{user_id}", response_model=user_schema.UserOut)
 def read_user(user_id: int, db: Session = Depends(get_db)) -> UserModel:
     db_user: UserModel | None = user_crud.get_user(db, user_id=user_id)
     if db_user is None:
@@ -42,7 +42,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)) -> UserModel:
     return db_user
 
 
-@router.post("/users", response_model=TokenResponse)
+@router.post("/api/v1/users", response_model=TokenResponse)
 def create_user_with_profile(user_data: user_schema.UserCreate, db: Session = Depends(get_db)) -> TokenResponse:
     is_user_data_in_db: UserModel | None = user_crud.get_user_by_email_or_username(db, user_data.email, user_data.user_name)
     if is_user_data_in_db:
@@ -63,10 +63,10 @@ def create_user_with_profile(user_data: user_schema.UserCreate, db: Session = De
     return token_reponse
 
 
-@router.delete("/users", response_model=dict[str, str])
+@router.delete("/api/v1/users", response_model=dict[str, str])
 async def delete_user_all(
     credentials: user_schema.UserCredentials,
-    current_user: Annotated[UserModel, Depends(get_current_user)],
+    current_user: Annotated[UserModel, Depends(get_current_user)],  # token, and that returns the usre thats assinged to token
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
 ) -> dict[str, str]:
@@ -75,7 +75,7 @@ async def delete_user_all(
     user_to_delete: bool = user_crud.deleting_user(db, credentials, current_user)
 
     if not user_to_delete:
-        raise HTTPException(status_code=401, detail="Try Again, wrong credentials")
+        raise HTTPException(status_code=401, detail="The operation failed try again")
 
     if user_files:
         file_processor = FileProccesor()

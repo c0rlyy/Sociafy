@@ -13,7 +13,7 @@ from dependencies.db import get_db
 router = APIRouter(tags=["file"])
 
 
-@router.get("/file-retrive/{file_id}", response_class=FileResponse)
+@router.get("/api/v1/file-retrive/{file_id}", response_class=FileResponse)
 async def read_file(file_id: int, db: Session = Depends(get_db)):
     db_file: FileModel | None = file_crud.get_file_by_id(db, file_id)
     if not db_file:

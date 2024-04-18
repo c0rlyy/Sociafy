@@ -23,7 +23,7 @@ from dependencies.user_dependency import get_current_user
 router = APIRouter(tags=["post"])
 
 
-@router.get("/posts/me", response_model=list[post_schema.PostAllInfo])
+@router.get("/api/v1/posts/me", response_model=list[post_schema.PostAllInfo])
 def read_posts_me(
     current_user: Annotated[UserModel, Depends(get_current_user)], skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)
 ) -> list[PostModel]:
@@ -33,7 +33,7 @@ def read_posts_me(
     return user_me_posts
 
 
-@router.post("/posts/create-optional-file", response_model=post_schema.PostAllInfo)
+@router.post("/api/v1/posts/create-optional-file", response_model=post_schema.PostAllInfo)
 async def uploading_file_with_post(
     current_user: Annotated[UserModel, Depends(get_current_user)],
     post: Annotated[post_schema.PostCreate, Depends(post_checker)],
@@ -55,7 +55,7 @@ async def uploading_file_with_post(
     return full_post
 
 
-@router.get("/posts/{post_id}/files", response_model=dict[str, list[int]])
+@router.get("/api/v1/posts/{post_id}/files", response_model=dict[str, list[int]])
 async def get_files_id(post_id: int, db: Session = Depends(get_db)):
     db_files: list[FileModel] | None = file_crud.get_post_files(db, post_id)
     if not db_files:
@@ -76,7 +76,7 @@ async def get_files_id(post_id: int, db: Session = Depends(get_db)):
 #     return new_post
 
 
-@router.get("/posts", response_model=list[post_schema.PostAllInfo])
+@router.get("/api/v1/posts", response_model=list[post_schema.PostAllInfo])
 def read_posts(skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[PostModel]:
     posts: list[PostModel] = post_crud.get_posts(skip=skip, limit=limit, db=db)
     if not posts:
@@ -84,7 +84,7 @@ def read_posts(skip: int | None = 0, limit: int = 100, db: Session = Depends(get
     return posts
 
 
-@router.get("/posts/{post_id}", response_model=post_schema.PostAllInfo)
+@router.get("/api/v1/posts/{post_id}", response_model=post_schema.PostAllInfo)
 def read_post(post_id: int, db: Session = Depends(get_db)) -> list[PostModel]:
     post: PostModel = post_crud.get_post(db, post_id)
     if not post:
@@ -92,7 +92,7 @@ def read_post(post_id: int, db: Session = Depends(get_db)) -> list[PostModel]:
     return post
 
 
-@router.delete("/posts/{post_id}}", response_model=dict)
+@router.delete("/api/v1/posts/{post_id}}", response_model=dict)
 def delete_post(
     post_id: int, curerent_user: Annotated[UserModel, Depends(get_current_user)], background_tasks: BackgroundTasks, db: Session = Depends(get_db)
 ):

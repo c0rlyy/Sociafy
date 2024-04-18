@@ -19,7 +19,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 router = APIRouter(tags=["auth"])
 
 
-@router.post("/token", response_model=TokenResponse)
+@router.post("/api/v1/token", response_model=TokenResponse)
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)) -> TokenResponse:
     db_user: UserModel | Literal[False] = authenticate_user(db, form_data.username, form_data.password)
     if not db_user:
@@ -37,7 +37,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
 
 
 ##### this dont make no sense
-@router.post("/login", response_model=TokenResponse)
+@router.post("/api/v1/login", response_model=TokenResponse)
 def log_in(token: Annotated[str, Depends(oauth2_scheme)]) -> TokenResponse:
     if token is None:
         raise HTTPException(status_code=401, detail="Wrong Password or email and yes i love react")

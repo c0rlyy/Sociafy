@@ -59,9 +59,9 @@ def log_in(db: Session, login_credentials: UserCredentials) -> str | None:
 
 
 def deleting_user(db: Session, credentials: UserCredentials, current_user: UserModel) -> bool:
-    db_user: UserModel | None = db.query(UserModel).filter(UserModel.email == current_user.email).first()
+    db_user: UserModel | None = db.query(UserModel).filter(UserModel.id == current_user.id).first()
 
-    if db_user is None:
+    if not db_user:
         return False
 
     if not verify_password(credentials.password, db_user.password):  # type: ignore
@@ -77,21 +77,22 @@ def update_user(db: Session, user_credentials: UserCredentials, updated_user_dat
     db_user: UserModel | None = db.query(UserModel).filter(UserModel.id == current_user.id).first()
 
     if not db_user:
-        return False
-    if not verify_password(user_credentials.password, db_user.password):  # type: ignore
+        raise HTTPException(status_code=404, detail="no user was found")
+
+    if not verify_password(current_user.password, db_user.password):  # type: ignore
         return False
     if user_credentials.email != db_user.email:
         return False
 
     user_info_dict = updated_user_data.model_dump()
-    if user_info_dict:
-        for key, item in user_info_dict.items():
-            if key == "password":
-                item = hash_password(item)
-            setattr(db_user, key, item)
+    if not user_info_dict:
+        raise HTTPException(status_code=500, detail="Server error GL next time")
 
-        db.commit()
-        db.refresh(db_user)
-        return db_user
+    for key, item in user_info_dict.items():
+        if key == "password":
+            item = hash_password(item)
+        setattr(db_user, key, item)
 
-    return False
+    db.commit()
+    db.refresh(db_user)
+    return db_user

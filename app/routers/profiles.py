@@ -22,7 +22,7 @@ from service.file_utils import FileProccesor
 router = APIRouter(tags=["profile"])
 
 
-@router.get("/profile/{user_id}", response_model=profile_schema.ProfileWithUser)
+@router.get("/api/v1/profile/{user_id}", response_model=profile_schema.ProfileWithUser)
 def read_profile(user_id: int, db: Session = Depends(get_db)) -> user_crud.ProfileModel:
     user_profile: user_crud.ProfileModel | None = profile_crud.get_profile(db, user_id)
     if user_profile is None:
@@ -30,7 +30,7 @@ def read_profile(user_id: int, db: Session = Depends(get_db)) -> user_crud.Profi
     return user_profile
 
 
-@router.get("/profile/{profile_id}/posts", response_model=profile_schema.ProfileWithPost)
+@router.get("/api/v1/profile/{profile_id}/posts", response_model=profile_schema.ProfileWithPost)
 def read_profile_and_posts(profile_id: int, db: Session = Depends(get_db)) -> ProfileModel:
     profile_with_posts: ProfileModel | None = profile_crud.get_profile_with_posts(db, profile_id)
     if profile_with_posts is None:
@@ -39,7 +39,7 @@ def read_profile_and_posts(profile_id: int, db: Session = Depends(get_db)) -> Pr
     return profile_with_posts
 
 
-@router.patch("/profile/add-profile-pic")
+@router.patch("/api/v1/profile/add-profile-pic")
 async def add_profile_pic(
     current_user: Annotated[UserModel, Depends(get_current_user)],
     profile_pic: Annotated[list[UploadFile], File(description="photo sent from FORM object in js")],
@@ -56,7 +56,7 @@ async def add_profile_pic(
     if len(db_file) == 0:
         raise HTTPException(status_code=500, detail="error while trying to add picture try again")
 
-    profile_pic_data = db_file[0]
+    profile_pic_data: FileModel = db_file[0]
 
     db.query(ProfileModel).filter(ProfileModel.user_id == current_user.id).update({"picture_id": profile_pic_data.file_id})
     db.commit()
