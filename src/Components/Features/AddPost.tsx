@@ -7,35 +7,46 @@ import {
   useRef,
   FormEvent,
   ChangeEvent,
+  useEffect,
 } from "react";
 import PostOverlay from "../FooterMenu/AddPostOverlay.module.css";
 interface AddPostType {
   onClose: MouseEventHandler<SVGAElement>;
 }
+
+// const toStrinfy = { post_title: textData };
 type addPostStateProps = {
-  image: string[];
+  images: File[];
   textData: null | string;
 };
 const AddPost: React.FC<AddPostType> = ({ onClose }) => {
   const [addPostState, setAddPostState] = useState<addPostStateProps>({
-    image: [],
-    textData: null,
+    images: [],
+    textData: "",
   });
-  const { image, textData } = addPostState;
+  const [isSelected, setIsSelected] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0];
-    if (selectedFile) {
+    const selectedFiles = event.target.files;
+    console.log(selectedFiles);
+    if (selectedFiles) {
+      setIsSelected(true);
       const fileReader = new FileReader();
-      fileReader.onloadend = () => {
-        setAddPostState((prev) => ({
-          ...prev,
-          image: image.push(fileReader?.result as string),
-        }));
-      };
-      fileReader.readAsDataURL(selectedFile);
+      Array.from(selectedFiles).forEach((file) => {
+        fileReader.onloadend = () => {
+          setAddPostState((prev) => ({
+            ...prev,
+            images: [...prev.images, file],
+          }));
+        };
+        fileReader.readAsDataURL(file);
+      });
     }
   };
+  useEffect(() => {
+    console.log(addPostState.images);
+    console.log(isSelected);
+  }, [isSelected]);
   const handleClick: React.MouseEventHandler<HTMLButtonElement> = () => {
     fileRef.current?.click();
   };
@@ -45,16 +56,12 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
   const addPostSubmitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData();
-    const image = e.currentTarget.image.files?.[0];
-    setAddPostState((prev) => ({ ...prev }));
-
-    if (image) {
-      formData.append("uploaded_files", image);
-      await addPostFetch(formData, addPostState?.textData as string);
-      console.log(formData);
-    } else {
-      console.error("No image selected or empty text field");
-    }
+    const { images, textData } = addPostState;
+    images.forEach((image, index) => {
+      formData.append(`uploaded_files`, image);
+    });
+    formData.append("data", JSON.stringify({ post_title: `${textData}` }));
+    await addPostFetch(formData);
   };
   return (
     <AddPostModal>
@@ -65,14 +72,18 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
       />
       <div
         onClick={handleClick}
-        className={`col-[1/2] ${image ? "hidden" : ""}`}
+        className={`col-[1/2] row-[1/2] ${isSelected ? "hidden" : "block"} border border-black`}
       >
-        <CiImageOn size={"100%"} />
+        <CiImageOn z={100} size={"100%"} fill={"black"} />
       </div>
-      {image && (
-        <picture className="max-h-full max-w-full justify-self-center">
-          <img className={PostOverlay.addPostImage} src={image} alt="" />
+      {isSelected ? (
+        <picture className="max-h-full w-[50vw] max-w-full justify-self-center border border-slate-500">
+          {addPostState.images.map((image, index) => (
+            <img key={index} src={image.toString()} alt="" />
+          ))}
         </picture>
+      ) : (
+        <div className="grid"> No image inserted</div>
       )}
       <form
         method="POST"
@@ -91,7 +102,7 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
           name="textAddPost"
           id=""
           placeholder="Description"
-          value={textData}
+          value={addPostState.textData}
         ></textarea>
         <input
           onChange={handleImageChange}
@@ -113,12 +124,9 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
     </AddPostModal>
   );
 };
-const addPostFetch = async (formData: FormData, textData: string) => {
-  const submission = {
-    uploaded_files: formData,
-    data: textData,
-  };
-  console.log(submission);
+const addPostFetch = async (formData: FormData) => {
+  // FormData musi być stringowanym JSONem (?) (JSON.stringify(textData))**
+  console.log(formData);
   try {
     const response = await fetch(
       "http://localhost:8000/posts/create-optional-file",
@@ -127,7 +135,7 @@ const addPostFetch = async (formData: FormData, textData: string) => {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
         method: "POST",
-        body: submission,
+        body: formData,
       },
     );
     const data = await response.json();

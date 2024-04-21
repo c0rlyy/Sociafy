@@ -10,17 +10,15 @@ type UserProfileProps = {
 
 const Recommended: React.FC = () => {
   const [recommendedUsers, setRecommendedUsers] = useState<UserProfileProps[]>(
-    []
+    [],
   );
   const [followState, setFollowState] = useState<{ [key: string]: boolean }>(
-    {}
+    {},
   ); // Store isFollowed state by userId
 
   const fetchUsers = async (): Promise<void> => {
     try {
-      const resp = await fetch("http://localhost:8000/users?skip=0&limit=100", {
-        method: "GET",
-      });
+      const resp = await fetch("http://localhost:8000/users?skip=0&limit=100");
       if (!resp.ok) {
         throw new Error(`HTTP error! Status: ${resp.status}`);
       }
@@ -28,7 +26,7 @@ const Recommended: React.FC = () => {
 
       if (users && users.length > 0) {
         const transformedUsers = users.map((item) => ({
-          user_name: item.user_name,
+          user_name: item?.user_name,
           picture_id: item?.profile?.picture_id,
           picture: "",
           isFollowed: false, // Initialize isFollowed with false
@@ -52,25 +50,28 @@ const Recommended: React.FC = () => {
             return;
           }
           const response = await fetch(
-            `http://localhost:8000/file_retrive/${picture_id}`,
+            `http://localhost:8000/file_retrive/${JSON.parse(picture_id)}`,
             {
               method: "GET",
-            }
+            },
           );
-          const data = await response.json();
           if (!response.ok) {
-            console.error("Wrong Response :(");
+            console.log(
+              `fetchRecommended: ${response.status} ${response.statusText}`,
+            );
             return;
           }
+          const blob = await response.blob();
+          const imageurl = URL.createObjectURL(blob);
           setRecommendedUsers((prevUsers) =>
             prevUsers.map((prevUser) => {
               if (prevUser.picture_id === picture_id) {
-                return { ...prevUser, picture: data };
+                return { ...prevUser, picture: imageurl };
               }
               return prevUser;
-            })
+            }),
           );
-        })
+        }),
       );
     } catch (error) {
       console.error("Error fetching photos", error);
@@ -85,19 +86,19 @@ const Recommended: React.FC = () => {
   };
 
   useEffect(() => {
+    console.log(recommendedUsers);
     fetchUsers();
   }, []);
 
-  useEffect(() => {
-    console.log(recommendedUsers);
-  }, [recommendedUsers]);
-
   return (
     <div
-      className={`bg-inherit md:grid grid-rows-recommendedContainer hidden col-[3/4] row-[2/3]`}
+      className={`col-[3/4] row-[1/2] hidden grid-rows-recommendedContainer border-l border-inherit bg-inherit px-2 py-1 md:grid`}
     >
-      <div onClick={followHandler} className="md:row[2/3] md:grid-cols-2 grid ">
-        <h1 className="font-bold col-start-1 col-end-4">
+      <div
+        onClick={followHandler}
+        className="md:row[1/-1] grid md:grid-cols-2 "
+      >
+        <h1 className="col-start-1 col-end-4 font-bold">
           People you might know
         </h1>
         {recommendedUsers.map((recommend, index) => (

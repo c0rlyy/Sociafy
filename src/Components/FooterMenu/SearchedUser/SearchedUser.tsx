@@ -8,9 +8,9 @@ type Props = {
 
 const SearchedUser: React.FC<Props> = ({ userEmail, userImage, userName }) => {
   return (
-    <div>
-      <picture className="size-20 rounded-full border border-slate-500">
-        <img className="w-full h-full rounded-full" src={userImage} alt="" />
+    <div className="flex place-items-center gap-3">
+      <picture className="size-10 rounded-full border border-slate-500">
+        <img className="h-full w-full rounded-full" src={userImage} alt="" />
       </picture>
       <div>
         <span className="font-bold">{userName}</span>

@@ -1,4 +1,5 @@
 import { Cookies } from "react-cookie";
+import { redirect } from "react-router-dom";
 import fetchReels from "./fetchReels";
 export type CurrentUserPostProps = {
   post_title: string;
@@ -19,27 +20,35 @@ export type CurrentUserPost = {
   darkProps: string;
   lightProps: string;
 };
-const fetchPosts = async (): Promise<CurrentUserPost | null> => {
-  try {
-    const response = await fetch(
-      "http://localhost:8000/posts?skip=0&limit=100",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
+const fetchPosts = async (): Promise<CurrentUserPost | []> => {
+  const access_token = localStorage.getItem("access_token");
+  if (!access_token) {
+    return redirect("/");
+  } else {
+    try {
+      const response = await fetch(
+        "http://localhost:8000/posts?skip=0&limit=100",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        console.log(
+          `HTTP Response Error ${response.status}:${response.statusText}`,
+        );
+        return [];
       }
-    );
-    const data = await response.json();
-    if (response.ok) {
-      console.log("Successfully posts loaded");
-      console.log(data);
-      return data;
-    } else {
-      return new Error("Error occured");
+      if (data) {
+        return data;
+      }
+    } catch (error) {
+      console.log(error?.message);
     }
-  } catch (error) {
-    console.log(error?.message);
   }
 };
+
 export default fetchPosts;

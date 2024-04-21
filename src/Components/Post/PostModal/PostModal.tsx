@@ -1,7 +1,8 @@
 import React, { ReactNode } from "react";
-import ReelModal, { Backdrop } from "../../Modal/ReelModal/ReelModal";
 import ReactDOM from "react-dom";
 import addPost from "../PostModal/PostModal.module.css";
+import ReelModal from "../Reels/ReelModal";
+ReelModal;
 type Props = {
   children: ReactNode;
 };

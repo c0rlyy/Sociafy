@@ -1,6 +1,6 @@
 // import logo from "./logo.svg";
-import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "./App.css";
 import LandingPage from "./pages/LandingPage/LandingPage";
 
 import MainPage from "./pages/MainPage/MainPage";
@@ -16,6 +16,16 @@ import SignUp from "./pages/SignUp/SignUp";
 import ThemeProvider from "./store/themeContext";
 import fetchMe from "./pages/Fetch/fetchMe";
 function App() {
+  // useEffect(() => {
+  //   const removeTokenOnUnload = () => {
+  //     return localStorage.removeItem("access_token");
+  //   };
+  //   window.addEventListener("beforeunload", removeTokenOnUnload);
+
+  //   return () => {
+  //     window.removeEventListener("beforeunload", removeTokenOnUnload);
+  //   };
+  // }, []);
   const router = createBrowserRouter([
     {
       path: "/",

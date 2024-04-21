@@ -13,13 +13,11 @@ type ProfileProps = {
   picture_id: number;
 };
 
-const fetchProfile = async (): Promise<UserProps> => {
-  const cookies = new Cookies();
+const fetchProfile = async (id): Promise<UserProps> => {
   try {
-    const response = await fetch("https://localhost:8000/me/user", {
+    const response = await fetch(`https://localhost:8000/profile/{${id}}`, {
       headers: {
         "Content-Type": "Application/json",
-        token: cookies.get("token"),
       },
     });
     const data = await response.json();

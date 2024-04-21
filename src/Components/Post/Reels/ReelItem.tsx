@@ -1,26 +1,31 @@
 import React from "react";
 import Reel from "./Reel.module.css";
 import ReelModal from "../../Modal/ReelModal/ReelModal";
+import { IoMdCloseCircle } from "react-icons/io";
 type ReelItemProps = {
   reelUserPhoto: string;
   reelUser: string;
-  reel: string;
+  reelID: string;
 };
 const ReelItem: React.FC<ReelItemProps> = ({
   reelUserPhoto,
   reelUser,
-  reel,
+  reelID,
 }) => {
   return (
-    <>
-      <div className={Reel.user}>
-        <picture className={Reel.userImageBox}>
-          <img className={Reel.userImage} src={`${reelUserPhoto}`} alt="" />
-        </picture>
-        <span>{reelUser}</span>
-      </div>
-      <div className={Reel.content}>{reel}</div>
-    </>
+    <div data-reelid={reelID} aria-label={reelID} className={Reel.user}>
+      <picture data-reelid={reelID} className={Reel.userImageBox}>
+        <img
+          data-reelid={reelID}
+          className={Reel.userImage}
+          src={`${reelUserPhoto}`}
+          alt=""
+        />
+      </picture>
+      <span className={Reel.reelUser}>
+        {reelUser.length > 5 ? reelUser.slice(0, 5) + "..." : reelUser}
+      </span>
+    </div>
   );
 };
 

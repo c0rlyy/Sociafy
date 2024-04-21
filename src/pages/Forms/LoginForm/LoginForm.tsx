@@ -1,8 +1,7 @@
 import login from "../LoginForm/LoginForm.module.css";
 import { Link, Form, redirect } from "react-router-dom";
-import { Cookies } from "react-cookie";
 import React from "react";
-import SociafyLogo from "../../../assets/SVG/Obszar roboczy 1.svg";
+import SociafyLogo from "../../../assets/SVG 2/Sociafy.svg";
 import { useAuth } from "../../../store/AuthContext";
 type loginFormScreen = {
   mdScreen: boolean;
@@ -39,7 +38,6 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
   //     console.log("CLEANUP");
   //   };
   // }, [inputs.email, inputs.password, email, password]);
-  const { storeInLS } = useAuth();
   return (
     <div
       className={` ${

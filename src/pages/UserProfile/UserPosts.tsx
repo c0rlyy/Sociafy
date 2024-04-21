@@ -1,13 +1,15 @@
 import React from "react";
 import UserProfileProps from "../Fetch/fetchUsers";
 import { CurrentUserProfilePosts } from "../Fetch/fetchMyPosts";
-type UserProfilePostProps = {
+import PostPreview from "./PostModal/PostPreview";
+export type UserProfilePostProps = {
   postIMAGEID: number;
   postID: number;
   userID: number;
   profileID: number;
   postDESCRIPTION: string;
   postIMAGE: string;
+  isOpened: boolean;
 };
 const UserPosts: React.FC<UserProfilePostProps> = ({
   postIMAGEID,
@@ -16,15 +18,31 @@ const UserPosts: React.FC<UserProfilePostProps> = ({
   profileID,
   postDESCRIPTION,
   postIMAGE,
+  isOpened,
 }) => {
   return (
-    <picture data-id={postIMAGEID} className="max-w-full max-h-full mt-2">
-      <img
-        className="max-w-full max-h-full object-cover"
-        src={`${postIMAGEID}`}
-        alt=""
-      />
-    </picture>
+    <>
+      <picture data-id={postIMAGEID} className="max-w-full">
+        <img
+          className="h-full w-full object-cover"
+          src={`${postIMAGEID}`}
+          alt=""
+        />
+      </picture>
+      {isOpened ? (
+        <PostPreview
+          postIMAGEID={postIMAGEID}
+          postID={postID}
+          userID={postID}
+          profileID={profileID}
+          postDESCRIPTION={postDESCRIPTION}
+          postIMAGE={postIMAGE}
+          isOpened={false}
+        />
+      ) : (
+        ""
+      )}
+    </>
   );
 };
 

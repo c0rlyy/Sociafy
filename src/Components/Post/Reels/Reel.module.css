@@ -1,5 +1,4 @@
 .user {
-  display: flex;
   gap: 3rem;
 }
 .userImageBox {
@@ -21,4 +20,7 @@
 .reelForm {
   display: flex;
   gap: 0.344em;
+}
+.reelUser {
+  font-size: clamp(12px, 1.5vw, 14px);
 }

@@ -1,9 +1,9 @@
-import { createContext, useContext } from "react";
+import { createContext, ReactNode, useContext } from "react";
 
 export const AuthContext = createContext(undefined);
 
-export const AuthProvider = ({ children }) => {
-  const getTokenFromLS = (server_token) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const getTokenFromLS = (server_token: string) => {
     return localStorage.setItem("token", server_token);
   };
   return (

@@ -9,8 +9,8 @@ const Layout: React.FC<Props> = ({ children }) => {
   return (
     <div
       className={`${
-        theme === "dark" ? "text-slate-300 bg-slate-900" : "text-black bg-white"
-      } grid grid-cols-layout grid-rows-layout overflow-visible`}
+        theme === "dark" ? "bg-slate-900 text-white" : "bg-white text-black"
+      } grid grid-cols-mobileLayout grid-rows-mobileLayout md:grid-cols-layout md:grid-rows-layout `}
     >
       <FooterMenu />
       {children}

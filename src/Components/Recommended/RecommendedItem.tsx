@@ -15,7 +15,7 @@ const RecommendedItem: React.FC<RecommendedUserProps> = ({
 }) => {
   return (
     <>
-      <div className="col-[1/2] grid items-center gap-5">
+      <div className="col-[1/2] grid items-center ">
         <div className="flex items-center gap-3">
           <picture className="size-10 rounded-full border border-inherit">
             <img src={recommendedUserPhoto} alt="" />
@@ -25,7 +25,7 @@ const RecommendedItem: React.FC<RecommendedUserProps> = ({
           </h1>
         </div>
       </div>
-      <div className="self-center">
+      <div className="justify-self-center">
         <button
           onClick={() => {
             handleFollowClick();

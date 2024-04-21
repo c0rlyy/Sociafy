@@ -1,5 +1,6 @@
 import React from "react";
 import Buttons from "../Buttons/Buttons";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 type postItemProps = {
   postTITLE: string;
   postID: number;
@@ -16,20 +17,20 @@ const PostItem: React.FC<postItemProps> = ({
   postImage,
 }: postItemProps) => {
   return (
-    <div className=" mt-8 grid min-h-[50vh] grid-cols-PostCardColumns grid-rows-postCard  ">
+    <div className="mt-8 grid min-h-[50vh] grid-cols-PostCardColumns grid-rows-postCard  ">
       <div className="col-[2/3] row-span-4 grid grid-cols-subgrid grid-rows-subgrid">
         <div className="flex items-center gap-2">
           <picture className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-gray-300">
-            <img
-              className="h-full w-full object-cover"
-              src={`${userIMG}`}
-              alt="Your Image"
-            />
+            <LazyLoadImage />
           </picture>
           <h1>{username}</h1>
         </div>
         <picture className="row-[2/3]">
-          <img className="h-full w-full object-cover" src={postImage} alt="" />
+          <img
+            className="h-full w-full object-cover"
+            src={`${postImage}`}
+            alt=""
+          />
         </picture>
         <Buttons />
         <div>
