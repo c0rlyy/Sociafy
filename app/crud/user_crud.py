@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import List, Literal
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_, update
 from sqlalchemy.sql import text
@@ -8,6 +8,7 @@ from service.password_hash import hash_password, verify_password
 
 from models.user_model import User as UserModel
 from models.profile_model import Profile as ProfileModel
+from models.post_model import Post as PostModel
 from schemas.user_schema import UserCredentials, UserEmailChange, UserNameChange, UserUpdate, UserPasswordCred, UserPasswordChange
 from schemas.user_schema import UserCreate as UserCreateSchema
 from schemas.token_schema import TokenBase
@@ -74,7 +75,7 @@ def deleting_user(db: Session, credentials: UserPasswordCred, current_user: User
 
 ## old deprecated
 # def update_user(db: Session, user_credentials: UserCredentials, updated_user_data: UserUpdate, current_user: UserModel) -> UserModel | Literal[False]:
-
+# PostModel
 #     db_user: UserModel | None = db.query(UserModel).filter(UserModel.id == current_user.id).first()
 
 #     if not db_user:
@@ -156,3 +157,21 @@ def change_user_name(db: Session, req_data: UserNameChange, current_user: UserMo
     db.commit()
     db.refresh(db_user)
     return db_user
+
+
+def search_users(db: Session, q: str, skip: int, limit: int) -> list[UserModel]:
+    users: list[UserModel] = db.query(UserModel).filter(UserModel.user_name.like(f"%{q}%")).offset(skip).limit(limit).all()
+    return users
+
+
+def search_posts(db: Session, q: str, skip: int, limit: int) -> list[PostModel]:
+    posts: list[PostModel] = db.query(PostModel).filter(PostModel.post_title.like(f"%{q}%")).offset(skip).limit(limit).all()
+    return posts
+
+
+def search_all(db: Session, q: str, skip: int, limit: int):
+    # select * from users,posts where querry like =users.username or posts.title
+    posts: list[PostModel] = search_posts(db, q, skip, limit)
+    users: list[UserModel] = search_users(db, q, skip, limit)
+    results = {"users": users, "posts": posts}
+    return results

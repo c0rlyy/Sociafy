@@ -10,7 +10,7 @@ profile_model.Base.metadata.create_all(bind=engine)
 post_model.Base.metadata.create_all(bind=engine)
 file_model.Base.metadata.create_all(bind=engine)
 
-from routers import users, profiles, files, posts, auth
+from routers import users, profiles, files, posts, auth, search
 
 app = FastAPI()
 
@@ -19,6 +19,7 @@ app.include_router(profiles.router)
 app.include_router(files.router)
 app.include_router(posts.router)
 app.include_router(auth.router)
+app.include_router(search.router)
 
 origins: list[str] = ["*"]  # i love CORS
 
