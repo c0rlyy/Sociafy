@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import BackgroundTasks, Depends, HTTPException, Header, APIRouter
 
@@ -65,7 +65,7 @@ def create_user_with_profile(user_data: user_schema.UserCreate, db: Session = De
 
 @router.delete("/api/v1/users", response_model=dict[str, str])
 async def delete_user_all(
-    credentials: user_schema.UserCredentials,
+    credentials: user_schema.UserPasswordCred,
     current_user: Annotated[UserModel, Depends(get_current_user)],  # token, and that returns the usre thats assinged to token
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
@@ -85,23 +85,65 @@ async def delete_user_all(
     return {"msg": "succesfully deleted the User"}
 
 
-@router.patch("/users", response_model=user_schema.UserOut)
-def update_user_model(
-    user_credentials: user_schema.UserCredentials,
-    updated_user_data: user_schema.UserUpdate,
-    current_user: Annotated[UserModel, Depends(get_current_user)],
-    db: Session = Depends(get_db),
-) -> UserModel:
-    user_updated: UserModel | None = user_crud.update_user(db, user_credentials, updated_user_data, current_user)
-
-    if user_updated is None:
-        raise HTTPException(status_code=401, detail="incorrect Credentials")
-    return user_updated
-
-
-@router.get("/user/posts/{user_id}", response_model=list[post_schema.PostAllInfo])
+@router.get("/api/v1/user/posts/{user_id}", response_model=list[post_schema.PostAllInfo])
 def read_user_posts(user_id: int, db: Session = Depends(get_db)) -> list[PostModel]:
     posts: list[PostModel] | None = post_crud.get_user_posts(db, user_id)
     if posts is None:
         raise HTTPException(status_code=404, detail="no post were found")
     return posts
+
+
+# @router.patch("/api/v1/users", response_model=user_schema.UserOut)
+# def update_user_model(
+#     user_credentials: user_schema.UserPasswordCred,
+#     updated_user_data: user_schema.UserUpdate,
+#     current_user: Annotated[UserModel, Depends(get_current_user)],
+#     db: Session = Depends(get_db),
+# ) -> UserModel:
+#     user_updated: UserModel | None = user_crud.update_user(db, user_credentials, updated_user_data, current_user)
+
+#     if user_updated is None:
+#         raise HTTPException(status_code=401, detail="incorrect Credentials")
+#     return user_updated
+
+
+@router.patch("/api/v1/users/change-password", response_model=user_schema.UserOut)
+def change_user_password(
+    req_data: user_schema.UserPasswordChange,
+    current_user: Annotated[UserModel, Depends(get_current_user)],
+    db: Session = Depends(get_db),
+) -> UserModel:
+    user_updated: UserModel | Literal[False] = user_crud.change_password(db, req_data, current_user)
+
+    if not user_updated:
+        raise HTTPException(status_code=401, detail="incorrect Credentials")
+
+    return user_updated
+
+
+@router.patch("/api/v1/users/change-email", response_model=user_schema.UserOut)
+def change_user_email(
+    req_data: user_schema.UserEmailChange,
+    current_user: Annotated[UserModel, Depends(get_current_user)],
+    db: Session = Depends(get_db),
+) -> UserModel:
+    user_updated: UserModel | Literal[False] = user_crud.change_email(db, req_data, current_user)
+
+    if not user_updated:
+        raise HTTPException(status_code=401, detail="incorrect Credentials")
+
+    return user_updated
+
+
+@router.patch("/api/v1/users/change-username", response_model=user_schema.UserOut)
+def change_user_name(
+    req_data: user_schema.UserNameChange,
+    current_user: Annotated[UserModel, Depends(get_current_user)],
+    db: Session = Depends(get_db),
+) -> UserModel:
+    user_updated: UserModel | Literal[False] = user_crud.change_user_name(db, req_data, current_user)
+
+    if not user_updated:
+        raise HTTPException(status_code=401, detail="incorrect Credentials")
+
+    return user_updated

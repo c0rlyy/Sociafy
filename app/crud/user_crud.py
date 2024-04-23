@@ -8,7 +8,7 @@ from service.password_hash import hash_password, verify_password
 
 from models.user_model import User as UserModel
 from models.profile_model import Profile as ProfileModel
-from schemas.user_schema import UserCredentials, UserUpdate
+from schemas.user_schema import UserCredentials, UserEmailChange, UserNameChange, UserUpdate, UserPasswordCred, UserPasswordChange
 from schemas.user_schema import UserCreate as UserCreateSchema
 from schemas.token_schema import TokenBase
 from service.web_token import encode, decode
@@ -58,7 +58,7 @@ def log_in(db: Session, login_credentials: UserCredentials) -> str | None:
     return token
 
 
-def deleting_user(db: Session, credentials: UserCredentials, current_user: UserModel) -> bool:
+def deleting_user(db: Session, credentials: UserPasswordCred, current_user: UserModel) -> bool:
     db_user: UserModel | None = db.query(UserModel).filter(UserModel.id == current_user.id).first()
 
     if not db_user:
@@ -72,27 +72,87 @@ def deleting_user(db: Session, credentials: UserCredentials, current_user: UserM
     return True
 
 
-def update_user(db: Session, user_credentials: UserCredentials, updated_user_data: UserUpdate, current_user: UserModel) -> UserModel | Literal[False]:
+## old deprecated
+# def update_user(db: Session, user_credentials: UserCredentials, updated_user_data: UserUpdate, current_user: UserModel) -> UserModel | Literal[False]:
 
+#     db_user: UserModel | None = db.query(UserModel).filter(UserModel.id == current_user.id).first()
+
+#     if not db_user:
+#         raise HTTPException(status_code=404, detail="no user was found")
+
+#     if not verify_password(current_user.password, db_user.password):  # type: ignore
+#         return False
+#     if user_credentials.email != db_user.email:
+#         return False
+
+#     user_info_dict = updated_user_data.model_dump()
+#     if not user_info_dict:
+#         raise HTTPException(status_code=500, detail="Server error GL next time")
+
+#     for key, item in user_info_dict.items():
+#         if key == "password":
+#             item = hash_password(item)
+#         setattr(db_user, key, item)
+
+#     db.commit()
+#     db.refresh(db_user)
+#     return db_user
+
+
+def change_password(db: Session, req_data: UserPasswordChange, current_user: UserModel) -> UserModel | Literal[False]:
     db_user: UserModel | None = db.query(UserModel).filter(UserModel.id == current_user.id).first()
 
     if not db_user:
         raise HTTPException(status_code=404, detail="no user was found")
 
-    if not verify_password(current_user.password, db_user.password):  # type: ignore
-        return False
-    if user_credentials.email != db_user.email:
+    if not verify_password(req_data.old_password, db_user.password):  # type: ignore
         return False
 
-    user_info_dict = updated_user_data.model_dump()
-    if not user_info_dict:
-        raise HTTPException(status_code=500, detail="Server error GL next time")
+    # hash the password first
+    hashed_password: str = hash_password(req_data.new_password)
+    db_user.password = hashed_password  # type: ignore
+    db.commit()
+    db.refresh(db_user)
+    return db_user
 
-    for key, item in user_info_dict.items():
-        if key == "password":
-            item = hash_password(item)
-        setattr(db_user, key, item)
 
+def change_email(db: Session, req_data: UserEmailChange, current_user: UserModel) -> UserModel | Literal[False]:
+    db_user: UserModel | None = db.query(UserModel).filter(UserModel.id == current_user.id).first()
+
+    if not db_user:
+        raise HTTPException(status_code=404, detail="no user was found")
+
+    if not verify_password(req_data.password, db_user.password):  # type: ignore
+        return False
+
+    email_in_db: UserModel | None = db.query(UserModel).filter(UserModel.email == req_data.new_email).first()
+
+    if email_in_db:
+        raise HTTPException(status_code=400, detail="email is already in use try again")
+    # hash the password first
+
+    db_user.email = req_data.new_email  # type: ignore
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+def change_user_name(db: Session, req_data: UserNameChange, current_user: UserModel) -> UserModel | Literal[False]:
+    db_user: UserModel | None = db.query(UserModel).filter(UserModel.id == current_user.id).first()
+
+    if not db_user:
+        raise HTTPException(status_code=404, detail="no user was found")
+
+    if not verify_password(req_data.password, db_user.password):  # type: ignore
+        return False
+
+    user_name_in_db: UserModel | None = db.query(UserModel).filter(UserModel.user_name == req_data.new_user_name).first()
+
+    if user_name_in_db:
+        raise HTTPException(status_code=400, detail="username is already in use try again")
+    # hash the password first
+
+    db_user.user_name = req_data.new_user_name  # type: ignore
     db.commit()
     db.refresh(db_user)
     return db_user

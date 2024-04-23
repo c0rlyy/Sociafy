@@ -35,7 +35,28 @@ class UserCredentials(UserBase):
     password: str
 
 
+class UserPasswordCred(BaseModel):
+    password: str
+
+
 class UserUpdate(BaseModel):
     email: str | None
     password: str | None
     user_name: str | None
+
+
+class UserPassword(BaseModel):
+    password: str
+
+
+class UserPasswordChange(BaseModel):
+    old_password: str
+    new_password: str
+
+
+class UserEmailChange(UserPasswordCred):
+    new_email: str
+
+
+class UserNameChange(UserPasswordCred):
+    new_user_name: str

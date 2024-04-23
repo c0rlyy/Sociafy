@@ -40,6 +40,9 @@ async def uploading_file_with_post(
     db: Session = Depends(get_db),
     uploaded_files: Annotated[list[UploadFile], File(description="photos/videos sent from FORM object in js")] = None,  # type: ignore #if i make it list[type],None ... it brakes the docs, but works
 ) -> PostModel:
+    """exmaple of data in form
+    {"post_title":"send this as a string"}
+    """
 
     if not uploaded_files:
         db_post: PostModel = post_crud.create_post(db, post, current_user)

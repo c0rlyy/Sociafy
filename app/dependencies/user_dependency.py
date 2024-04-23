@@ -18,7 +18,7 @@ from dependencies.db import get_db
 from models.user_model import User as UserModel
 
 ## redirect to "/token" endpoint
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/login/access-token")
 
 
 ##### this functions is doinf magic, it gets token from token endpoit and then u retyrb yser frin ut
