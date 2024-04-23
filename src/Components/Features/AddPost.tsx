@@ -10,16 +10,19 @@ import {
   useEffect,
 } from "react";
 import PostOverlay from "../FooterMenu/AddPostOverlay.module.css";
+import useMe from "../../Hooks/useMe";
 interface AddPostType {
   onClose: MouseEventHandler<SVGAElement>;
 }
-
-// const toStrinfy = { post_title: textData };
 type addPostStateProps = {
   images: File[];
   textData: null | string;
 };
+// Adding Post Logic
 const AddPost: React.FC<AddPostType> = ({ onClose }) => {
+  // CurrentUser
+  const { currentUser } = useMe();
+
   const [addPostState, setAddPostState] = useState<addPostStateProps>({
     images: [],
     textData: "",
@@ -72,18 +75,26 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
       />
       <div
         onClick={handleClick}
-        className={`col-[1/2] row-[1/2] ${isSelected ? "hidden" : "block"} border border-black`}
+        className={`col-[1/2] row-[1/2] ${isSelected ? "hidden" : "block"}`}
       >
         <CiImageOn z={100} size={"100%"} fill={"black"} />
       </div>
       {isSelected ? (
-        <picture className="max-h-full w-[50vw] max-w-full justify-self-center border border-slate-500">
+        <picture className="max-h-full max-w-full  justify-self-center pt-2 ">
           {addPostState.images.map((image, index) => (
-            <img key={index} src={image.toString()} alt="" />
+            <img
+              className="h-full w-full object-cover"
+              key={index}
+              src={URL.createObjectURL(image)}
+              alt=""
+            />
           ))}
         </picture>
       ) : (
-        <div className="grid"> No image inserted</div>
+        <span className="text-sm font-extralight italic">
+          {" "}
+          No image inserted
+        </span>
       )}
       <form
         method="POST"
@@ -93,7 +104,7 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
         <div className={PostOverlay.user__container}>
           <picture className={PostOverlay.userImg}>
             <img src="" alt="" />
-            <span>Danielek</span>
+            <span>{currentUser?.user_name}</span>
           </picture>
         </div>
         <textarea

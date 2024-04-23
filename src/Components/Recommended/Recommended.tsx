@@ -92,7 +92,7 @@ const Recommended: React.FC = () => {
 
   return (
     <div
-      className={`col-[3/4] row-[1/2] hidden grid-rows-recommendedContainer border-l border-inherit bg-inherit px-2 py-1 md:grid`}
+      className={`col-[3/4] row-[1/2] hidden grid-rows-recommendedContainer border-l-[.1px] border-inherit bg-inherit px-2 py-1 md:grid`}
     >
       <div
         onClick={followHandler}

@@ -6,44 +6,22 @@ import { Link } from "react-router-dom";
 import { CiLogout } from "react-icons/ci";
 import { SlMagnifier } from "react-icons/sl";
 import FooterSearchBar from "./FooterSearchBar";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineDarkMode } from "react-icons/md";
-import { Cookies, useCookies } from "react-cookie";
-import SociafyIcon from "../../assets/SVG 2/Sociafy.svg";
+
 import { CiUser } from "react-icons/ci";
 import SociafyIconSmaller from "../../../public/sociafy_1.svg";
 import { motion, useAnimate } from "framer-motion";
 import { useTheme } from "../../store/themeContext";
 import AddPost from "../Features/AddPost";
-import { UserProps } from "../../pages/Fetch/fetchProfile";
+import useFetchUrl from "../../Hooks/useFetchUrl";
 function FooterMenu() {
   const [picture_id, setPictureId] = useState<number | null>(null);
-  const [pictureUrl, setPictureUrl] = useState<string | null>("");
 
   const [openPost, setOpenPost] = useState(false);
   const [, setIsLogout] = useState(false);
-  const [userImage, setUserImage] = useState("");
   const [openedSearch, setOpenedSearch] = useState(false);
   const { theme, toggleTheme } = useTheme();
-  const fetchUrl = async (pictureID: number) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8000/file-retrive/${JSON.parse(pictureID)}`,
-      );
-      if (!response.ok) {
-        throw new Error(`fetchUrl: ${response.status}: ${response.statusText}`);
-      }
-      const data = await response.url;
-      if (data) {
-        console.log(`fetchUrl Result ${data}`);
-        setPictureUrl(data);
-      } else {
-        console.log("Empty response received");
-      }
-    } catch (error) {
-      console.error(error?.message);
-    }
-  };
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -70,12 +48,8 @@ function FooterMenu() {
     };
     fetchProfile();
   }, []);
-
-  useEffect(() => {
-    if (picture_id !== null) {
-      fetchUrl(picture_id);
-    }
-  }, [picture_id]);
+  const { pictureUrl } = useFetchUrl(picture_id);
+  console.log(pictureUrl);
 
   const logoutHandler = () => {
     setIsLogout(true);
@@ -108,8 +82,7 @@ function FooterMenu() {
     <>
       <motion.footer
         role="navigation"
-        className={` bottom-0 z-50 flex
-  bg-inherit text-center max-smScreen:fixed sm:sticky sm:top-0 sm:col-[1] sm:row-[1/-1] sm:h-[100vh] sm:w-full sm:flex-col sm:place-items-center sm:justify-around sm:border-r`}
+        className={`bottom-0 z-50 flex w-full place-items-center bg-inherit pl-3 text-center max-smScreen:fixed sm:sticky sm:top-0 sm:col-[1] sm:row-[1/-1] sm:h-[100vh] sm:flex-col sm:place-items-center sm:justify-evenly sm:border-r-[.1px] md:place-items-start`}
       >
         <picture className={`sm:grid sm:w-1/2`}>
           <svg
@@ -177,51 +150,68 @@ function FooterMenu() {
             alt=""
           />
         </picture>
-        <div className="sm:justify-content-center flex  gap-8 bg-inherit sm:flex-col sm:gap-4">
-          <Link to={"/MainPage"}>
-            <IoMdHome size={`${lg ? "2.5rem" : "2rem"}`} />
+        <div className="justify-items flex  gap-8 bg-inherit sm:flex-col sm:gap-4">
+          <Link className="flex place-items-center gap-3" to={"/MainPage"}>
+            <IoMdHome size={`${lg ? "2.5rem" : "2.4rem"}`} />
+            <span className={`${mdScreen ? "block" : "hidden"}`}>Home</span>
           </Link>
-          <IoIosAddCircleOutline
-            size={`${lg ? "2.5rem" : "2rem"}`}
-            onClick={openPostHandler}
-          />
+          <div className="flex items-center gap-3">
+            <IoIosAddCircleOutline
+              size={`${lg ? "2.5rem" : "2.4rem"}`}
+              onClick={openPostHandler}
+            />
+            <span className={`${mdScreen ? "block" : "hidden"}`}>Add Post</span>
+          </div>
           {openPost && <AddPost onClose={closePostHandler} />}
-          <SlMagnifier
-            onClick={() => setOpenedSearch(true)}
-            size={`${lg ? "2.5rem" : "2rem"}`}
-            className="hidden sm:flex"
-          />
-          <IoIosSend size={`${lg ? "2.5rem" : "2rem"}`} />
+          <div className="flex items-center gap-3">
+            <SlMagnifier
+              onClick={() => setOpenedSearch(true)}
+              size={`${lg ? "2.5rem" : "2.4rem"}`}
+              className="hidden sm:flex"
+            />
+            <span className={`${mdScreen ? "block" : "hidden"}`}>Search</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <IoIosSend size={`${lg ? "2.5rem" : "2.4rem"}`} />
+            <span className={`${mdScreen ? "block" : "hidden"}`}>Messages</span>
+          </div>
           <Link to={"/"}>
-            <div>
+            <div className="flex items-center gap-3">
               <CiLogout
                 onClick={logoutHandler}
-                size={mdScreen ? "2.5rem" : "2rem"}
+                size={lg ? "2.5rem" : "2.4rem"}
               />
+              <span className={`${mdScreen ? "block" : "hidden"}`}>Logout</span>
             </div>
           </Link>
           <motion.div
             whileTap={{ scale: 1.05 }}
-            className=" hidden h-10 w-10 rounded-full border border-inherit  sm:block lg:h-10 lg:w-10"
+            className=" hidden h-full w-full rounded-full   sm:block lg:h-full lg:w-full"
           >
-            <Link to={"/User"}>
+            <Link className="flex items-center gap-3" to={"/User"}>
               {pictureUrl === null ? (
-                <CiUser size={"2.5rem"} />
+                <CiUser size={`${lg ? "2.5rem" : "2rem"}`} />
               ) : (
-                <motion.img
-                  whileHover={{ scale: 1.2 }}
-                  className="h-full w-full rounded-full border border-inherit bg-inherit object-cover "
-                  src={pictureUrl}
-                  alt=""
-                />
+                <div className="h-10 w-10 rounded-full border border-inherit">
+                  <motion.img
+                    whileHover={{ scale: 1.2 }}
+                    className="h-full w-full rounded-full border border-inherit bg-inherit object-cover "
+                    src={pictureUrl}
+                    alt=""
+                  />
+                </div>
               )}
+              <span className={`${mdScreen ? "block" : "hidden"}`}>
+                Profile
+              </span>
             </Link>
           </motion.div>
-          <div className="">
+          <div className="flex items-center gap-3">
             <MdOutlineDarkMode
-              size={mdScreen ? "2.5rem" : "2rem"}
+              size={lg ? "2.5rem" : "2.4rem"}
               onClick={toggleTheme}
             />
+            <span className={`${mdScreen ? "block" : "hidden"}`}>Mode</span>
           </div>
         </div>
         {openedSearch && (

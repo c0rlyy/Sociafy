@@ -1,11 +1,13 @@
 import { Cookies } from "react-cookie";
-
+import { PostFilesProps } from "./fetchPosts";
 export type CurrentUserProfilePosts = {
   post_title: string;
   post_id: number;
   post_description: string;
   profile_id: number;
   user_id: number;
+  post_files: [] | PostFilesProps[];
+  post_photo: "";
 };
 const FetchMyPosts = async (): Promise<CurrentUserProfilePosts | null> => {
   try {
@@ -16,7 +18,7 @@ const FetchMyPosts = async (): Promise<CurrentUserProfilePosts | null> => {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
-      }
+      },
     );
     const data = await resp.json();
     console.log(data);

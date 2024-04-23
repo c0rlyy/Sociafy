@@ -8,8 +8,9 @@ export type CurrentUserPostProps = {
   profile_id: number;
   user_id: number;
   post_files: PostFilesProps[];
+  post_photo: string;
 };
-type PostFilesProps = {
+export type PostFilesProps = {
   path: string;
   file_type: string;
   file_id: number;
@@ -43,6 +44,7 @@ const fetchPosts = async (): Promise<CurrentUserPost | []> => {
         return [];
       }
       if (data) {
+        console.log(data);
         return data;
       }
     } catch (error) {

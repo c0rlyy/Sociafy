@@ -18,7 +18,7 @@ export const theme = {
       userProfile: `minmax(5rem,30rem) minmax(5rem,30rem) minmax(5rem,30rem)`,
       layout: `minmax(min-content,18%) minmax(30rem,1fr) minmax(20ch,40ch)`,
       mobileLayout: `minmax(min-content,18%) minmax(30rem,1fr)`,
-      PostCardColumns: `minmax(0,5ch) minmax(170px, 1000px) minmax(0,30ch)`,
+      PostCardColumns: `minmax(0,5ch) minmax(400px, auto) minmax(0,10ch)`,
       userProfileLayout: `minmax(0,30ch) minmax(0,1fr)`,
       userProfileUpperMenu: `minmax(0,15ch) minmax(50ch,700px)`,
       mainPageCenterContainer: `minmax(5rem, 10rem) minmax(40ch,1fr) minmax(0,20ch)`,
@@ -31,7 +31,7 @@ export const theme = {
       userProfileRows: `minmax(0,25rem)`,
       userProfileContainerRows: `minmax(0,20rem) minmax(0,1fr)`,
       PostPageRows: `minmax(5rem,15rem)`,
-      postCard: `minmax(10ch, 15ch) minmax(0,1fr) minmax(5ch, 10ch) minmax(5ch, 15ch)`,
+      postCard: `minmax(10ch, 15ch) minmax(200px,1fr) minmax(5ch, 10ch) minmax(5ch, 15ch)`,
       footer: `minmax(15ch,30ch) minmax(0,1fr)`,
       layout: ` minmax(5ch, 8ch) minmax(1fr, auto)`,
       mobileLayout: `minmax(40rem,1fr) minmax(1fr, auto)`,
@@ -47,7 +47,7 @@ export const theme = {
       userPicturesRow: `1/ span 4`,
     },
     gridAutoRows: {
-      userProfileRows: `minmax(10rem,25rem)`,
+      userProfileRows: `minmax(100px,300px)`,
     },
     screens: {
       extraSm: "400px",

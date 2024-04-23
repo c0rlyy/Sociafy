@@ -22,9 +22,9 @@ const UserPosts: React.FC<UserProfilePostProps> = ({
 }) => {
   return (
     <>
-      <picture data-id={postIMAGEID} className="max-w-full">
+      <picture data-id={postIMAGEID} className="h-full w-full">
         <img
-          className="h-full w-full object-cover"
+          className="h-full w-full overflow-hidden object-cover"
           src={`${postIMAGEID}`}
           alt=""
         />

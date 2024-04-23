@@ -53,7 +53,7 @@ function FooterSearchBar({
       }
     };
 
-    const initializer = setTimeout(fetchUsers, 500);
+    const initializer = setTimeout(fetchUsers, 2500);
 
     return () => {
       console.log("CLEAN UP");
@@ -78,7 +78,7 @@ function FooterSearchBar({
       initial={{ x: -150 }}
       animate={{ x: 0 }}
       transition={{ type: "spring", duration: 0.5 }}
-      className={`absolute left-0 top-0 z-50 flex h-screen w-[400px] flex-col  place-items-center gap-3 border-r bg-inherit `}
+      className={`absolute left-0 top-0 z-50 flex h-screen w-screen flex-col place-items-center  gap-3 border-r bg-inherit md:w-[400px] `}
     >
       <IoMdClose
         onClick={setOpenedSearchFuncProp}

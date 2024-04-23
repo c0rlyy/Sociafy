@@ -14,9 +14,13 @@ import UserInfo from "./UserInfo/UserInfo";
 import UserBio from "./UserBio/UserBio";
 import PostContext from "../../store/post-context";
 import UserPosts from "./UserPosts";
+import useFetchMyPost from "../../Hooks/useFetchMyPost";
+import fetchUrl from "../Fetch/fetchUrl";
 function UserProfile() {
+  const { userPosts } = useFetchMyPost();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [image, setImage] = useState("");
+  const [userP, setUserP] = useState(userPosts);
   const postCtx = useContext(PostContext);
   const openModalHandler = () => {
     setIsOpenModal(true);
@@ -28,24 +32,41 @@ function UserProfile() {
   const userData = useLoaderData() as UserProfileProps;
   console.log(userData);
   useEffect(() => {
+    const updatePostPhotos = async () => {
+      const updatedPosts = await Promise.all(
+        userP.map(async (post) => {
+          const updatedPostFiles = await Promise.all(
+            post.post_files.map(async (postFile) => {
+              return await fetchUrl(postFile.file_id);
+            }),
+          );
+          const updatedProfilePostPhoto = updatedPostFiles.filter(
+            (file) => file !== null,
+          )[0];
+          return {
+            ...post,
+            post_photo: updatedProfilePostPhoto || "",
+          };
+        }),
+      );
+      setUserP(updatedPosts);
+    };
     const fetchPicture = async () => {
       const image = await fetchMePicture(userData.profile.picture_id);
       setImage(image);
     };
     fetchPicture();
-  });
+    updatePostPhotos();
+  }, []);
   return (
     <Layout>
       <div className={`col-[2/-1] row-[1] p-4`}>
         <div className="col-[2/3] row-[1/-1] grid grid-cols-userProfileUpperMenu grid-rows-3 items-center">
-          <div
-            onClick={openModalHandler}
-            className=" circle-container flex items-center border border-slate-500"
-          >
-            <div className="flex rounded-full border">
+          <div onClick={openModalHandler} className="flex items-center ">
+            <div className="rond flex size-20 rounded-full border border-inherit">
               <img
                 onClick={openModalHandler}
-                className=" rounded-full"
+                className="h-full w-full overflow-hidden rounded-full  object-cover"
                 alt=""
                 src={image}
               />
@@ -62,14 +83,15 @@ function UserProfile() {
             onClick={handleOpenPost}
             className="col-[1/-1] row-span-2 grid grid-cols-subgrid grid-rows-subgrid py-3"
           >
-            {postCtx.posts.map((userPost) => (
-              <UserPosts
-                key={userPost.id}
-                postID={userPost.id}
-                postIMAGEID={userPost.postImage}
-                postDESCRIPTION={userPost.postContent}
-              />
-            ))}
+            {userP?.length == 0
+              ? userP.map((userPost) => (
+                  <UserPosts
+                    key={userPost.post_id}
+                    postDESCRIPTION={userPost.post_description}
+                    postIMAGE={userPost.post_photo}
+                  />
+                ))
+              : ""}
           </div>
         </div>
       </div>

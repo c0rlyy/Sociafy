@@ -1,10 +1,10 @@
 import { createContext } from "react";
-import kubaPng from "../assets/kubus.jpg";
-import rafalPng from "../assets/rafal.jpg";
-import ja_wyciety from "../assets/Ja_wyciety.png";
+import sampleReel1 from "../assets/sampleReel1.jpg";
+import sampleReel2 from "../assets/sampleReel2.jpg";
+import sampleReel3 from "../assets/sampleReel3.jpg";
+import sampleReel4 from "../assets/sampleReel4.jpg";
 import kampus from "../assets/kampus.jpg";
-import miloszPng from "../assets/milosz.jpg";
-import mePng from "../assets/me.jpeg";
+
 type PostType = "colorful" | "default";
 type Post = {
   id: number;
@@ -22,10 +22,10 @@ type PostContextTypes = {
 const PostContext = createContext<PostContextTypes>({
   posts: [
     {
-      postImage: kampus,
+      postImage: sampleReel1,
       id: 3,
-      author: "c0rly",
-      authorImg: miloszPng,
+      author: "BeautyWorld",
+      authorImg: sampleReel1,
       email: "c0rly@backend.com",
       postTitle: "Kocham naszą uczelnie",
       postContent: "Kocham Wsiz",
@@ -35,18 +35,18 @@ const PostContext = createContext<PostContextTypes>({
       id: 1,
       author: "dundunek1",
       email: "dundunek1@yahoo.com",
-      authorImg: kubaPng,
-      postImage: kampus,
+      authorImg: sampleReel2,
+      postImage: sampleReel2,
       postTitle: "Dlaczego uwielbiam ćwiczyć o 8.00 rano",
       postContent: "Such a beautifull landscapes",
       likes: 1000,
     },
     {
-      postImage: rafalPng,
+      postImage: sampleReel3,
       id: 2,
       author: "rafalstawarz69",
       email: "rafalstawarz69@wp.pl",
-      authorImg: rafalPng,
+      authorImg: sampleReel3,
       postTitle: "Frekwencja to moje drugie imię",
       postContent:
         "Jestem bardzo punktualnym studentem, polecam również Tobie.",
@@ -54,10 +54,10 @@ const PostContext = createContext<PostContextTypes>({
     },
 
     {
-      postImage: ja_wyciety,
+      postImage: sampleReel4,
       id: 3,
       author: "rovgart",
-      authorImg: mePng,
+      authorImg: sampleReel4,
       email: "rovgarth@onet.pl",
       postTitle: "Kocham naszą uczelnie",
       postContent: "Kocham Wsiz",

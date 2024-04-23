@@ -8,13 +8,19 @@ type postItemProps = {
   profileID: number;
   userIMG: string;
   username: string;
-  postImage: string;
+  // postFiles: postFiles[];
+  postPhotos: string;
+};
+type postFiles = {
+  path: string;
+  file_type: string;
+  file_id: number;
 };
 const PostItem: React.FC<postItemProps> = ({
   postDESC,
   userIMG,
   username,
-  postImage,
+  postPhotos,
 }: postItemProps) => {
   return (
     <div className="mt-8 grid min-h-[50vh] grid-cols-PostCardColumns grid-rows-postCard  ">
@@ -26,11 +32,7 @@ const PostItem: React.FC<postItemProps> = ({
           <h1>{username}</h1>
         </div>
         <picture className="row-[2/3]">
-          <img
-            className="h-full w-full object-cover"
-            src={`${postImage}`}
-            alt=""
-          />
+          <img className="h-full w-full" src={postPhotos} alt="" />
         </picture>
         <Buttons />
         <div>
