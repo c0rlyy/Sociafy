@@ -127,6 +127,11 @@ def change_user_email(
     current_user: Annotated[UserModel, Depends(get_current_user)],
     db: Session = Depends(get_db),
 ) -> UserModel:
+
+    user_email_in_db: UserModel | None = user_crud.get_user_by_email(db, req_data.new_email)
+    if user_email_in_db:
+        raise HTTPException(status_code=400, detail="email is already in use")
+
     user_updated: UserModel | Literal[False] = user_crud.change_email(db, req_data, current_user)
 
     if not user_updated:
@@ -141,8 +146,12 @@ def change_user_name(
     current_user: Annotated[UserModel, Depends(get_current_user)],
     db: Session = Depends(get_db),
 ) -> UserModel:
-    user_updated: UserModel | Literal[False] = user_crud.change_user_name(db, req_data, current_user)
 
+    user_name_in_db: UserModel | None = user_crud.get_user_by_username(db, req_data.new_user_name)
+    if user_name_in_db:
+        raise HTTPException(status_code=400, detail="username is already in use")
+
+    user_updated: UserModel | Literal[False] = user_crud.change_user_name(db, req_data, current_user)
     if not user_updated:
         raise HTTPException(status_code=401, detail="incorrect Credentials")
 

@@ -15,4 +15,13 @@ class Profile(Base):
 
     user = relationship("User", back_populates="profile")
     posts = relationship("Post", back_populates="post_profile", cascade="all, delete-orphan")
-    # file = relationship("File", back_populates="profile", cascade="all, delete-orphan",uselist=False)
+
+    followers = relationship(
+        "Follow", back_populates="followed", foreign_keys="[Follow.profile_followed_id]", cascade="all, delete-orphan", uselist=True
+    )
+    follows = relationship(
+        "Follow", back_populates="follower", foreign_keys="[Follow.follower_profile_id]", cascade="all, delete-orphan", uselist=True
+    )
+
+    # followers = relationship("Follow", foreign_keys="[Follow.profile_followed_id]", cascade="all, delete-orphan", uselist=True)
+    # follows = relationship("Follow", foreign_keys="[Follow.follower_profile_id]", cascade="all, delete-orphan", uselist=True)

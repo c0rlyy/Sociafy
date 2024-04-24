@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from schemas.post_schema import PostAllInfo, PostOut
 from schemas.file_schema import FileOut
+from schemas.follow_schema import Follow, FollowProfileInfo, Followed, Follower
 
 
 class ProfileBase(BaseModel):
@@ -27,4 +28,15 @@ class ProfileWithUser(ProfileBase):
 
 
 class ProfileWithPost(ProfileOut):
+    posts: list[PostAllInfo]
+
+
+class ProfileWithFollows(ProfileOut):
+    follows: list[Followed]
+    followers: list[Follower]
+
+
+class ProfileAllInfo(ProfileWithFollows):
+    picture_id: int | None
+    user_id: int
     posts: list[PostAllInfo]

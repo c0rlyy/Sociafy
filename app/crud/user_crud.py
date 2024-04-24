@@ -126,12 +126,6 @@ def change_email(db: Session, req_data: UserEmailChange, current_user: UserModel
     if not verify_password(req_data.password, db_user.password):  # type: ignore
         return False
 
-    email_in_db: UserModel | None = db.query(UserModel).filter(UserModel.email == req_data.new_email).first()
-
-    if email_in_db:
-        raise HTTPException(status_code=400, detail="email is already in use try again")
-    # hash the password first
-
     db_user.email = req_data.new_email  # type: ignore
     db.commit()
     db.refresh(db_user)
@@ -147,31 +141,7 @@ def change_user_name(db: Session, req_data: UserNameChange, current_user: UserMo
     if not verify_password(req_data.password, db_user.password):  # type: ignore
         return False
 
-    user_name_in_db: UserModel | None = db.query(UserModel).filter(UserModel.user_name == req_data.new_user_name).first()
-
-    if user_name_in_db:
-        raise HTTPException(status_code=400, detail="username is already in use try again")
-    # hash the password first
-
     db_user.user_name = req_data.new_user_name  # type: ignore
     db.commit()
     db.refresh(db_user)
     return db_user
-
-
-def search_users(db: Session, q: str, skip: int, limit: int) -> list[UserModel]:
-    users: list[UserModel] = db.query(UserModel).filter(UserModel.user_name.like(f"%{q}%")).offset(skip).limit(limit).all()
-    return users
-
-
-def search_posts(db: Session, q: str, skip: int, limit: int) -> list[PostModel]:
-    posts: list[PostModel] = db.query(PostModel).filter(PostModel.post_title.like(f"%{q}%")).offset(skip).limit(limit).all()
-    return posts
-
-
-def search_all(db: Session, q: str, skip: int, limit: int):
-    # select * from users,posts where querry like =users.username or posts.title
-    posts: list[PostModel] = search_posts(db, q, skip, limit)
-    users: list[UserModel] = search_users(db, q, skip, limit)
-    results = {"users": users, "posts": posts}
-    return results

@@ -11,3 +11,7 @@ def get_profile_with_posts(db: Session, profile_id: int) -> ProfileModel | None:
 
 def get_profile(db: Session, user_id: int) -> ProfileModel | None:
     return db.query(ProfileModel).filter(ProfileModel.user_id == user_id).first()
+
+
+def get_profile_by_id(db: Session, profile_id: int) -> ProfileModel | None:
+    return db.query(ProfileModel).filter(ProfileModel.profile_id == profile_id).first()
