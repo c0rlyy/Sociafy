@@ -31,7 +31,10 @@ def create_post(db: Session, post_data: post_schema.PostCreate, current_user: Us
 
 
 def create_post_with_files(
-    db: Session, post_data: post_schema.PostCreate, current_user: UserModel, files_meta_data: list[dict[str, str]] | None = None
+    db: Session,
+    post_data: post_schema.PostCreate,
+    current_user: UserModel,
+    files_meta_data: list[dict[str, str]] | None = None,
 ) -> PostModel:
 
     if files_meta_data is None:
@@ -72,9 +75,13 @@ def get_post(db: Session, post_id: int) -> PostModel | None:
     return db.query(PostModel).filter(PostModel.post_id == post_id).first()
 
 
-def get_current_user_posts(db: Session, current_user: UserModel, skip: int | None = 0, limit: int = 100) -> list[PostModel] | None:
+def get_current_user_posts(
+    db: Session, current_user: UserModel, skip: int | None = 0, limit: int = 100
+) -> list[PostModel] | None:
 
-    user_post: list[PostModel] | None = db.query(PostModel).filter(PostModel.user_id == current_user.id).offset(skip).limit(limit).all()
+    user_post: list[PostModel] | None = (
+        db.query(PostModel).filter(PostModel.user_id == current_user.id).offset(skip).limit(limit).all()
+    )
     return user_post
 
 
@@ -91,3 +98,7 @@ def delete_post(db: Session, post_id: int, current_user: UserModel):
     db.delete(post_to_delete)
     db.commit()
     return True
+
+
+def get_profile_posts(db: Session, profile_id: int, skip: int, limit: int) -> list[PostModel] | None:
+    return db.query(PostModel).filter(PostModel.profile_id == profile_id).offset(skip).limit(limit).all()

@@ -39,3 +39,7 @@ class Post(PostBase):
 
 class PostOut(Post):
     post_id: int
+
+
+class PostCountLikes(BaseModel):
+    post_likes_count: int

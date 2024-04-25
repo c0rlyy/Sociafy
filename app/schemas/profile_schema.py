@@ -1,4 +1,3 @@
-from typing import Any
 from pydantic import BaseModel
 from schemas.post_schema import PostAllInfo, PostOut
 from schemas.file_schema import FileOut

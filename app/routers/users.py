@@ -34,7 +34,7 @@ def read_users(skip: int | None = 0, limit: int = 100, db: Session = Depends(get
     return users
 
 
-@router.get("/api/v1/users{user_id}", response_model=user_schema.UserOut)
+@router.get("/api/v1/users/{user_id}", response_model=user_schema.UserOut)
 def read_user(user_id: int, db: Session = Depends(get_db)) -> UserModel:
     db_user: UserModel | None = user_crud.get_user(db, user_id=user_id)
     if db_user is None:

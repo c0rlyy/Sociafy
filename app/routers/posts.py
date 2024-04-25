@@ -25,7 +25,10 @@ router = APIRouter(tags=["post"])
 
 @router.get("/api/v1/posts/me", response_model=list[post_schema.PostAllInfo])
 def read_posts_me(
-    current_user: Annotated[UserModel, Depends(get_current_user)], skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)
+    current_user: Annotated[UserModel, Depends(get_current_user)],
+    skip: int | None = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db),
 ) -> list[PostModel]:
     user_me_posts: list[PostModel] | None = post_crud.get_current_user_posts(db, current_user, skip=skip, limit=limit)
     if not user_me_posts:
@@ -70,12 +73,12 @@ async def get_files_id(post_id: int, db: Session = Depends(get_db)):
     return {"post's files id's": file_id_list}
 
 
-# deprecated
+# #deprecated
 # @router.post("/posts-create", response_model=post_schema.PostBase, deprecated=True)
 # def create_post(post_data: post_schema.PostCreate, token: Annotated[str, Header()], db: Session = Depends(get_db)) -> PostModel:
-#     new_post: PostModel | None = post_controller.create_post(db, post_data=post_data, token=token)
+#     new_post: PostModel | None = post_crud.create_post(db, post_data=post_data, token=token)
 #     if new_post is None:
-#         raise HTTPException(status_code=500, detail="failed adding the post")
+#         raise HTTPException(status_code=500, detail="fread_profile_postsailed adding the post")
 #     return new_post
 
 
@@ -97,7 +100,10 @@ def read_post(post_id: int, db: Session = Depends(get_db)) -> list[PostModel]:
 
 @router.delete("/api/v1/posts/{post_id}}", response_model=dict)
 def delete_post(
-    post_id: int, curerent_user: Annotated[UserModel, Depends(get_current_user)], background_tasks: BackgroundTasks, db: Session = Depends(get_db)
+    post_id: int,
+    curerent_user: Annotated[UserModel, Depends(get_current_user)],
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
 ):
 
     post_files: list[FileModel] | None = file_crud.get_post_files(db, post_id)
@@ -122,3 +128,11 @@ def delete_post(
     background_tasks.add_task(file_processor.delete_file_from_storage, post_files)  # type: ignore
 
     return {"deleted post id ": post_id}
+
+
+@router.get("/api/v1/profile-posts/{profile_id}", response_model=list[post_schema.PostAllInfo])
+def read_profile_posts(profile_id, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[PostModel]:
+    posts: list[PostModel] | None = post_crud.get_profile_posts(profile_id=profile_id, skip=skip, limit=limit, db=db)
+    if not posts:
+        raise HTTPException(status_code=404, detail="no post were found")
+    return posts

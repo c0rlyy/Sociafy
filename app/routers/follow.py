@@ -79,7 +79,7 @@ def delete_follow(profile_id: int, current_user: UserModel = Depends(get_current
     return {"msg": "sucesfully unfollowed the user, LEARN COBAL "}
 
 
-import logging
+# import logging
 
 
 @router.get("/api/v1/follows/profile-followers/{profile_id}", response_model=list[user_schema.UserOut])
@@ -96,13 +96,13 @@ def read_followers(profile_id: int, skip: int = 0, limit: int = 100, db: Session
     return user_followers
 
 
-logging.basicConfig()
-logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+# logging.basicConfig()
+# logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
 
 @router.get("/api/v1/follows/profile-followed/{profile_id}", response_model=list[user_schema.UserOut])
 def read_followed(profile_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users_followed = []
+    users_followed: list[UserModel] = []
 
     followed: list[FollowModel] = follow_crud.find_followed(db, profile_id, skip, limit)
     if len(followed) < 1:
@@ -113,3 +113,12 @@ def read_followed(profile_id: int, skip: int = 0, limit: int = 100, db: Session 
         users_followed.append(follow.followed.user)
 
     return users_followed
+
+
+@router.get("/api/v1/follows/follow-counts/{profile_id}", summary="temporart solution, will imporve logic later")
+def get_follow_counts(profile_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+
+    followed: list[FollowModel] = follow_crud.find_followed(db, profile_id, 0, 10000000)
+    followers: list[FollowModel] = follow_crud.find_followers(db, profile_id, 0, 10000000)
+
+    return {"followers:": len(followers), "followed": len(followed)}
