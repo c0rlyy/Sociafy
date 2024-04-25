@@ -1,49 +1,15 @@
-TODO:Ogarnac registerForm(layout)
-TODO:Disable widocznosc i dostęp do routów
-
-TODO: Modal w dodaj post jest zjebany
-TODO:Search Bar not responsive
-TODO: Dodać do searchbara abort controller
-TODO:*Ogarnac dodawanie posta i layout tego modala
-TODO:* ZAIMPLEMENTOWAĆ LOADER !
-TODO: Ogarnąć Sending Messages(layout) i poczytać o websocketsa
-TODO: Dark mode
-
-Zdjecie:
-TODO: 1. User sie loguje, nie ma zdjecia
-TODO: 2. Klika w zdjecie profilowe
-TODO: 3. Tam wybiera fotke i daje dodaj, wtedy request do serwa leci
-TODO: 4. To zdjecie dodane jest dostepne za pomocą picture_id
-
-
-Strategia:
-1. Na starcie przy dobrym logowaniu 
-musi być fetchMe, zeby zdjecie pobrało. To musi być
-useEffect, aby wykonywało się gdy komponent się załaduje
-Ale w ten sposób, ze najpierw pobieram picture_id,
-a nastepnie to picture_id które uzyskam umieszczam w requestcie, w ktorym zwroci mi stringa.
-PITFALL: Jeśli zdjęcia nie będzie to tło jasnyszary
 
 TODO: Reels:
-
-1. Stworzyć przykładowe reelsy
-2. Zaimplementować coś w stylu slidera na reelsy
-3. Dodaj overflow: hidden na root reel container
-4. Usunąć delikatne wcięcia w circles in Reels
-
-TODO: Search:
-1. Zniknął póki co xDD
-2. abortController zeby nie wysyłać za kazdym razem, gdy literka sie pojawi 
-3. Stwórz SearchedUser komponent 
-4. Na Stwórz searchedUser zaimplementuj
-logikę sprawdzającą ID usera, a następnie do UserProfile ?
-5. Najpierw fetch, pozniej przekieruj
 
 
 TODO: Post
 1. Stwórz event delegation na root Post elemencie
 2. Stwórz funkcje ktora przekierowuje do UserProfile na kazde user_id
-3* . Funkcje dla like,comment, share
+ TODO:Funkcje dla like,comment, share
+    1. Jesli pojawi się event (like/share/comment) wykonac odpowiednia funkcje
+    2. Funkcja eventButtonHandler(event)
+    3. 
+
 
 
 TODO: Security: 

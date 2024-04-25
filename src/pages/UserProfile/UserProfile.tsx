@@ -31,32 +31,6 @@ function UserProfile() {
   };
   const userData = useLoaderData() as UserProfileProps;
   console.log(userData);
-  useEffect(() => {
-    const updatePostPhotos = async () => {
-      const updatedPosts = await Promise.all(
-        userP.map(async (post) => {
-          const updatedPostFiles = await Promise.all(
-            post.post_files.map(async (postFile) => {
-              return await fetchUrl(postFile.file_id);
-            }),
-          );
-          const updatedProfilePostPhoto = updatedPostFiles.filter(
-            (file) => file !== null,
-          )[0];
-          return {
-            ...post,
-            post_photo: updatedProfilePostPhoto || "",
-          };
-        }),
-      );
-      setUserP(updatedPosts);
-    };
-    const fetchPicture = async () => {
-      const image = await fetchMePicture(userData.profile.picture_id);
-      setImage(image);
-    };
-    fetchPicture();
-  }, []);
   return (
     <Layout>
       <div className={`col-[2/-1] row-[1] p-4`}>
@@ -82,8 +56,8 @@ function UserProfile() {
             onClick={handleOpenPost}
             className="col-[1/-1] row-span-2 grid grid-cols-subgrid grid-rows-subgrid py-3"
           >
-            {userP?.length == 0
-              ? userP.map((userPost) => (
+            {userPosts?.length == 0
+              ? userPosts.map((userPost) => (
                   <UserPosts
                     key={userPost.post_id}
                     postDESCRIPTION={userPost.post_description}

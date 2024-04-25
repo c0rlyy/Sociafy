@@ -33,7 +33,7 @@ const useFetchMyPost = () => {
       }
     };
     fetchMePosts();
-  });
+  }, []);
   return { userPosts };
 };
 

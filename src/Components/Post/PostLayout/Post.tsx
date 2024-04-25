@@ -93,9 +93,9 @@ const Post: React.FC<CurrentUserPost> = () => {
     switch (action) {
       case "like":
         setButtonsState((prev) => ({
-          ...prev,
+          ...prev, // Saving previous state for other buttons
           [post_id]: {
-            ...prev[post_id],
+            ...prev[post_id], // Previous state for posts on specific post_id
             likeState: !prev[post_id]?.likeState, // Toggle like state
           },
         }));

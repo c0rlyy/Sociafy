@@ -56,7 +56,12 @@ const PostItem: React.FC<postItemProps> = ({
           comment={"comment"}
           share={"share"}
           postId={postID}
-          eventButtonClick={(action) => eventButtonHandler(action, postID)}
+          eventButtonClick={(action) =>
+            eventButtonHandler(
+              action,
+              postID /*<- That postID from Buttons component */,
+            )
+          }
           likeStateProp={likeState}
           commentStateProp={commentState}
           shareStateProp={shareState}

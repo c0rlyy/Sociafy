@@ -16,6 +16,7 @@ const Buttons: React.FC<ButtonsEventNamesAndFuncs> = ({
   like,
   comment,
   share,
+  // postId prop for handling which post
   postId,
   eventButtonClick,
   likeStateProp,
@@ -25,7 +26,7 @@ const Buttons: React.FC<ButtonsEventNamesAndFuncs> = ({
   //
   const handleButtonClick = (action: string) => {
     // Callback Prop function
-    eventButtonClick(postId, action);
+    eventButtonClick(postId /*<- passing postId prop for PostItem*/, action);
     console.log(`postId: ${postId} action:${action}`);
     console.log(action);
   };

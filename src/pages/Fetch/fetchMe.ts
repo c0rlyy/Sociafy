@@ -1,6 +1,6 @@
 export const fetchMePicture = async (picture_id: number) => {
   if (!picture_id) {
-    return;
+    return null;
   }
   try {
     const response = await fetch(
@@ -36,6 +36,7 @@ const fetchMe = async (): Promise<UserProfileProps | null> => {
         responseData?.profile?.picture_id,
       );
       console.log(fetchMePicValid);
+      responseData.profile.picture = fetchMePicValid;
       return responseData;
     } else {
       return null;
