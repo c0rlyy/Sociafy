@@ -92,31 +92,44 @@ export const registerAction = async ({ request }: { request: Request }) => {
   const data = Object.fromEntries(await request.formData());
   const submission = {
     email: data.email,
-    username: data.username,
+    user_name: data.username,
     password: data.password,
   };
   console.log(submission);
   const fetchAddUser = async () => {
     try {
-      const response = await fetch("http://localhost:8000/users/", {
+      const response = await fetch("http://localhost:8000/api/v1/users", {
         headers: {
           "Content-Type": "application/json",
         },
         method: "POST",
         body: JSON.stringify({
-          email: submission.email,
-          password: submission.password,
-          user_name: submission.username,
+          email: submission?.email,
+          password: submission?.password,
+          user_name: submission?.user_name,
         }),
       });
-      if (response.ok) {
-        alert("Pomyślnie załozono konto");
+      if (!response.ok) {
+        throw new Error(
+          `HTTP Failed to create Profile ${response.status}: ${response.statusText}`,
+        );
+      }
+      const data = await response.json();
+      if (data) {
+        alert("Successfull Profile Created :)");
+        const receivedTokenData = {
+          access_token: data?.access_token,
+          token_type: data?.token_type,
+        };
+        localStorage.setItem("access_token", receivedTokenData?.access_token);
+        localStorage.setItem("token_type", receivedTokenData?.token_type);
+        return receivedTokenData;
       }
     } catch (error) {
       console.log(error);
     }
   };
   await fetchAddUser();
-  return redirect("/");
+  return redirect("/MainPage");
 };
 export default RegisterForm;

@@ -33,28 +33,33 @@ function FooterSearchBar({
     const fetchUsers = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8000/users?skip=0&limit=100",
+          `http://localhost:8000/api/v1/search/${searchInput.slice(0) === "#" ? `posts?q=${searchInput}&skip=0&limit=100` : `users?q=${searchInput}&skip=0&limit=100`}`,
           {
             method: "GET",
           },
         );
-        const users = await response.json();
-        if (users.length > 0) {
-          const newUsers = users.map((user) => ({ username: user?.user_name }));
-          setUsernames(newUsers);
-
-          const filteredResults = newUsers.filter((result) =>
-            result?.username.toLowerCase().includes(searchInput.toLowerCase()),
+        if (!response.ok) {
+          console.log(
+            `HTTP Failed to searchedUser: ${response.status}: ${response.statusText}`,
           );
-          setResult(filteredResults);
+        }
+        const data = await response.json();
+        if (data) {
+          console.log(data);
+          const users = data.map((item) => {
+            const users = {
+              username: item?.user_name,
+            };
+            return users;
+          });
+          setResult(users);
         }
       } catch (error) {
         console.log(error);
       }
     };
 
-    const initializer = setTimeout(fetchUsers, 2500);
-
+    const initializer = setTimeout(fetchUsers, 1000);
     return () => {
       console.log("CLEAN UP");
       console.log(results);
@@ -94,12 +99,14 @@ function FooterSearchBar({
         id=""
       />
       <div className="flex h-full flex-col gap-5">
-        {usernames.length > 0 ? (
+        {results.length > 0 ? (
           results.map((result, index) => (
             <SearchedUser
+              key={index}
+              userId={result?.id}
               userImage={""}
               userName={result?.username}
-              userEmail={""}
+              userEmail={result?.email}
             />
           ))
         ) : (

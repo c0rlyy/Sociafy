@@ -15,7 +15,7 @@ const useMe = () => {
   useEffect(() => {
     const fetchCurrentUser = async (): Promise<CurrentUser> => {
       try {
-        const response = await fetch("http://localhost:8000/users/me", {
+        const response = await fetch("http://localhost:8000/api/v1/users/me", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,

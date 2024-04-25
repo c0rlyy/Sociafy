@@ -56,7 +56,6 @@ function UserProfile() {
       setImage(image);
     };
     fetchPicture();
-    updatePostPhotos();
   }, []);
   return (
     <Layout>
@@ -89,6 +88,11 @@ function UserProfile() {
                     key={userPost.post_id}
                     postDESCRIPTION={userPost.post_description}
                     postIMAGE={userPost.post_photo}
+                    postIMAGEID={0}
+                    postID={0}
+                    userID={0}
+                    profileID={0}
+                    isOpened={false}
                   />
                 ))
               : ""}

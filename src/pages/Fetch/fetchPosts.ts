@@ -28,7 +28,7 @@ const fetchPosts = async (): Promise<CurrentUserPost | []> => {
   } else {
     try {
       const response = await fetch(
-        "http://localhost:8000/posts?skip=0&limit=100",
+        "http://localhost:8000/api/v1/posts?skip=0&limit=100",
         {
           method: "GET",
           headers: {

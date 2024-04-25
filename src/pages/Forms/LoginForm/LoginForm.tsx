@@ -113,17 +113,20 @@ export const loginAction = async ({ request }: { request: Request }) => {
   const fetchValidation = async (): Promise<LoginProps | undefined> => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     try {
-      const response = await fetch("http://localhost:8000/token", {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
+      const response = await fetch(
+        "http://localhost:8000/api/v1/login/access-token",
+        {
+          method: "POST",
+          headers: {
+            accept: "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({
+            username: `${submission.username}`,
+            password: `${submission.password}`,
+          }),
         },
-        body: new URLSearchParams({
-          username: `${submission.username}`,
-          password: `${submission.password}`,
-        }),
-      });
+      );
       const data = await response.json();
       console.log(data);
       const result = {

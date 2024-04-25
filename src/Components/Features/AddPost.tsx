@@ -140,7 +140,7 @@ const addPostFetch = async (formData: FormData) => {
   console.log(formData);
   try {
     const response = await fetch(
-      "http://localhost:8000/posts/create-optional-file",
+      "http://localhost:8000/posts/api/v1/posts/create-optional-file",
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,

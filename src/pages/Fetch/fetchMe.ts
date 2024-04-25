@@ -1,12 +1,15 @@
 export const fetchMePicture = async (picture_id: number) => {
+  if (!picture_id) {
+    return;
+  }
   try {
     const response = await fetch(
-      `http://localhost:8000/file-retrive/${JSON.parse(picture_id)}`,
+      `http://localhost:8000/api/v1/file-retrive/${JSON.parse(picture_id)}`,
     );
     if (!response.ok) {
       throw new Error(`HTTP Error status: ${response.status}`);
     }
-    const data: UserPictureProp = await response.url;
+    const data: UserPictureProp = response.url;
     console.log(`Data from fetchMePicture: ${data}`);
     return data;
   } catch (error) {
@@ -17,7 +20,7 @@ export const fetchMePicture = async (picture_id: number) => {
 
 const fetchMe = async (): Promise<UserProfileProps | null> => {
   try {
-    const response = await fetch("http://localhost:8000/users/me", {
+    const response = await fetch("http://localhost:8000/api/v1/users/me", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },
@@ -33,11 +36,7 @@ const fetchMe = async (): Promise<UserProfileProps | null> => {
         responseData?.profile?.picture_id,
       );
       console.log(fetchMePicValid);
-      if (fetchMePicValid) {
-        return responseData;
-      } else {
-        return null;
-      }
+      return responseData;
     } else {
       return null;
     }

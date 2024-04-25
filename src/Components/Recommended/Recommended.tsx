@@ -18,7 +18,9 @@ const Recommended: React.FC = () => {
 
   const fetchUsers = async (): Promise<void> => {
     try {
-      const resp = await fetch("http://localhost:8000/users?skip=0&limit=100");
+      const resp = await fetch(
+        "http://localhost:8000/api/v1/users?skip=0&limit=4",
+      );
       if (!resp.ok) {
         throw new Error(`HTTP error! Status: ${resp.status}`);
       }
@@ -50,7 +52,7 @@ const Recommended: React.FC = () => {
             return;
           }
           const response = await fetch(
-            `http://localhost:8000/file_retrive/${JSON.parse(picture_id)}`,
+            `http://localhost:8000/api/v1/file_retrive/${JSON.parse(picture_id)}`,
             {
               method: "GET",
             },

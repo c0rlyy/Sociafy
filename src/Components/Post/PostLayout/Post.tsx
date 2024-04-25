@@ -5,8 +5,14 @@ import fetchPosts, {
   CurrentUserPostProps,
 } from "../../../pages/Fetch/fetchPosts";
 import Reels from "../Reels/Reels";
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  ButtonHTMLAttributes,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import PostContext from "../../../store/post-context";
+import { ButtonsEventNames } from "../Buttons/Buttons";
 // type fetchUserNameProps = {
 //   email: string;
 //   user_name: string;
@@ -28,10 +34,17 @@ const Post: React.FC<CurrentUserPost> = () => {
   const postCtx = useContext(PostContext);
   const [postsData, setPostsData] = useState(posts);
   const [postPhotos, setPostPhotos] = useState([{}]);
+  const [buttonsState, setButtonsState] = useState<{
+    [key: string]: {
+      likeState: boolean;
+      commentState: boolean;
+      shareState: boolean;
+    };
+  }>({});
   const fetchPostsData = async (file_id: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/file-retrive/${JSON.parse(file_id)}`,
+        `http://localhost:8000/api/v1/file-retrive/${file_id}`,
       );
       if (!response.ok) {
         console.log(
@@ -47,7 +60,10 @@ const Post: React.FC<CurrentUserPost> = () => {
       console.error(error?.message);
     }
   };
-
+  const likeButtonHandler = (post_id: string) => {
+    setButtonsState((prev) => ({ ...prev, [post_id]: !prev[post_id] }));
+    console.log(post_id);
+  };
   useEffect(() => {
     const updatePostPhotos = async () => {
       const updatedPosts = await Promise.all(
@@ -70,7 +86,39 @@ const Post: React.FC<CurrentUserPost> = () => {
     };
     updatePostPhotos();
   }, [posts]);
-
+  useEffect(() => {
+    console.log(buttonsState);
+  }, [buttonsState]);
+  const eventButtonHandlerAction = (action, post_id) => {
+    switch (action) {
+      case "like":
+        setButtonsState((prev) => ({
+          ...prev,
+          [post_id]: {
+            ...prev[post_id],
+            likeState: !prev[post_id]?.likeState, // Toggle like state
+          },
+        }));
+        break;
+      case "comment":
+        setButtonsState((prev) => ({
+          ...prev,
+          [post_id]: { ...prev[post_id], commentState: true },
+        }));
+        break;
+      case "share":
+        setButtonsState((prev) => ({
+          ...prev,
+          [post_id]: {
+            ...prev[post_id],
+            shareState: !prev[post_id]?.shareState,
+          },
+        }));
+        break;
+      default:
+        break;
+    }
+  };
   return (
     <>
       <div
@@ -82,9 +130,10 @@ const Post: React.FC<CurrentUserPost> = () => {
         </div>
         <Reels />
         <div className=" relative col-[1/-1] grid-cols-postColumns grid-rows-PostPageRows md:col-[2/3]">
-          {posts.length > 0
-            ? postCtx.posts.map((postSamp) => (
+          {posts.length === 0
+            ? postCtx.posts.map((postSamp, index) => (
                 <PostItem
+                  key={index}
                   postTITLE={postSamp.postTitle}
                   postID={postSamp.id}
                   postDESC={postSamp.postTitle}
@@ -92,6 +141,9 @@ const Post: React.FC<CurrentUserPost> = () => {
                   userIMG={postSamp.authorImg}
                   username={postSamp.author}
                   postPhotos={postSamp.postImage}
+                  eventButtonHandler={(action) =>
+                    eventButtonHandlerAction(action, postSamp.id)
+                  }
                 />
               ))
             : postsData.map((post) => (
@@ -104,6 +156,12 @@ const Post: React.FC<CurrentUserPost> = () => {
                   userIMG={""}
                   username={""}
                   postPhotos={post.post_photo}
+                  likeState={buttonsState?.likeState}
+                  commentState={buttonsState?.commentState}
+                  shareState={buttonsState?.shareState}
+                  eventButtonHandler={(action) =>
+                    eventButtonHandlerAction(action, post.post_id)
+                  }
                 />
               ))}
         </div>

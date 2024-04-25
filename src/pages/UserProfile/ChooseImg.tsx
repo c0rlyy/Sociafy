@@ -33,7 +33,7 @@ function ChooseImg() {
       {selectedImage && (
         <picture className="size-[300px]">
           <img
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
             src={selectedImage}
             alt=""
           />
@@ -52,7 +52,7 @@ function ChooseImg() {
           onChange={handleImageChange}
         />
         <button
-          className="bg-[#009fe3] px-1 py-3 text-white rounded-sm"
+          className="rounded-sm bg-[#009fe3] px-1 py-3 text-white"
           type="submit"
           value="Add"
         >
@@ -68,14 +68,14 @@ async function AddProfilePicture(formData: FormData) {
   console.log(submission);
   try {
     const response = await fetch(
-      "http://localhost:8000/profile/add-profile-pic",
+      "http://localhost:8000/api/v1/profile/add-profile-pic",
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },
         method: "PATCH",
         body: formData,
-      }
+      },
     );
     if (response.ok) {
       const data = await response.json();

@@ -12,15 +12,12 @@ const useFetchMyPost = () => {
   useEffect(() => {
     const fetchMePosts = async (): Promise<boolean> => {
       try {
-        const response = await fetch(
-          "http://localhost:8000/posts/me?skip=0&limit=100",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch("http://localhost:8000/api/v1/posts/me", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
         if (!response.ok) {
           throw new Error(
             `HTTP Failed to fetchUserPosts: ${response.status}: ${response.statusText}`,
