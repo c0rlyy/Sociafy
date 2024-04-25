@@ -35,7 +35,7 @@ def follow_user(profile_id: int, current_user: UserModel = Depends(get_current_u
     if not db_profile:
         raise HTTPException(status_code=404, detail="no profile with that id was found")
 
-    db_follow_relation: FollowModel | None = follow_crud.find_follow_relation(db, profile_id, current_user)
+    db_follow_relation: FollowModel | None = follow_crud.get_follow_relationship(db, profile_id, current_user)
     if db_follow_relation:
         raise HTTPException(status_code=400, detail="tryiong to follow already followed user")
 
@@ -52,9 +52,9 @@ def read_all_follows(skip: int = 0, limit: int = 100, db: Session = Depends(get_
     return follows
 
 
-@router.get("/api/v1/follows/profile/{profile_id}", response_model=profile_schema.ProfileWithFollows)
+@router.get("/api/v1/follows/profile/{profile_id}", response_model=profile_schema.ProfileWithFollows, deprecated=True)
 def read_follow_info_profile(profile_id: int, db: Session = Depends(get_db)):
-    """reads info about profile and both followers/followed profiles"""
+    """reads info about profile and both followers/followed profiles not recomended coz its trash"""
 
     profile: ProfileModel | None = profile_crud.get_profile_by_id(db, profile_id)
     if not profile:
@@ -67,8 +67,7 @@ def delete_follow(profile_id: int, current_user: UserModel = Depends(get_current
 
     if current_user.profile.profile_id == profile_id:
         raise HTTPException(status_code=400, detail="wrong request, trying to un-follow yourself")
-
-    db_follow_relation: FollowModel | None = follow_crud.find_follow_relation(db, profile_id, current_user)
+    db_follow_relation: FollowModel | None = follow_crud.get_follow_relationship(db, profile_id, current_user)
 
     if not db_follow_relation:
         raise HTTPException(status_code=400, detail="cannot unfollow not followed user")
@@ -78,3 +77,39 @@ def delete_follow(profile_id: int, current_user: UserModel = Depends(get_current
     db.commit()
 
     return {"msg": "sucesfully unfollowed the user, LEARN COBAL "}
+
+
+import logging
+
+
+@router.get("/api/v1/follows/profile-followers/{profile_id}", response_model=list[user_schema.UserOut])
+def read_followers(profile_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    user_followers: list[UserModel] = []
+    followers: list[FollowModel] = follow_crud.find_followers(db, profile_id, skip, limit)
+
+    if len(followers) < 1:
+        raise HTTPException(status_code=404, detail="no followers were found")
+
+    for follower in followers:
+        user_followers.append(follower.follower.user)
+
+    return user_followers
+
+
+logging.basicConfig()
+logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
+
+
+@router.get("/api/v1/follows/profile-followed/{profile_id}", response_model=list[user_schema.UserOut])
+def read_followed(profile_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    users_followed = []
+
+    followed: list[FollowModel] = follow_crud.find_followed(db, profile_id, skip, limit)
+    if len(followed) < 1:
+        raise HTTPException(status_code=404, detail="no followers were found")
+
+    # folloer is PROfileMOdel
+    for follow in followed:
+        users_followed.append(follow.followed.user)
+
+    return users_followed

@@ -1,3 +1,4 @@
+from typing import Any
 from pydantic import BaseModel
 from schemas.post_schema import PostAllInfo, PostOut
 from schemas.file_schema import FileOut
@@ -40,3 +41,8 @@ class ProfileAllInfo(ProfileWithFollows):
     picture_id: int | None
     user_id: int
     posts: list[PostAllInfo]
+
+
+class ProfileFollowed(ProfileOut):
+    picture_id: int | None
+    follows: list[Followed]

@@ -44,7 +44,9 @@ def read_user(user_id: int, db: Session = Depends(get_db)) -> UserModel:
 
 @router.post("/api/v1/users", response_model=TokenResponse)
 def create_user_with_profile(user_data: user_schema.UserCreate, db: Session = Depends(get_db)) -> TokenResponse:
-    is_user_data_in_db: UserModel | None = user_crud.get_user_by_email_or_username(db, user_data.email, user_data.user_name)
+    is_user_data_in_db: UserModel | None = user_crud.get_user_by_email_or_username(
+        db, user_data.email, user_data.user_name
+    )
     if is_user_data_in_db:
         if is_user_data_in_db.email == user_data.email:  # type: ignore
             raise HTTPException(status_code=400, detail="Email already exists, learn c not react")
@@ -56,7 +58,12 @@ def create_user_with_profile(user_data: user_schema.UserCreate, db: Session = De
     if not created_user:
         raise HTTPException(status_code=500, detail="creating the account failed, try again")
 
-    data = {"id": created_user.id, "sub": created_user.user_name, "email": created_user.email, "profile_id": created_user.profile.profile_id}
+    data = {
+        "id": created_user.id,
+        "sub": created_user.user_name,
+        "email": created_user.email,
+        "profile_id": created_user.profile.profile_id,
+    }
     access_token: str = encode(data=data)
 
     token_reponse = TokenResponse(access_token=access_token, token_type="bearer")
@@ -66,7 +73,9 @@ def create_user_with_profile(user_data: user_schema.UserCreate, db: Session = De
 @router.delete("/api/v1/users", response_model=dict[str, str])
 async def delete_user_all(
     credentials: user_schema.UserPasswordCred,
-    current_user: Annotated[UserModel, Depends(get_current_user)],  # token, and that returns the usre thats assinged to token
+    current_user: Annotated[
+        UserModel, Depends(get_current_user)
+    ],  # token, and this later returns userModel associeted with that token
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
 ) -> dict[str, str]:

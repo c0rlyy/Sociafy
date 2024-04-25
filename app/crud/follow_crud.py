@@ -23,10 +23,13 @@ from dependencies.user_dependency import get_current_user
 from dependencies.db import get_db
 
 
-def find_follow_relation(db: Session, profile_id: int, current_user: UserModel) -> FollowModel | None:
+def get_follow_relationship(db: Session, profile_id: int, current_user: UserModel) -> FollowModel | None:
     return (
         db.query(FollowModel)
-        .filter((FollowModel.follower_profile_id == current_user.profile.profile_id) & (FollowModel.profile_followed_id == profile_id))
+        .filter(
+            (FollowModel.follower_profile_id == current_user.profile.profile_id)
+            & (FollowModel.profile_followed_id == profile_id)
+        )
         .first()
     )
 
@@ -40,4 +43,14 @@ def follow_profile(profile_id: int, current_user: UserModel, db: Session) -> Fol
 
 
 def unfollow_user(profile_id: int, current_user: UserModel, db: Session):
-    db_follow_relation: FollowModel | None = db.query(FollowModel).filter(FollowModel.follower_profile_id == current_user.profile.profile_id).first()
+    db_follow_relation: FollowModel | None = (
+        db.query(FollowModel).filter(FollowModel.follower_profile_id == current_user.profile.profile_id).first()
+    )
+
+
+def find_followers(db: Session, profile_id: int, skip: int, limit: int) -> list[FollowModel]:
+    return db.query(FollowModel).filter(FollowModel.profile_followed_id == profile_id).offset(skip).limit(limit).all()
+
+
+def find_followed(db: Session, profile_id: int, skip: int, limit: int) -> list[FollowModel]:
+    return db.query(FollowModel).filter(FollowModel.follower_profile_id == profile_id).offset(skip).limit(limit).all()
