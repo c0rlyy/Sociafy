@@ -22,6 +22,8 @@ class Post(Base):
     post_profile = relationship("Profile", back_populates="posts", uselist=False)
     post_files = relationship("File", back_populates="file_post", uselist=True, cascade="all, delete-orphan")
 
+    post_user = relationship("User", foreign_keys=user_id, uselist=False)
+
     post_likes = relationship(
         "Like", back_populates="post", foreign_keys="[Like.post_id]", uselist=True, cascade="all, delete-orphan"
     )

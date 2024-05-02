@@ -17,11 +17,25 @@ class Profile(Base):
     posts = relationship("Post", back_populates="post_profile", cascade="all, delete-orphan")
 
     followers = relationship(
-        "Follow", back_populates="followed", foreign_keys="[Follow.profile_followed_id]", cascade="all, delete-orphan", uselist=True
+        "Follow",
+        back_populates="followed",
+        foreign_keys="[Follow.profile_followed_id]",
+        cascade="all, delete-orphan",
+        uselist=True,
     )
     follows = relationship(
-        "Follow", back_populates="follower", foreign_keys="[Follow.follower_profile_id]", cascade="all, delete-orphan", uselist=True
+        "Follow",
+        back_populates="follower",
+        foreign_keys="[Follow.follower_profile_id]",
+        cascade="all, delete-orphan",
+        uselist=True,
     )
-
+    comments = relationship(
+        "Comment",
+        back_populates="profile",
+        foreign_keys="[Comment.profile_id]",
+        cascade="all, delete-orphan",
+        uselist=True,
+    )
     # followers = relationship("Follow", foreign_keys="[Follow.profile_followed_id]", cascade="all, delete-orphan", uselist=True)
     # follows = relationship("Follow", foreign_keys="[Follow.follower_profile_id]", cascade="all, delete-orphan", uselist=True)

@@ -45,3 +45,11 @@ class ProfileAllInfo(ProfileWithFollows):
 class ProfileFollowed(ProfileOut):
     picture_id: int | None
     follows: list[Followed]
+
+
+class Us(BaseModel):
+    user_name:str
+class ProfileWithUserIn(BaseModel): 
+    picture_id:int | None
+    description:str | None
+    user: Us

@@ -14,8 +14,8 @@ app/routers/__pycache__
 app/.env
 fileStorage/images
 fileStorage/video
-
 oldFunctionality
+dmService/
 
 Todo.todo
 
