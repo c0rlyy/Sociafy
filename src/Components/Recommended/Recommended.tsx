@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import RecommendedItem from "./RecommendedItem";
 
@@ -52,10 +53,7 @@ const Recommended: React.FC = () => {
             return;
           }
           const response = await fetch(
-            `http://localhost:8000/api/v1/file_retrive/${JSON.parse(picture_id)}`,
-            {
-              method: "GET",
-            },
+            `http://localhost:8000/api/v1/file-retrive/${JSON.parse(picture_id)}`,
           );
           if (!response.ok) {
             console.log(
@@ -63,12 +61,11 @@ const Recommended: React.FC = () => {
             );
             return;
           }
-          const blob = await response.blob();
-          const imageurl = URL.createObjectURL(blob);
+          const image = response.url;
           setRecommendedUsers((prevUsers) =>
             prevUsers.map((prevUser) => {
               if (prevUser.picture_id === picture_id) {
-                return { ...prevUser, picture: imageurl };
+                return { ...prevUser, picture: image };
               }
               return prevUser;
             }),
@@ -87,14 +84,16 @@ const Recommended: React.FC = () => {
     }));
   };
 
-  useEffect(() => {
-    console.log(recommendedUsers);
-    fetchUsers();
-  }, []);
-
+  const { data: RecommendedUsers, isLoading: RecommendedLoading } = useQuery({
+    queryKey: ["recommended"],
+    queryFn: async () => {
+      const RecommendedUsers = await fetchUsers();
+      return RecommendedUsers;
+    },
+  });
   return (
     <div
-      className={`col-[3/4] row-[1/2] hidden grid-rows-recommendedContainer border-l-[.1px] border-inherit bg-inherit px-2 py-1 md:grid`}
+      className={`col-[3/4] row-[1/2] hidden grid-rows-recommendedContainer  border-l-[.1px] border-inherit bg-inherit px-2 py-1 lg:grid`}
     >
       <div
         onClick={followHandler}

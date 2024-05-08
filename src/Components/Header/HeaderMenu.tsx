@@ -4,7 +4,7 @@ import { MdOutlineDarkMode } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
 import { FiMessageCircle } from "react-icons/fi";
 import Likes from "../Likes/Likes";
-import PostContext from "../../store/post-context";
+import PostContext from "../../store/PostContext";
 interface HeaderMenuProps {
   mdScreen: boolean;
 }

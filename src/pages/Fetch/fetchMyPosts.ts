@@ -1,3 +1,5 @@
+import axios from "axios";
+import { useState } from "react";
 import { Cookies } from "react-cookie";
 import { PostFilesProps } from "./fetchPosts";
 export type CurrentUserProfilePosts = {
@@ -9,7 +11,9 @@ export type CurrentUserProfilePosts = {
   post_files: [] | PostFilesProps[];
   post_photo: "";
 };
-const FetchMyPosts = async (): Promise<CurrentUserProfilePosts | null> => {
+const FetchMyPosts = async ({
+  params,
+}): Promise<CurrentUserProfilePosts | null> => {
   try {
     const resp = await fetch(
       `http://localhost:8000/posts/me?skip=0&limit=100`,
@@ -20,16 +24,16 @@ const FetchMyPosts = async (): Promise<CurrentUserProfilePosts | null> => {
         },
       },
     );
-    const data = await resp.json();
-    console.log(data);
     if (!resp.ok) {
-      console.log("Something went wrong");
-    }
-    if (data) {
-      return data;
-    } else {
+      console.log(`FetchMyPosts failed:${resp.status}:${resp.statusText} `);
       return null;
     }
+    const data = await resp.json();
+    console.log(data);
+    if (!data) {
+      return null;
+    }
+    return data;
   } catch (error) {
     console.log(error);
   }

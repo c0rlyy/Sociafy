@@ -11,6 +11,10 @@ import {
 } from "react";
 import PostOverlay from "../FooterMenu/AddPostOverlay.module.css";
 import useMe from "../../Hooks/useMe";
+import { redirect } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
+import { useProfile } from "../../store/UserProfile-context";
+import { useQuery } from "@tanstack/react-query";
 interface AddPostType {
   onClose: MouseEventHandler<SVGAElement>;
 }
@@ -19,10 +23,7 @@ type addPostStateProps = {
   textData: null | string;
 };
 // Adding Post Logic
-const AddPost: React.FC<AddPostType> = ({ onClose }) => {
-  // CurrentUser
-  const { currentUser } = useMe();
-
+const AddPost: React.FC<AddPostType> = ({ onClose }: { onClose: () => {} }) => {
   const [addPostState, setAddPostState] = useState<addPostStateProps>({
     images: [],
     textData: "",
@@ -66,13 +67,30 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
     formData.append("data", JSON.stringify({ post_title: `${textData}` }));
     await addPostFetch(formData);
   };
+  const closeButtonPostScreen = useMediaQuery({
+    query: "(max-width:600px)",
+  });
+  const { userProfile, fetchMe, getUserProfilePicUrl } = useProfile();
+  const { data: myData, isLoading: loadingBro } = useQuery({
+    queryKey: ["profileData"],
+    queryFn: async () => {
+      const profileData = await fetchMe();
+      const profilePic = await getUserProfilePicUrl(
+        profileData?.profile.picture_id,
+      );
+
+      return { profileData: profileData, profilePic: profilePic };
+    },
+  });
   return (
-    <AddPostModal>
-      <IoMdClose
-        size={"2rem"}
-        className="absolute left-3 top-0 "
-        onClick={onClose}
-      />
+    <AddPostModal onClosePropFc={onClose}>
+      {closeButtonPostScreen && (
+        <IoMdClose
+          onClick={onClose}
+          size={"2rem"}
+          className="absolute left-0 top-0 text-black"
+        />
+      )}
       <div
         onClick={handleClick}
         className={`col-[1/2] row-[1/2] ${isSelected ? "hidden" : "block"}`}
@@ -80,8 +98,8 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
         <CiImageOn z={100} size={"100%"} fill={"black"} />
       </div>
       {isSelected ? (
-        <picture className="max-h-full max-w-full  justify-self-center pt-2 ">
-          {addPostState.images.map((image, index) => (
+        <picture className=" h-1/2 w-1/2  justify-self-center pt-2 ">
+          {addPostState.images.map((image: File, index: number) => (
             <img
               className="h-full w-full object-cover"
               key={index}
@@ -102,10 +120,14 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
         className={PostOverlay.form}
       >
         <div className={PostOverlay.user__container}>
-          <picture className={PostOverlay.userImg}>
-            <img src="" alt="" />
-            <span>{currentUser?.user_name}</span>
+          <picture className={PostOverlay.userImgPictureBox}>
+            <img
+              className={PostOverlay?.userImg}
+              src={myData?.profilePic}
+              alt=""
+            />
           </picture>
+          <span>{myData?.profileData?.user_name}</span>
         </div>
         <textarea
           onChange={dataTextHandler}
@@ -125,7 +147,7 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
           style={{ display: "none" }}
         />
         <button
-          className="h-1/4 w-1/2 self-start rounded-lg bg-[rgb(77,181,249)] px-2 py-2 text-white md:self-center md:justify-self-center"
+          className="h-full w-full rounded-lg bg-[rgb(77,181,249)] px-2 py-2 text-white  "
           type="submit"
           name="submitB"
         >
@@ -140,7 +162,7 @@ const addPostFetch = async (formData: FormData) => {
   console.log(formData);
   try {
     const response = await fetch(
-      "http://localhost:8000/posts/api/v1/posts/create-optional-file",
+      "http://localhost:8000/api/v1/posts/create-optional-file",
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -155,7 +177,7 @@ const addPostFetch = async (formData: FormData) => {
       throw new Error("Your post cannot be added");
     } else {
       alert("Added post :)");
-      return data;
+      return redirect("/MainPage");
     }
   } catch (error) {
     console.log(error);

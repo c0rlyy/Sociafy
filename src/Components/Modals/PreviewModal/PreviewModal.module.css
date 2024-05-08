@@ -1,0 +1,32 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99998;
+  background-color: rgba(0, 0, 0, 0.406);
+}
+
+.modal {
+  position: fixed;
+  top: 5vw;
+  right: 20vw;
+  width: 50%;
+  height: 75%;
+  background-color: white;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  z-index: 99999;
+  animation: slide-down 300ms ease-out forwards;
+  margin: 0 auto;
+  /* overflow: hidden; */
+}
+/* Stylowanko dalej 10.05.2024  */
+.content {
+  display: grid;
+  grid-template-columns: minmax(1fr, 200px) minmax(1fr, 200px);
+  grid-template-rows: minmax(100px, 1fr);
+  height: 100%;
+  place-items: center;
+}

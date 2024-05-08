@@ -5,13 +5,15 @@
   height: 100vh;
 }
 .modal {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50vw;
-  width: 50%;
-  height: 50%;
+  width: 100%;
+  height: 100vh;
   border: 1px solid black;
   border-radius: 12px;
   background-color: white;
+}
+.content {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }

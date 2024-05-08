@@ -1,85 +1,95 @@
 import React, { useEffect, useState } from "react";
-import { Form, Link, redirect } from "react-router-dom";
-import register from "../SignUp/RegisterForm.module.css";
+import { Link, redirect, useNavigate, useNavigation } from "react-router-dom";
 import SociafyLogo from "../../../assets/3x/Obszar roboczy 1@3x.png";
-type RegisterState = {
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import registerModule from "../SignUp/RegisterForm.module.css";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { loginForm, useAuth } from "../../../store/AuthContext";
+export type RegisterState = {
   email?: string;
   username?: string;
   password?: string;
 };
+export type SuccessfullRegister = {
+  access_token: string;
+  token_type: string;
+};
+const Schema = z.object({
+  email: z.string().email(),
+  username: z.string().min(3),
+  password: z.string().min(8),
+});
 const RegisterForm: React.FC<RegisterState> = () => {
+  const { registerAction } = useAuth();
   const [userForm, setUserForm] = useState({
     email: "",
     username: "",
     password: "",
   });
-  const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const nextState = {
-      ...userForm,
-      [e.target.name]: e.target.value,
-    };
-    setUserForm(nextState);
-  };
-  const [userValid, setUserValid] = useState<boolean>(false);
-  useEffect(() => {
-    const identifier = setTimeout(() => {
-      console.log("TYPING...");
-      if (userForm.email.includes("@")) {
-        setUserValid(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterState>({ resolver: zodResolver(Schema) });
+  const navigate = useNavigate();
+  const onRegisterSubmit = async (data: loginForm) => {
+    try {
+      const token = await registerAction(data);
+      if (token) {
+        console.log("Wstaje rano ale nie do pracy");
+        return navigate("/MainPage");
       } else {
-        setUserValid(false);
+        throw new Error("Something went wrong");
       }
-    }, 500);
-    return () => {
-      console.log("CLEANUP");
-      clearTimeout(identifier);
-    };
-  }, [userForm.email]);
+    } catch (error: any) {
+      console.log(error?.message);
+    }
+  };
   return (
-    <div className={register.registerFormLayout}>
-      <div className={register.registerLogo}>
+    <div className={registerModule.registerFormLayout}>
+      <div className={registerModule.registerLogo}>
         <img src={`${SociafyLogo}`} alt="" />
       </div>
-      <Form className={register.registerForm} method="POST" action="/Register">
-        <div className={register.registerField}>
+      <form
+        onSubmit={handleSubmit(onRegisterSubmit)}
+        className={registerModule.registerForm}
+        method="POST"
+      >
+        <div className={registerModule.registerField}>
           <input
-            className={register.registerInput}
+            className={registerModule.registerInput}
             type="email"
-            onChange={inputChangeHandler}
-            value={userForm.email}
-            name="email"
-            id=""
+            {...register("email")}
           />
           <label htmlFor="email">Email</label>
-          {!userValid ? <p className="text-red-500">Wrong Email</p> : ""}
+          {errors.email && <p>{errors.email.message}</p>}
         </div>
-        <div className={register.registerField}>
+        <div className={registerModule.registerField}>
           <input
-            className={register.registerInput}
+            className={registerModule.registerInput}
             type="text"
-            onChange={inputChangeHandler}
-            name="username"
-            value={userForm.username}
-            id=""
+            {...register("username")}
           />
+          {errors.username && <p>{errors.username.message}</p>}
           <label htmlFor="username">Username</label>
         </div>
-        <div className={register.registerField}>
+        <div className={registerModule.registerField}>
           <input
-            className={register.registerInput}
+            className={registerModule.registerInput}
             type="password"
-            onChange={inputChangeHandler}
-            name="password"
-            value={userForm.password}
+            {...register("password")}
           />
           <label htmlFor="password">Password</label>
+          {errors.password && <p>{errors.password.message}</p>}
         </div>
         <input
           className="rounded-sm bg-sky-600 text-white"
           type="submit"
           value="Next"
+          disabled={isSubmitting}
         />
-      </Form>
+      </form>
       <div className="row-[-2/-1] mt-5 text-center text-sm text-gray-400 ">
         <span>
           Already have an account ? <Link to={"/"}>Click</Link>
@@ -88,48 +98,5 @@ const RegisterForm: React.FC<RegisterState> = () => {
     </div>
   );
 };
-export const registerAction = async ({ request }: { request: Request }) => {
-  const data = Object.fromEntries(await request.formData());
-  const submission = {
-    email: data.email,
-    user_name: data.username,
-    password: data.password,
-  };
-  console.log(submission);
-  const fetchAddUser = async () => {
-    try {
-      const response = await fetch("http://localhost:8000/api/v1/users", {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          email: submission?.email,
-          password: submission?.password,
-          user_name: submission?.user_name,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error(
-          `HTTP Failed to create Profile ${response.status}: ${response.statusText}`,
-        );
-      }
-      const data = await response.json();
-      if (data) {
-        alert("Successfull Profile Created :)");
-        const receivedTokenData = {
-          access_token: data?.access_token,
-          token_type: data?.token_type,
-        };
-        localStorage.setItem("access_token", receivedTokenData?.access_token);
-        localStorage.setItem("token_type", receivedTokenData?.token_type);
-        return receivedTokenData;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  await fetchAddUser();
-  return redirect("/MainPage");
-};
+
 export default RegisterForm;

@@ -7,7 +7,6 @@ type Props = {
   children: ReactNode;
 };
 const overlays = document.getElementById("overlays") as HTMLElement;
-
 const PostOverlay: React.FC<Props> = ({ children }) => {
   return (
     <div className={addPost.postModal}>
@@ -18,7 +17,7 @@ const PostOverlay: React.FC<Props> = ({ children }) => {
 const PostModal: React.FC<Props> = ({ children }) => {
   return (
     <div>
-      {ReactDOM.createPortal(<Backdrop />, overlays)}
+      {/* {ReactDOM.createPortal(<Backdrop />, overlays)} */}
       {ReactDOM.createPortal(<PostOverlay>{children}</PostOverlay>, overlays)}
     </div>
   );

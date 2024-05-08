@@ -1,7 +1,7 @@
 import React, { ReactNode, useContext } from "react";
 import ReactDOM from "react-dom";
 import { IoMdCloseCircle } from "react-icons/io";
-import PostContext from "../../../store/post-context";
+import PostContext from "../../../store/PostContext";
 import Reel from "./ReelModal.module.css";
 type Props = {};
 type ReelModalProps = {

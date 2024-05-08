@@ -12,7 +12,7 @@ const useFetchUrl = (pictureID: string | null) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8000//api/v1/file-retrive/${JSON.parse(pictureID)}`,
+          `http://localhost:8000/api/v1/file-retrive/${JSON.parse(pictureID)}`,
         );
         if (!response.ok) {
           throw new Error(

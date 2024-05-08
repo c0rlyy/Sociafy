@@ -8,7 +8,7 @@ export type CurrentUserPostProps = {
   profile_id: number;
   user_id: number;
   post_files: PostFilesProps[];
-  post_photo: string;
+  username: string;
 };
 export type PostFilesProps = {
   path: string;
@@ -21,10 +21,11 @@ export type CurrentUserPost = {
   darkProps: string;
   lightProps: string;
 };
-const fetchPosts = async (): Promise<CurrentUserPost | []> => {
+export const fetchPosts = async (): Promise<
+  CurrentUserPostProps[] | null | undefined
+> => {
   const access_token = localStorage.getItem("access_token");
   if (!access_token) {
-    return redirect("/");
   } else {
     try {
       const response = await fetch(
@@ -36,7 +37,7 @@ const fetchPosts = async (): Promise<CurrentUserPost | []> => {
           },
         },
       );
-      const data = await response.json();
+      const data: CurrentUserPostProps[] = await response.json();
       if (!response.ok) {
         console.log(
           `HTTP Response Error ${response.status}:${response.statusText}`,
@@ -47,7 +48,8 @@ const fetchPosts = async (): Promise<CurrentUserPost | []> => {
         console.log(data);
         return data;
       }
-    } catch (error) {
+      return null;
+    } catch (error: any) {
       console.log(error?.message);
     }
   }

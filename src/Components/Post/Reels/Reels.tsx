@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import usePreventScroll from "../../../Hooks/usePreventScroll";
 import useLockedBody from "../../../Hooks/usePreventScroll";
-import PostContext from "../../../store/post-context";
+import PostContext from "../../../store/PostContext";
 import ReelItem from "./ReelItem";
 import ReelModal from "./ReelModal";
 const Reels = () => {

@@ -4,8 +4,10 @@ type UserBioProps = {
 };
 const UserBio: React.FC<UserBioProps> = ({ desc }) => {
   return (
-    <div className=" col-[2/3] row-[3]">
-      <p>{desc === null ? "Write something about you" : desc}</p>
+    <div className=" col-[2/3] row-[3] ">
+      <p className="italic ">
+        {desc === null ? "Write something about you" : desc}
+      </p>
     </div>
   );
 };

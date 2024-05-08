@@ -11,8 +11,9 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import PostContext from "../../../store/post-context";
-import { ButtonsEventNames } from "../Buttons/Buttons";
+
+import { PostContext } from "../../../store/PostContext";
+import { useQuery } from "@tanstack/react-query";
 // type fetchUserNameProps = {
 //   email: string;
 //   user_name: string;
@@ -25,15 +26,9 @@ import { ButtonsEventNames } from "../Buttons/Buttons";
 // };
 // import classes from "./Post.module.css";
 // Fetching Posts
-const isEmptyObj = (obj: {}) => {
-  return Object.keys(obj).length === 0;
-};
+
 const Post: React.FC<CurrentUserPost> = () => {
-  const posts = useLoaderData() as CurrentUserPostProps[];
-  const isEmpty = isEmptyObj(posts);
-  const postCtx = useContext(PostContext);
-  const [postsData, setPostsData] = useState(posts);
-  const [postPhotos, setPostPhotos] = useState([{}]);
+  const { receivePostPicture } = useContext(PostContext);
   const [buttonsState, setButtonsState] = useState<{
     [key: string]: {
       likeState: boolean;
@@ -41,51 +36,21 @@ const Post: React.FC<CurrentUserPost> = () => {
       shareState: boolean;
     };
   }>({});
-  const fetchPostsData = async (file_id: number) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8000/api/v1/file-retrive/${file_id}`,
-      );
-      if (!response.ok) {
-        console.log(
-          `FetchPostsData HTTP Request Failed: ${response.status}: ${response.statusText}`,
-        );
-      }
-      const data = response.url;
-      if (data) {
-        console.log(`FetchPostsData: ${data}`);
-        return data;
-      }
-    } catch (error) {
-      console.error(error?.message);
-    }
-  };
+
   const likeButtonHandler = (post_id: string) => {
     setButtonsState((prev) => ({ ...prev, [post_id]: !prev[post_id] }));
     console.log(post_id);
   };
-  useEffect(() => {
-    const updatePostPhotos = async () => {
-      const updatedPosts = await Promise.all(
-        postsData.map(async (post) => {
-          const updatedPostFiles = await Promise.all(
-            post.post_files.map(async (postFile) => {
-              return await fetchPostsData(postFile.file_id);
-            }),
-          );
-          const updatedPostPhoto = updatedPostFiles.filter(
-            (file) => file !== null,
-          )[0];
-          return {
-            ...post,
-            post_photo: updatedPostPhoto || "",
-          };
-        }),
-      );
-      setPostsData(updatedPosts);
-    };
-    updatePostPhotos();
-  }, [posts]);
+  const { data: postsData, isLoading: pictureLoading } = useQuery({
+    queryKey: ["posts"],
+    queryFn: async () => {
+      const loaderData = await fetchPosts();
+
+      const updatedPostsData = await receivePostPicture(loaderData);
+
+      return updatedPostsData;
+    },
+  });
   useEffect(() => {
     console.log(buttonsState);
   }, [buttonsState]);
@@ -119,28 +84,32 @@ const Post: React.FC<CurrentUserPost> = () => {
         break;
     }
   };
+  if (pictureLoading) {
+    return <div>Loading</div>;
+  }
   return (
     <>
       <div
-        className={`col-[1/-1] grid grid-cols-mainPageCenterContainer grid-rows-mainPageCentreContainer  p-4 sm:col-[2/3]`}
+        className={`col-[1/-1] grid grid-rows-mainPageCentreContainer p-4  sm:col-[2/3] sm:grid-cols-mainPageCenterContainer`}
       >
-        <div className="col-[1/2] row-[1/2] hidden gap-4 self-start font-bold md:col-[2/3] md:flex">
+        <div className="col-[1/2] row-[1/2] hidden gap-4 place-self-start font-bold md:col-[2/3] md:flex">
           <h1>For you</h1>
           <span>Following</span>
         </div>
         <Reels />
         <div className=" relative col-[1/-1] grid-cols-postColumns grid-rows-PostPageRows md:col-[2/3]">
-          {posts.length === 0
-            ? postCtx.posts.map((postSamp, index) => (
+          {postsData === 0
+            ? postsData.map((postSamp, index) => (
                 <PostItem
                   key={index}
-                  postTITLE={postSamp.postTitle}
-                  postID={postSamp.id}
-                  postDESC={postSamp.postTitle}
-                  profileID={postSamp.id}
-                  userIMG={postSamp.authorImg}
-                  username={postSamp.author}
-                  postPhotos={postSamp.postImage}
+                  postTITLE={postSamp.post_title}
+                  postID={postSamp.post_id}
+                  postDESC={postSamp.post_description}
+                  profileID={postSamp.profile_id}
+                  userIMG={""}
+                  username={postSamp.username}
+                  postPhotos={postSamp.profile_id}
+                  postFilms={postSamp.post_film}
                   eventButtonHandler={(action) =>
                     eventButtonHandlerAction(action, postSamp.id)
                   }
@@ -148,14 +117,16 @@ const Post: React.FC<CurrentUserPost> = () => {
               ))
             : postsData.map((post) => (
                 <PostItem
+                  userID={post.user_id}
                   key={post.post_id}
                   postTITLE={post.post_title}
                   postID={post.post_id}
                   postDESC={post.post_title}
                   profileID={post.post_id}
-                  userIMG={""}
-                  username={""}
+                  userIMG={post.profile_picture}
+                  username={post.username}
                   postPhotos={post.post_photo}
+                  postFilms={post.post_film?.fileUrl}
                   likeState={buttonsState?.likeState}
                   commentState={buttonsState?.commentState}
                   shareState={buttonsState?.shareState}

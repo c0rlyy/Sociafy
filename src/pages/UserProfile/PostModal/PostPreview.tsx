@@ -1,5 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
+import PreviewModal from "../../../Components/Modals/PreviewModal/PreviewModal";
+import PostPreviewModal from "../../../Components/Modals/PreviewModal/PreviewModal";
 import PostModal from "../../../Components/Post/PostModal/PostModal";
+import { useProfile } from "../../../store/UserProfile-context";
 import { UserProfilePostProps } from "../UserPosts";
 type Props = {};
 
@@ -8,16 +12,20 @@ const PostPreview: React.FC<UserProfilePostProps> = ({
   postIMAGE,
   postIMAGEID,
   profileID,
+  postID,
 }) => {
   return (
-    <PostModal>
-      <picture className="h-full w-full">
-        <img className="h-full w-full object-cover" src={""} alt="" />
+    <PreviewModal>
+      <picture
+        data-postid={postID}
+        className="size-20 overflow-hidden rounded-full border border-slate-500"
+      >
+        <img className="h-full w-full object-cover" src={postIMAGE} alt="" />
       </picture>
       <main>
         <div className="flex place-items-center">
           <picture>
-            <img src={postIMAGE} alt="" />
+            <img src={""} alt="" />
           </picture>
           <h1>Rovgarth</h1>
         </div>
@@ -28,7 +36,7 @@ const PostPreview: React.FC<UserProfilePostProps> = ({
           <h1>Likes</h1>
         </aside>
       </main>
-    </PostModal>
+    </PreviewModal>
   );
 };
 export default PostPreview;

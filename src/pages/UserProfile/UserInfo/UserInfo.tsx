@@ -12,7 +12,7 @@ const UserInfo: React.FC<UserInfoProps> = ({
   following,
 }) => {
   return (
-    <ul className="col-[2/3] row-[2] flex gap-2 ">
+    <ul className="text-md lg:text-md col-[2/3] row-[2] flex gap-2 ">
       <li>Posts: {postsNumber}</li>
       <li>Followers: {followers}</li>
       <li>Following: {following}</li>

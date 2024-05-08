@@ -15,12 +15,12 @@ import { motion, useAnimate } from "framer-motion";
 import { useTheme } from "../../store/themeContext";
 import AddPost from "../Features/AddPost";
 import useFetchUrl from "../../Hooks/useFetchUrl";
-function FooterMenu() {
+import { useAuth } from "../../store/AuthContext";
+function FooterMenu({ openedSearch, openedSearchHandler }) {
   const [picture_id, setPictureId] = useState<number | null>(null);
 
   const [openPost, setOpenPost] = useState(false);
   const [, setIsLogout] = useState(false);
-  const [openedSearch, setOpenedSearch] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
@@ -38,8 +38,8 @@ function FooterMenu() {
         }
         const data = await response.json();
         if (data && data.profile && data.profile.picture_id !== null) {
-          console.log(typeof data.profile.picture_id);
-          console.log(data.profile.picture_id);
+          // console.log(typeof data.profile.picture_id);
+          // console.log(data.profile.picture_id);
           setPictureId(data.profile.picture_id);
         }
       } catch (error) {
@@ -49,12 +49,7 @@ function FooterMenu() {
     fetchProfile();
   }, []);
   const { pictureUrl } = useFetchUrl(picture_id);
-  console.log(pictureUrl);
-
-  const logoutHandler = () => {
-    setIsLogout(true);
-    localStorage.clear();
-  };
+  const { logoutHandler } = useAuth();
   const openPostHandler = () => {
     document.body.style.overflow = "hidden";
     setOpenPost(true);
@@ -72,12 +67,6 @@ function FooterMenu() {
   const smScreen = useMediaQuery({
     query: "(min-width:640px)",
   });
-
-  const searchBarHandler = () => {
-    setOpenedSearch((prev) => !prev);
-    console.log(openedSearch);
-  };
-
   return (
     <>
       <motion.footer
@@ -165,9 +154,9 @@ function FooterMenu() {
           {openPost && <AddPost onClose={closePostHandler} />}
           <div className="flex items-center gap-3">
             <SlMagnifier
-              onClick={() => setOpenedSearch(true)}
+              onClick={() => openedSearchHandler()}
               size={`${lg ? "2.5rem" : "2.4rem"}`}
-              className="hidden sm:flex"
+              className=" sm:flex"
             />
             <span className={`${mdScreen ? "block" : "hidden"}`}>Search</span>
           </div>
@@ -186,9 +175,9 @@ function FooterMenu() {
           </Link>
           <motion.div
             whileTap={{ scale: 1.05 }}
-            className=" hidden h-full w-full rounded-full   sm:block lg:h-full lg:w-full"
+            className=" h-full w-full rounded-full sm:block lg:h-full lg:w-full"
           >
-            <Link className="flex items-center gap-3" to={"/User"}>
+            <Link className="flex items-center gap-3" to={"/User/Me"}>
               {pictureUrl === null ? (
                 <CiUser size={`${lg ? "2.5rem" : "2rem"}`} />
               ) : (
@@ -214,12 +203,6 @@ function FooterMenu() {
             <span className={`${mdScreen ? "block" : "hidden"}`}>Mode</span>
           </div>
         </div>
-        {openedSearch && (
-          <FooterSearchBar
-            setOpenedSearchFuncProp={searchBarHandler}
-            isOpened={openedSearch}
-          />
-        )}
       </motion.footer>
     </>
   );

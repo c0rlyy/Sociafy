@@ -1,10 +1,10 @@
 import "./Loader.css";
-import { FaReact } from "react-icons/fa";
+import { InfinitySpin } from "react-loader-spinner";
 
 function Loader() {
   return (
-    <div className="flex h-screen w-screen items-center justify-center">
-      <FaReact size={"50%"} />
+    <div className="flex h-screen w-screen items-center justify-center opacity-50">
+      <InfinitySpin color="#009fe3" />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { LineWave } from "react-loader-spinner";
-import LoaderModal from "../Modal/LoaderModal/LoaderModal";
+import LoaderModal from "../Modals/LoaderModal/LoaderModal";
 
 function Loader() {
   return (

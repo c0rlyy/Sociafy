@@ -1,10 +1,14 @@
 import { Cookies } from "react-cookie";
 
 export type UserProfileProps = {
-  user_id: number;
-  profile_id: number;
+  email: string;
   user_name: string;
-  exp: number;
+  id: number;
+  profile: {
+    description: string | null;
+    profile_id: number;
+    picture_id: number | null;
+  };
 };
 const fetchUsers = async (): Promise<UserProfileProps> => {
   const cookies = new Cookies();

@@ -1,6 +1,6 @@
 import React from "react";
 import Reel from "./Reel.module.css";
-import ReelModal from "../../Modal/ReelModal/ReelModal";
+import ReelModal from "../../Modals/ReelModal/ReelModal";
 import { IoMdCloseCircle } from "react-icons/io";
 type ReelItemProps = {
   reelUserPhoto: string;

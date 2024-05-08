@@ -6,15 +6,27 @@ import LandingPage from "./pages/LandingPage/LandingPage";
 import MainPage from "./pages/MainPage/MainPage";
 // import styled, { ThemeProvider } from "styled-components";
 // import { useState } from "react";
-import { registerAction } from "./pages/Forms/SignUp/RegisterForm";
+import RegisterForm, {
+  registerAction,
+} from "./pages/Forms/SignUp/RegisterForm";
 // import useLoading from "./customHooks/useLoading";
 // import Loader from "./pages/Loader";
 import UserProfile from "./pages/UserProfile/UserProfile";
-import { loginAction } from "./pages/Forms/LoginForm/LoginForm";
 import fetchPosts from "./pages/Fetch/fetchPosts";
 import SignUp from "./pages/SignUp/SignUp";
 import ThemeProvider from "./store/themeContext";
 import fetchMe from "./pages/Fetch/fetchMe";
+import FetchMyPosts from "./pages/Fetch/fetchMyPosts";
+
+import { AuthProvider, useAuth } from "./store/AuthContext";
+import ProtectedRoute from "./pages/Secret/ProtectedRoute";
+import User from "./Components/FooterMenu/User";
+import PostsProvider from "./store/PostContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import UserProfileProvider from "./store/UserProfile-context";
+import MyProfile from "./pages/MyProfile/MyProfile";
+
+// import { loginAction } from "./pages/Forms/LoginForm/loginAction";
 function App() {
   // useEffect(() => {
   //   const removeTokenOnUnload = () => {
@@ -26,27 +38,59 @@ function App() {
   //     window.removeEventListener("beforeunload", removeTokenOnUnload);
   //   };
   // }, []);
+  const { loginAction } = useAuth();
+  const queryClient = new QueryClient();
   const router = createBrowserRouter([
     {
       path: "/",
       element: <LandingPage />,
-      action: loginAction,
     },
-    { path: "/Register", element: <SignUp />, action: registerAction },
+    {
+      path: "/Register",
+      element: <RegisterForm />,
+    },
     {
       path: "/MainPage",
-      element: <MainPage />,
-      loader: fetchPosts,
+      element: (
+        <ProtectedRoute>
+          <QueryClientProvider client={queryClient}>
+            <MainPage />
+          </QueryClientProvider>
+        </ProtectedRoute>
+      ),
     },
     {
-      path: "/User",
-      element: <UserProfile />,
-      loader: fetchMe,
+      path: "/User/:user_id",
+      element: (
+        <ProtectedRoute>
+          <UserProfileProvider>
+            <UserProfile />
+          </UserProfileProvider>
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/User/Me",
+      element: (
+        <QueryClientProvider client={queryClient}>
+          <ProtectedRoute>
+            <UserProfileProvider>
+              <MyProfile />
+            </UserProfileProvider>
+          </ProtectedRoute>
+        </QueryClientProvider>
+      ),
     },
   ]);
   return (
     <ThemeProvider>
-      <RouterProvider router={router} />
+      <AuthProvider>
+        <PostsProvider>
+          <UserProfileProvider>
+            <RouterProvider router={router} />
+          </UserProfileProvider>
+        </PostsProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

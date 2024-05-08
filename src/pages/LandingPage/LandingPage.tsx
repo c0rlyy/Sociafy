@@ -6,12 +6,6 @@ import { useNavigation } from "react-router-dom";
 // Fetching Users
 
 const LandingPage: React.FC = () => {
-  const navigateLandingStatus = useNavigation();
-  console.log(navigateLandingStatus.state);
-  // if (navigateLandingStatus.state == "submitting") {
-  //   return <Loader />;
-  // }
-  // const [curSlide, setCurSlide] = useState(0);
   const mdScreen = useMediaQuery({
     query: `(min-width:1024px)`,
   });

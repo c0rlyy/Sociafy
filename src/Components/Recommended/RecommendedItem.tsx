@@ -1,4 +1,5 @@
 import React from "react";
+import { FaUser } from "react-icons/fa";
 type RecommendedUserProps = {
   recommendedUserPhoto: string | undefined;
   recommendedUser: string;
@@ -17,8 +18,15 @@ const RecommendedItem: React.FC<RecommendedUserProps> = ({
     <>
       <div className="col-[1/2] grid items-center ">
         <div className="flex items-center gap-3">
-          <picture className="size-10 rounded-full border border-inherit">
-            <img src={recommendedUserPhoto} alt="" />
+          <picture className="size-10 overflow-hidden rounded-full border border-inherit">
+            {recommendedUserPhoto && (
+              <img
+                className="h-full w-full "
+                src={recommendedUserPhoto}
+                alt=""
+              />
+            )}
+            <FaUser className="h-full w-full" size={"2rem"} />
           </picture>
           <h1 className={`${recommendedUser?.length > 10 ? "text-sm" : ""}`}>
             {recommendedUser}

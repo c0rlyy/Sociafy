@@ -18,10 +18,7 @@ const Overlay: React.FC<ModalProps> = ({ children }) => {
 
 const LoaderModal: React.FC<ModalProps> = ({ children }) => {
   return (
-    <div>
-      {ReactDOM.createPortal(<Backdrop />, overlays)}
-      {ReactDOM.createPortal(<Overlay>{children}</Overlay>, overlays)}
-    </div>
+    <div>{ReactDOM.createPortal(<Overlay>{children}</Overlay>, overlays)}</div>
   );
 };
 

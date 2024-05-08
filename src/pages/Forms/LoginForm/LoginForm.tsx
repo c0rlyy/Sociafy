@@ -1,8 +1,11 @@
 import login from "../LoginForm/LoginForm.module.css";
-import { Link, Form, redirect } from "react-router-dom";
-import React from "react";
+import { Link, Form, redirect, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import SociafyLogo from "../../../assets/SVG 2/Sociafy.svg";
-import { useAuth } from "../../../store/AuthContext";
+import { loginForm, useAuth } from "../../../store/AuthContext";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 type loginFormScreen = {
   mdScreen: boolean;
 };
@@ -10,46 +13,47 @@ export type LoginProps = {
   access_token: string;
   token_type: string;
 };
+type loginType = {
+  username: string;
+  password: string;
+};
 const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
-  // const [inputs, setInputs] = useState({
-  //   email: "",
-  //   password: "",
-  // });
-  // const inputHandler = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const nextState = {
-  //     ...inputs,
-  //     [e.target.name]: e.target.value,
-  //   };
-  //   setInputs(nextState);
-  // };
-
-  // const formSubmitHandler = (e: ChangeEvent<HTMLFormElement>) => {
-  //   fetchValidation();
-  //   e.preventDefault();
-  //   resetInputs();
-  // };
-
-  // useEffect(() => {
-  //   const identifier = setTimeout(() => {
-  //     console.log("Validating...");
-  //   }, 100);
-  //   return () => {
-  //     clearTimeout(identifier);
-  //     console.log("CLEANUP");
-  //   };
-  // }, [inputs.email, inputs.password, email, password]);
+  const { loginAction } = useAuth();
+  const [formValidation, setformValidation] = useState<boolean>(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const loginSchema = z.object({
+    username: z.string().min(3),
+    password: z.string().min(8),
+  });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitSuccessful, isSubmitting },
+  } = useForm<loginType>({
+    resolver: zodResolver(loginSchema),
+  });
+  const navigation = useNavigate();
+  // Validation before redirecting to /MainPage
+  const onSubmit = async (data: loginForm) => {
+    try {
+      const token = await loginAction(data);
+      if (token) {
+        navigation("/MainPage");
+        console.log("Successfully logged in");
+      } else {
+        throw new Error("Sorry, something went wrong");
+      }
+    } catch (error: any) {
+      console.error(error?.message);
+    }
+  };
   return (
     <div
       className={` ${
         mdScreen ? "col-[3/4]" : "col-[1/-1]"
       } flex h-full w-screen flex-col items-center gap-3 rounded-lg bg-[#F3F4F6] p-3 shadow-md  shadow-[#329CE5] lg:h-auto lg:w-3/4 lg:justify-start `}
     >
-      <Form
-        // onSubmit={formSubmitHandler}
-        className={login.loginForm}
-        action={"/"}
-        method="post"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className={login.loginForm}>
         <picture className={login.logoContainer}>
           <img className={login.logo} src={`${SociafyLogo}`} alt="" />
         </picture>
@@ -58,35 +62,38 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
             <input
               className={login.loginInput}
               type="text"
-              name="username"
-              id=""
+              {...register("username")}
             />
             <label htmlFor="email" className={login.label}>
-              Email
+              Username
             </label>
+            {errors.username && (
+              <p className="text-sm text-red-500">{errors.username.message}</p>
+            )}
           </div>
           <div className={login.loginField}>
             <input
               className={login.loginInput}
               type="password"
-              name="password"
-              id=""
+              {...register("password")}
             />
             <label className={login.label} htmlFor="password">
               Password
             </label>
+            {errors.password && (
+              <p className="text-sm text-red-500">{errors.password.message}</p>
+            )}
           </div>
           <div className="self-center justify-self-center">
-            <button
+            <input
               className="w-full bg-[#009fe3] p-2 font-bold text-white"
               type="submit"
-              value="Sign In"
-            >
-              Sign In
-            </button>
+              value={"Sign In"}
+              disabled={isSubmitting}
+            />
           </div>
         </div>
-      </Form>
+      </form>
       <div className={login.loginButtonsContainer}>
         <Link to={"/Register"}>
           <button
@@ -101,62 +108,5 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
     </div>
   );
 };
-// eslint-disable-next-line react-refresh/only-export-components
-export const loginAction = async ({ request }: { request: Request }) => {
-  const data = Object.fromEntries(await request.formData());
 
-  const submission = {
-    username: data?.username,
-    password: data?.password,
-  };
-
-  const fetchValidation = async (): Promise<LoginProps | undefined> => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    try {
-      const response = await fetch(
-        "http://localhost:8000/api/v1/login/access-token",
-        {
-          method: "POST",
-          headers: {
-            accept: "application/json",
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({
-            username: `${submission.username}`,
-            password: `${submission.password}`,
-          }),
-        },
-      );
-      const data = await response.json();
-      console.log(data);
-      const result = {
-        access_token: data?.access_token,
-        token_type: data?.token_type,
-      };
-      if (response.ok) {
-        localStorage.setItem("access_token", result.access_token);
-        localStorage.setItem("token_type", result.token_type);
-
-        console.log("Request working");
-        return result.access_token, result.token_type;
-      }
-      if (data.acces_token) {
-        return result;
-      } else {
-        return undefined;
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  console.log(submission);
-
-  const fetchValidationResult = await fetchValidation();
-  if (fetchValidationResult) {
-    return redirect("/MainPage");
-  } else {
-    alert("Niepoprawne dane logowania");
-    return null;
-  }
-};
 export default LoginForm;

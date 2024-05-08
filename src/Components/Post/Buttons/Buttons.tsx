@@ -42,11 +42,7 @@ const Buttons: React.FC<ButtonsEventNamesAndFuncs> = ({
       }}
       className="row-[3/4] flex gap-5 self-center"
     >
-      <AiOutlineHeart
-        name={(like = "like")}
-        size={"2rem"}
-        fill={`${likeStateProp ? "red" : "white"}`}
-      />
+      <AiOutlineHeart name={(like = "like")} size={"2rem"} />
       <FaRegComment name={(comment = "comment")} size={"2rem"} />
       {commentStateProps
         ? {

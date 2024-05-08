@@ -2,9 +2,10 @@ import { ChangeEvent, useState } from "react";
 import { Cookies } from "react-cookie";
 import { Form } from "react-router-dom";
 import AddPostModal from "../../Components/FooterMenu/AddPostOverlay";
-import Modal from "../../Components/Modal/Modal";
-function ChooseImg() {
+import Modal from "../../Components/Modals/Modal";
+function ChooseImg({ onClose }: { onClose: () => void }) {
   const [selectedImage, setSelectedImage] = useState("");
+  const [closeModal, setCloseModal] = useState(false);
 
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]; //?. Optionl chaining czyli mozliwosc ze zmienna moze byc undefined
@@ -29,7 +30,7 @@ function ChooseImg() {
     }
   };
   return (
-    <Modal>
+    <Modal onCloseProp={onClose}>
       {selectedImage && (
         <picture className="size-[300px]">
           <img
