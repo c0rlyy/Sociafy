@@ -1,4 +1,10 @@
-import React, { createContext, useState, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  SetStateAction,
+  Dispatch,
+} from "react";
 import { useParams } from "react-router-dom";
 import { CurrentUserPostProps } from "../pages/Fetch/fetchPosts";
 import { UpdatedPosts } from "./PostContext";
@@ -46,6 +52,14 @@ type UserProfileContextType = {
     loaderData: CurrentUserPostProps[],
   ) => Promise<UpdatedPosts | null>;
   fetchPost: (post_id: number) => Promise<UpdatedPost>;
+  userPosts: (profile_id: number) => Promise<UserPosts[]>;
+  postControlHandler: () => void;
+  openState: boolean;
+  setOpenState: Dispatch<SetStateAction<boolean>>;
+  userProfileFollows: (
+    profile_id: number,
+  ) => UserProfileFollows | null | undefined;
+  getUser: (user_id: number) => Promise<User | null | undefined>;
 };
 type UserPosts = {
   post_title: string;
@@ -68,6 +82,10 @@ type UpdatedPost = {
   profile_id: string;
   post_picture: string;
 };
+type UserProfileFollows = {
+  followers: number;
+  followed: number;
+};
 // Create context
 export const UserProfileContext = createContext<
   UserProfileContextType | undefined
@@ -83,8 +101,8 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
     username: "",
     posts: null,
   });
+  const [openState, setOpenState] = useState(false);
   const { user_id } = useParams<{ user_id: string }>(); // Ensure prof_id is properly typed
-
   const fetchUserPosts = async (
     user_id: number,
   ): Promise<CurrentUserProfilePosts[] | null> => {
@@ -130,13 +148,13 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const getUser = async (): Promise<User | null> => {
+  const getUser = async (user_id: number): Promise<User | null | undefined> => {
     if (!user_id) {
       return null;
     }
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/users${user_id}`,
+        `http://localhost:8000/api/v1/users/${user_id}`,
       );
       if (!response.ok) {
         throw new Error(
@@ -144,9 +162,9 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
         );
       }
       const user: User = await response.json();
+      console.log(`getUser: ${user}`);
       if (user) {
-        // console.log(user);
-        setUserProfile((prev) => ({ ...prev, username: user?.user_name }));
+        return user;
       }
     } catch (error) {
       console.error(error);
@@ -210,6 +228,29 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       throw error; // Rethrow the error so the calling component can handle it
     }
   };
+  // userProfileFollows
+  const userProfileFollows = async (
+    profile_id: number,
+  ): Promise<UserProfileFollows | undefined | null> => {
+    try {
+      const response =
+        await fetch(`http://localhost:8000/api/v1/follows/follow-counts/${profile_id}
+        `);
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetchFollows: ${response.status}: ${response.statusText}`,
+        );
+      }
+      const userProfileFollows: UserProfileFollows = await response.json();
+      console.log(`FollowsData: ${userProfileFollows}`);
+      if (userProfileFollows) {
+        return userProfileFollows;
+      }
+      return null;
+    } catch (error: any) {
+      console.error(error?.message);
+    }
+  };
   const fetchMyPosts = async (): Promise<UserPosts[] | null | undefined> => {
     try {
       const resp = await fetch(
@@ -257,9 +298,43 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       console.log(error);
     }
   };
+  const userPosts = async (user_id: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/user/posts/${user_id}`,
+      );
+      if (!response.ok) {
+        throw Error(
+          `Failed to fetch profilePosts:${response.status}: ${response.statusText} `,
+        );
+      }
+      const profilePosts: UserPosts[] = await response.json();
+      console.log(profilePosts);
+      if (profilePosts) {
+        const updatedProfilePosts = await Promise.all(
+          profilePosts.map(async (post) => {
+            const updatedProfileFiles = await Promise.all(
+              post.post_files.map(async (postFile) => {
+                return {
+                  post_title: post.post_title,
+                  post_id: post.post_id,
+                  profile_id: post.profile_id,
+                  user_id: post.user_id,
+                  post_picture: await getUserProfilePicUrl(postFile.file_id),
+                };
+              }),
+            );
+          }),
+        );
+        return updatedProfilePosts;
+      }
+    } catch (error: any) {
+      console.error(error?.message);
+    }
+  };
   const fetchPost = async (
     post_id: number,
-  ): Promise<UpdatedPost | undefined> => {
+  ): Promise<UpdatedPost[] | undefined> => {
     try {
       const response = await fetch(
         `http://localhost:8000/api/v1/posts/${post_id}`,
@@ -271,15 +346,18 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       }
       const userPost: UserPosts = await response.json();
       if (userPost) {
-        const updatedPic: UpdatedPost = await Promise.all(
+        const updatedPic: UpdatedPost[] = await Promise.all(
           userPost.post_files.map(async (post_file) => {
-            const profilePic = await getUserProfilePicUrl(post_file.file_id);
+            const postPicture = await getUserProfilePicUrl(post_file.file_id);
+            const user = await userPostFetch(userPost.user_id);
             return {
               post_id: userPost.post_id,
               post_description: userPost.post_description,
               post_title: userPost.post_title,
               profile_id: userPost.profile_id,
-              post_picture: profilePic,
+              post_picture: postPicture,
+              user_id: userPost.user_id,
+              username: user?.user_name,
             };
           }),
         );
@@ -391,6 +469,11 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
         fetchMe,
         receivePostPicture,
         fetchPost,
+        userPosts,
+        setOpenState,
+        userProfileFollows,
+        getUser,
+        openState,
       }}
     >
       {children}

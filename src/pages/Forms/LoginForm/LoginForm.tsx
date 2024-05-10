@@ -28,7 +28,7 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitSuccessful, isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<loginType>({
     resolver: zodResolver(loginSchema),
   });

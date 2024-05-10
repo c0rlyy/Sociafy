@@ -9,40 +9,67 @@ import PostPreview from "../UserProfile/PostModal/PostPreview";
 import UserBio from "../UserProfile/UserBio/UserBio";
 import UserInfo from "../UserProfile/UserInfo/UserInfo";
 import UserPosts from "../UserProfile/UserPosts";
+import { LineWave } from "react-loader-spinner";
 const MyProfile = (props: Props) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
-
   const openModalHandler = () => {
     setIsOpenModal(true);
     console.log(isOpenModal);
   };
-  const { fetchPost } = useProfile();
+  const [selectedPost, setSelectedPost] = useState();
+  const handlePost = async (post_id: number) => {
+    const postID = post_id.target.parentElement.getAttribute("data-id");
+    if (postID)
+      console.log(post_id.target.parentElement.getAttribute("data-id"));
+    setSelectedPost(postID);
+    setOpenState(true);
+  };
   const handleOpenPost = async (e: MouseEvent) => {
     const target = e.target.parentElement.getAttribute("data-id");
     if (target) {
       console.log(target);
-      setIsOpenModal(true);
-      const PostResult = await fetchPost(target);
-      return PostResult;
+      setOpenState(true);
+      setSelectedPost(target);
+      const displayResult = await displayPostResult();
+      console.log(displayResult);
     }
   };
-  const { fetchMe, fetchMyPosts, getUserProfilePicUrl, receivePostPicture } =
-    useProfile();
+  const { data: previewPost, isLoading: isProfilePostsLoading } = useQuery({
+    queryKey: ["previewPost"],
+    queryFn: async () => {
+      if (selectedPost) {
+        const post = await fetchPost(selectedPost);
+        console.log(post);
+        return post;
+      }
+    },
+    enabled: !!selectedPost,
+  });
+  // const displayPostResult = async () => {
+  //   if (selectedPost) {
+  //     const Post = await fetchPost(selectedPost);
+  //     console.log(Post);
+  //     return Post;
+  //   }
+  // };
+  const {
+    fetchMe,
+    fetchMyPosts,
+    fetchPost,
+    getUserProfilePicUrl,
+    postControlHandler,
+    openState,
+    setOpenState,
+    receivePostPicture,
+    userProfileFollows,
+  } = useProfile();
   const { data: userData, isLoading: userLoading } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
       const PostsData = await fetchMyPosts();
 
       const updatedPosts = await receivePostPicture(PostsData);
-
       return updatedPosts;
-    },
-  });
-  const { data: previewPost, isLoading: isPictureLoading } = useQuery({
-    queryKey: ["previewPost"],
-    queryFn: async (e) => {
-      const post = await handleOpenPost(e);
-      return post;
     },
   });
   const { data: userProfile, isLoading: isUserProfileLoading } = useQuery({
@@ -53,7 +80,14 @@ const MyProfile = (props: Props) => {
     },
     staleTime: 5000,
   });
-
+  const {
+    data: profileFollows,
+    isLoading: isFollowsLoading,
+    isError: isFollowError,
+  } = useQuery({
+    queryKey: ["follows"],
+    queryFn: async () => userProfileFollows(userProfile?.profile.profile_id),
+  });
   return (
     <Layout>
       {userLoading ? (
@@ -80,12 +114,20 @@ const MyProfile = (props: Props) => {
               {userProfile?.username}
             </h1>
             {/* result of request here */}
-            <UserInfo postsNumber={0} followers={0} following={0} />
+            {isFollowsLoading ? (
+              <LineWave color="blue" />
+            ) : (
+              <UserInfo
+                postsNumber={0}
+                followers={isFollowError ? 0 : profileFollows?.followers}
+                following={isFollowError ? 0 : profileFollows?.followed}
+              />
+            )}
             <UserBio desc={userData?.post_description} />
           </div>
-          <div className="col-[2/3] grid auto-rows-userProfileRows grid-cols-userProfile ">
+          <div className="sm:col[2/3] col-[1/-1] grid auto-rows-userProfileRows grid-cols-userProfile ">
             <div
-              onClick={handleOpenPost}
+              onClick={(postId) => handlePost(postId)}
               className="col-[1/-1] row-span-2 grid grid-cols-subgrid grid-rows-subgrid py-3"
             >
               {userData?.length > 0 ? (
@@ -107,20 +149,22 @@ const MyProfile = (props: Props) => {
                   No posts were found
                 </h1>
               )}
-              {isOpenModal ? (
-                <PostPreview
-                  postIMAGEID={0}
-                  postID={0}
-                  userID={0}
-                  profileID={0}
-                  postDESCRIPTION={""}
-                  postIMAGE={previewPost?.post_picture}
-                  isOpened={false}
-                  postFILMS={""}
-                />
-              ) : (
-                ""
-              )}
+              {openState &&
+                previewPost?.map((post) => (
+                  <PostPreview
+                    key={post.post_id}
+                    postID={post.post_id}
+                    userID={post.profile_id}
+                    profileID={post.profile_id}
+                    postDESCRIPTION={post.post_description}
+                    postIMAGE={post.post_picture}
+                    isOpened={openState}
+                    profileIMAGE={post.post_picture}
+                    postTITLE={post.post_title}
+                    profileFILM={"previewPost.profileFILM"}
+                    profileUSERNAME={post.username}
+                  />
+                ))}
             </div>
           </div>
         </div>

@@ -15,7 +15,7 @@ export const theme = {
     gridTemplateColumns: {
       landing: `minmax(0,20rem) minmax(20ch,70ch) minmax(20ch,60ch) minmax(0,5rem)`,
       postColumns: `minmax(0,50%) minmax(17rem,40rem) minmax(0,50%)`,
-      userProfile: `minmax(5rem,30rem) minmax(5rem,30rem) minmax(5rem,30rem)`,
+      userProfile: `repeat(auto-fit, minmax(200px,1fr))`,
       layout: `minmax(min-content,18%) minmax(30rem,1fr) minmax(20ch,40ch)`,
       mobileLayout: `minmax(min-content,18%) minmax(30rem,1fr)`,
       PostCardColumns: `minmax(0,5ch) minmax(350px, auto) minmax(0,10ch)`,
@@ -28,7 +28,7 @@ export const theme = {
       SignUpLayout: `minmax(0,40vw) minmax(0,1fr)`,
     },
     gridTemplateRows: {
-      userProfileRows: `minmax(0,25rem)`,
+      userProfileRows: `auto`,
       userProfileContainerRows: `minmax(0,20rem) minmax(0,1fr)`,
       PostPageRows: `minmax(5rem,15rem)`,
       postCard: `minmax(10ch, 15ch) minmax(150px,1fr) minmax(5ch, 10ch) minmax(5ch, 15ch)`,

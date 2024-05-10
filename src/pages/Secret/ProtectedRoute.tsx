@@ -5,16 +5,16 @@ import { useAuth } from "../../store/AuthContext";
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const navigation = useNavigate();
-  const { logged } = useAuth();
-  useEffect(() => {
-    const isLogged = () => {
-      if (!logged) {
-        console.log("No logged bro...");
-        return navigation("/");
-      }
-    };
-    isLogged();
-  }, [logged]);
+  // const { logged } = useAuth();
+  // useEffect(() => {
+  //   const isLogged = () => {
+  //     if (!logged) {
+  //       console.log("No logged bro...");
+  //       return navigation("/");
+  //     }
+  //   };
+  //   isLogged();
+  // }, [logged]);
   return <>{children}</>;
 };
 

@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import PreviewModal from "../../../Components/Modals/PreviewModal/PreviewModal";
-import PostPreviewModal from "../../../Components/Modals/PreviewModal/PreviewModal";
+import PostPreviewModal from "../../../Components/Modals/PreviewModal/PreviewModal.module.css";
+import Buttons from "../../../Components/Post/Buttons/Buttons";
+import Post from "../../../Components/Post/PostLayout/Post";
 import PostModal from "../../../Components/Post/PostModal/PostModal";
 import { useProfile } from "../../../store/UserProfile-context";
 import { UserProfilePostProps } from "../UserPosts";
@@ -10,32 +12,60 @@ type Props = {};
 const PostPreview: React.FC<UserProfilePostProps> = ({
   postDESCRIPTION,
   postIMAGE,
-  postIMAGEID,
+  profileIMAGE,
+  profileUSERNAME,
   profileID,
   postID,
+  profileFILM,
+  postTITLE,
+  userID,
 }) => {
   return (
     <PreviewModal>
-      <picture
-        data-postid={postID}
-        className="size-20 overflow-hidden rounded-full border border-slate-500"
-      >
-        <img className="h-full w-full object-cover" src={postIMAGE} alt="" />
+      <picture className={PostPreviewModal.postPicture}>
+        {profileIMAGE && (
+          <img
+            className={PostPreviewModal.postImage}
+            src={profileIMAGE}
+            alt=""
+          />
+        )}
       </picture>
-      <main>
-        <div className="flex place-items-center">
-          <picture>
-            <img src={""} alt="" />
+      <aside className={PostPreviewModal.previewPostInfo}>
+        <div className={PostPreviewModal.userPictureContainer}>
+          <picture className={PostPreviewModal.userPicture}>
+            <img className={PostPreviewModal.userImg} src={postIMAGE} alt="" />
           </picture>
-          <h1>Rovgarth</h1>
+          <span className={PostPreviewModal.username}>{profileUSERNAME}</span>
         </div>
-        <aside>
-          <h1>Comments</h1>
-        </aside>
-        <aside>
-          <h1>Likes</h1>
-        </aside>
-      </main>
+        <div className={PostPreviewModal.postTitle}>
+          <picture className={PostPreviewModal.userPicture}>
+            <img
+              className={PostPreviewModal.userImg}
+              src={profileIMAGE}
+              alt=""
+            />
+          </picture>
+          <span className={PostPreviewModal.username}>{profileUSERNAME}</span>
+          <p>{postTITLE}</p>
+        </div>
+        <div className={PostPreviewModal.likes}>
+          <p>Likes: 10000;</p>
+        </div>
+        <div className={PostPreviewModal.buttons}>
+          <Buttons />
+        </div>
+        <div className={PostPreviewModal.userPictureContainer}>
+          <picture className={PostPreviewModal.userPicture}>
+            <img
+              className={PostPreviewModal.userImg}
+              src={profileIMAGE}
+              alt=""
+            />
+          </picture>
+          <span className={PostPreviewModal.username}>Danielson</span>
+        </div>
+      </aside>
     </PreviewModal>
   );
 };

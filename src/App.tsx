@@ -53,9 +53,7 @@ function App() {
       path: "/MainPage",
       element: (
         <ProtectedRoute>
-          <QueryClientProvider client={queryClient}>
-            <MainPage />
-          </QueryClientProvider>
+          <MainPage />
         </ProtectedRoute>
       ),
     },
@@ -72,26 +70,26 @@ function App() {
     {
       path: "/User/Me",
       element: (
-        <QueryClientProvider client={queryClient}>
-          <ProtectedRoute>
-            <UserProfileProvider>
-              <MyProfile />
-            </UserProfileProvider>
-          </ProtectedRoute>
-        </QueryClientProvider>
+        <ProtectedRoute>
+          <UserProfileProvider>
+            <MyProfile />
+          </UserProfileProvider>
+        </ProtectedRoute>
       ),
     },
   ]);
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <PostsProvider>
-          <UserProfileProvider>
-            <RouterProvider router={router} />
-          </UserProfileProvider>
-        </PostsProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <AuthProvider>
+          <PostsProvider>
+            <UserProfileProvider>
+              <RouterProvider router={router} />
+            </UserProfileProvider>
+          </PostsProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }
 

@@ -4,6 +4,7 @@ import { CurrentUserProfilePosts } from "../Fetch/fetchMyPosts";
 import PostPreview from "./PostModal/PostPreview";
 import { useProfile } from "../../store/UserProfile-context";
 import { useQuery } from "@tanstack/react-query";
+import userProfile from "./UserProfile.module.css";
 export type UserProfilePostProps = {
   postIMAGEID: number;
   postID: number;
@@ -13,6 +14,10 @@ export type UserProfilePostProps = {
   postIMAGE: string;
   isOpened: boolean;
   postFILMS: string;
+  profileIMAGE: string;
+  postTITLE: string;
+  profileUSERNAME: string;
+  profileFILM: string;
 };
 const UserPosts: React.FC<UserProfilePostProps> = ({
   postIMAGEID,
@@ -23,40 +28,33 @@ const UserPosts: React.FC<UserProfilePostProps> = ({
   postIMAGE,
   postFILMS,
   isOpened,
+  profileIMAGE,
+  profileUSERNAME,
+  postTITLE,
 }) => {
+  const { openState } = useProfile();
   return (
     <>
-      <picture data-id={postID} className="h-full w-full">
+      <picture
+        data-id={postID}
+        className={userProfile.profile__image_container}
+      >
         {postIMAGE && (
           <img
-            className="h-full w-full overflow-hidden object-cover"
+            className={userProfile.profile__image_film}
             src={postIMAGE}
             alt=""
           />
         )}
         {postFILMS && (
-          <video
+          <img
             controls
             src={postFILMS}
             playsInline
-            className="h-full w-full"
+            className={userProfile.profile__image_film}
             title="Post Film"
             loop
-          ></video>
-        )}
-        {isOpened ? (
-          <PostPreview
-            postIMAGEID={postIMAGEID}
-            postID={postID}
-            userID={postID}
-            profileID={profileID}
-            postDESCRIPTION={postDESCRIPTION}
-            postIMAGE={postIMAGE}
-            isOpened={false}
-            postFILMS={postFILMS}
           />
-        ) : (
-          ""
         )}
       </picture>
     </>

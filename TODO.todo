@@ -21,3 +21,9 @@ TODO: Errory
 1. Jeśli ktoś chce sie dostać do mainPage przez URL
 , to przekierować do LandingPage
 
+1. LoginForm/RegisterForm(Deleted States and added useForm )- OPTYMALIZACJA
+2. UserProfileContext and PostContext
+3. AuthContext
+4. React Querying 
+5. Protected Routes
+6. Post Preview
