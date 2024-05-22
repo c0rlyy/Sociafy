@@ -1,4 +1,4 @@
-# React Frontend Project
+# Sociafy
 
 Welcome to the React Frontend Project! This guide will walk you through the steps to set up and run the project using npm.
 
