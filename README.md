@@ -76,6 +76,6 @@ We welcome contributors to this project! To contribute:
 
     Please ensure your code adheres to the existing code style and includes tests where applicable.
 
-    ## License
+## License
 
-    This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the LICENSE file for details.
