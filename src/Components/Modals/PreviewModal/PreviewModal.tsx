@@ -10,12 +10,12 @@ const Backdrop: React.FC<{}> = () => {
 const PostPreviewOverlay: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const { setOpenState } = useProfile();
+  const { setOpenPreview } = useProfile();
   return (
     <div className={preview.modal}>
       <IoMdClose
         className="absolute right-0 top-0"
-        onClick={() => setOpenState(false)}
+        onClick={() => setOpenPreview(false)}
         size={"2rem"}
       />
       <div className={preview.content}>{children}</div>

@@ -27,3 +27,12 @@ TODO: Errory
 4. React Querying 
 5. Protected Routes
 6. Post Preview
+
+Likes
+1. Kazdy post ma button
+2. Po kliknieciu wykonuje sie fetch like'owania danego posta(post_id)
+3. Jesli post jest zalajkowany zablokuj wykonanie fetcha
+4. Jesli kliknieto w button, to +=1 do posta
+5. Przetrzymywac state dla posta
+6. User nie moze drugi raz polajkowac posta, jezeli juz to zrobił
+7. 

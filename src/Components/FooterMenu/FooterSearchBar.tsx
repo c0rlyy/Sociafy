@@ -119,7 +119,10 @@ const SearchForm = ({
 
   const { data: users, isLoading: isRunning } = useQuery({
     queryKey: ["users", searched],
-    queryFn: () => fetchUsers(searched),
+    queryFn: async () => {
+      const FetchedUsers = await fetchUsers(searched);
+      return FetchedUsers;
+    },
   });
 
   return (
@@ -140,17 +143,15 @@ const SearchForm = ({
           className="w-3/4 border border-slate-500 align-middle text-black  "
           ref={ref}
         />
-        <button>Search</button>
       </form>
       <div className="flex h-full flex-col gap-5">
         {users && users.length > 0 ? (
           users.map((result, index) => (
             <SearchedUser
-              key={index}
-              userId={result?.id}
-              userImage={result.profile_pic}
-              userName={result?.username}
-              userEmail={result?.email}
+              key={result.user_id}
+              userId={result.user_id}
+              userImage={result?.profile_pic}
+              userName={result.username}
             />
           ))
         ) : (

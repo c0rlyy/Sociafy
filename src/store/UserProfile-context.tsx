@@ -1,3 +1,4 @@
+import { OldPlugin } from "postcss";
 import React, {
   createContext,
   useState,
@@ -7,7 +8,8 @@ import React, {
 } from "react";
 import { useParams } from "react-router-dom";
 import { CurrentUserPostProps } from "../pages/Fetch/fetchPosts";
-import { UpdatedPosts } from "./PostContext";
+import { useAuth } from "./AuthContext";
+import { UpdatedPosts, usePost } from "./PostContext";
 
 // Define types
 
@@ -20,7 +22,7 @@ export type CurrentUserProfilePosts = {
   post_files: PostFilesProps[];
   post_photo: string;
 };
-type User = {
+export type User = {
   email: string;
   user_name: string;
   id: string;
@@ -29,6 +31,7 @@ type User = {
     profile_id: string;
     picture_id: string | null;
   };
+  profile_picture: string | null;
 };
 export type UserProfile = {
   profile_id: string;
@@ -37,11 +40,19 @@ export type UserProfile = {
   username: string;
   posts: CurrentUserProfilePosts[] | null;
 };
+export type FollowedProfileResponse = {
+  profile_followed_id: number;
+  follower_profile_id: number;
+};
+type FollowsState = {
+  [profile_id: number]: {
+    isFollowed: boolean;
+  };
+};
 type UserProfileFetch = Pick<UserProfile, "description" | "profile_id">;
 export type PostFilesProps = {
   // Define the structure of PostFilesProps
 };
-
 type UserProfileContextType = {
   userProfile: UserProfile | null;
   getUserProfile: (user_id: number) => Promise<UserProfile | null>;
@@ -54,14 +65,34 @@ type UserProfileContextType = {
   fetchPost: (post_id: number) => Promise<UpdatedPost>;
   userPosts: (profile_id: number) => Promise<UserPosts[]>;
   postControlHandler: () => void;
-  openState: boolean;
-  setOpenState: Dispatch<SetStateAction<boolean>>;
+  openPreview: boolean;
+  setOpenPreview: Dispatch<SetStateAction<boolean>>;
   userProfileFollows: (
     profile_id: number,
   ) => UserProfileFollows | null | undefined;
-  getUser: (user_id: number) => Promise<User | null | undefined>;
+  getUserWithPic: (user_id: number) => Promise<User | null | undefined>;
+  changeUsername: (
+    current_password: string,
+    new_username: string,
+  ) => Promise<User | null>;
+  changeEmail: (
+    current_password: string,
+    new_email: string,
+  ) => Promise<User | null>;
+  changePassword: (
+    old_password: string,
+    new_password: string,
+  ) => Promise<User | null>;
+  readFollowers: () => Promise<User[] | null | undefined>;
+  followUser: (
+    profile_id: number,
+  ) => Promise<FollowedProfileResponse | undefined>;
+  followUserHandler: (profile_id: number) => Promise<void>;
+  setFollowedProfiles: React.Dispatch<SetStateAction<FollowsState>>;
+  followedProfiles: FollowsState;
+  delay: (ms: number) => Promise<void>;
 };
-type UserPosts = {
+export type UserPosts = {
   post_title: string;
   post_description: string;
   post_id: string;
@@ -75,7 +106,8 @@ type UserPosts = {
     },
   ];
 };
-type UpdatedPost = {
+export type Followers = User[];
+export type UpdatedPost = {
   post_title: string;
   post_description: string;
   post_id: string;
@@ -101,8 +133,12 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
     username: "",
     posts: null,
   });
-  const [openState, setOpenState] = useState(false);
+  const [openPreview, setOpenPreview] = useState(false);
+  const [followedProfiles, setFollowedProfiles] = useState<FollowsState>({});
   const { user_id } = useParams<{ user_id: string }>(); // Ensure prof_id is properly typed
+  const { getTokenFromLS } = useAuth();
+  const token = getTokenFromLS();
+  const { countPostLikes } = usePost();
   const fetchUserPosts = async (
     user_id: number,
   ): Promise<CurrentUserProfilePosts[] | null> => {
@@ -121,6 +157,105 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
     } catch (error) {
       console.error(error);
       return null;
+    }
+  };
+  // Changing Credentials Section
+  const changeUsername = async (
+    current_password: string,
+    new_username: string,
+  ): Promise<User | null | undefined> => {
+    const options = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: new URLSearchParams({
+        password: current_password,
+        new_user_name: new_username,
+      }),
+    };
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/users/change-username`,
+        options,
+      );
+      if (!response.ok) {
+        throw Error(
+          `Failed to change username: ${response.status}:${response.statusText}`,
+        );
+      }
+      const changedUsername = await response.json();
+      if (changedUsername) {
+        return changedUsername;
+      }
+    } catch (error: any) {
+      console.error(error?.message);
+    }
+  };
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+  const changeEmail = async (
+    current_password: string,
+    new_email: string,
+  ): Promise<User | null | undefined> => {
+    const options = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: new URLSearchParams({
+        password: current_password,
+        new_email: new_email,
+      }),
+    };
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/v1/users/change-email",
+        options,
+      );
+      if (!response.ok) {
+        throw Error(
+          `Failed to changeEmail: ${response.status}: ${response.statusText}`,
+        );
+      }
+      const UserWithChangedEmail: User = await response.json();
+      if (UserWithChangedEmail) {
+        return UserWithChangedEmail;
+      }
+    } catch (error: any) {
+      console.error(error?.message);
+    }
+  };
+  const changePassword = async (
+    old_password: string,
+    new_password: string,
+  ): Promise<User | null | undefined> => {
+    const options = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: new URLSearchParams({
+        old_password: old_password,
+        new_password: new_password,
+      }),
+    };
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/v1/users/change-email",
+        options,
+      );
+      if (!response.ok) {
+        throw Error(
+          `Failed to changeEmail: ${response.status}: ${response.statusText}`,
+        );
+      }
+      const UserWithChangedEmail: User = await response.json();
+      if (UserWithChangedEmail) {
+        return UserWithChangedEmail;
+      }
+    } catch (error: any) {
+      console.error(error?.message);
     }
   };
 
@@ -148,7 +283,9 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const getUser = async (user_id: number): Promise<User | null | undefined> => {
+  const getUserWithPic = async (
+    user_id: number,
+  ): Promise<User | null | undefined> => {
     if (!user_id) {
       return null;
     }
@@ -164,7 +301,22 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       const user: User = await response.json();
       console.log(`getUser: ${user}`);
       if (user) {
-        return user;
+        const updatedProfilePic = await getUserProfilePicUrl(
+          user.profile.picture_id,
+        );
+        const UserFollows = await userProfileFollows(user.profile.profile_id);
+        const UserProfileFollowers = await readUserFollowers(
+          user.profile.profile_id,
+        );
+        const UserProfileFollowed = await readUserFollowed(
+          user.profile.profile_id,
+        );
+        return {
+          ...user,
+          profile_picture: updatedProfilePic,
+          followers: UserProfileFollowers,
+          following: UserProfileFollowed?.length,
+        };
       }
     } catch (error) {
       console.error(error);
@@ -213,11 +365,19 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       // Avoid logging sensitive information like access tokens
       console.log("Data from fetchMe:", responseData);
       if (responseData) {
+        const MyProfileFollows = readUserFollowers(
+          responseData.profile.profile_id,
+        );
+        const MyProfileFollowings = readUserFollowed(
+          responseData.profile.profile_id,
+        );
         const updatedProfile = {
           username: responseData.user_name,
           profile_picture: await getUserProfilePicUrl(
             responseData.profile.picture_id,
           ),
+          followers: MyProfileFollows,
+          followed: MyProfileFollowings,
         };
         console.log(updatedProfile);
         return updatedProfile;
@@ -251,6 +411,88 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error(error?.message);
     }
   };
+  const readUserFollowers = async (profile_id: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/follows/profile-followers/${profile_id}`,
+      );
+      if (!response.ok) {
+        console.log(
+          `Failed to fetch followers: ${response.status}: ${response.statusText}`,
+        );
+      }
+      const Followers: User[] = await response.json();
+      if (Followers) {
+        return Followers;
+      }
+    } catch (error: any) {
+      console.error(error?.message);
+    }
+  };
+  const readUserFollowed = async (profile_id: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/follows/profile-followed/${profile_id}`,
+      );
+      if (!response.ok) {
+        console.log(
+          `Failed to fetch followers: ${response.status}: ${response.statusText}`,
+        );
+      }
+      const Followers: User[] = await response.json();
+      if (Followers) {
+        return Followers;
+      }
+    } catch (error: any) {
+      console.error(error?.message);
+    }
+  };
+  const followUser = async (
+    profile_id: number,
+  ): Promise<FollowedProfileResponse | undefined> => {
+    let url = `http://localhost:8000/api/v1/follow-profile/${profile_id}`;
+    if (followedProfiles[profile_id]?.isFollowed) {
+      url = `http://localhost:8000/api/v1/delete-follow/${profile_id}`;
+    }
+    try {
+      const response = await fetch(url, {
+        method: followedProfiles[profile_id]?.isFollowed ? "DELETE" : "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        throw Error(
+          `Failed to followUser: ${response.status}: ${response.statusText}`,
+        );
+      }
+      const FollowedUser: FollowedProfileResponse = await response.json();
+      if (FollowedUser) {
+        return FollowedUser;
+      }
+    } catch (error: any) {
+      console.error(error?.message);
+    }
+  };
+  const followUserHandler = async (profile_id: number): Promise<void> => {
+    try {
+      const FollowedProfile = await followUser(profile_id);
+      if (FollowedProfile) {
+        setFollowedProfiles((prev) => ({
+          ...prev,
+          [profile_id]: {
+            ...prev[profile_id],
+            isFollowed: !prev[profile_id]?.isFollowed,
+          },
+        }));
+      }
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
+  const countPosts = (posts: UserPosts[]) => {
+    return [...posts].length;
+  };
   const fetchMyPosts = async (): Promise<UserPosts[] | null | undefined> => {
     try {
       const resp = await fetch(
@@ -270,6 +512,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       if (!userPosts) {
         return null;
       }
+      const CountedPosts = countPosts(userPosts);
       return userPosts;
     } catch (error: any) {
       console.log(error?.message);
@@ -311,22 +554,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       const profilePosts: UserPosts[] = await response.json();
       console.log(profilePosts);
       if (profilePosts) {
-        const updatedProfilePosts = await Promise.all(
-          profilePosts.map(async (post) => {
-            const updatedProfileFiles = await Promise.all(
-              post.post_files.map(async (postFile) => {
-                return {
-                  post_title: post.post_title,
-                  post_id: post.post_id,
-                  profile_id: post.profile_id,
-                  user_id: post.user_id,
-                  post_picture: await getUserProfilePicUrl(postFile.file_id),
-                };
-              }),
-            );
-          }),
-        );
-        return updatedProfilePosts;
+        return profilePosts;
       }
     } catch (error: any) {
       console.error(error?.message);
@@ -348,17 +576,29 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       if (userPost) {
         const updatedPic: UpdatedPost[] = await Promise.all(
           userPost.post_files.map(async (post_file) => {
-            const postPicture = await getUserProfilePicUrl(post_file.file_id);
+            const postFile = await getUserProfilePicUrl(post_file.file_id);
+            const UserPostLikes = await countPostLikes(userPost.post_id);
             const user = await userPostFetch(userPost.user_id);
-            return {
+            const UserPost = {
               post_id: userPost.post_id,
               post_description: userPost.post_description,
               post_title: userPost.post_title,
               profile_id: userPost.profile_id,
-              post_picture: postPicture,
               user_id: userPost.user_id,
               username: user?.user_name,
+              post_likes: UserPostLikes.post_likes_count,
             };
+            if (post_file.file_type === "mp4") {
+              return {
+                ...UserPost,
+                post_film: postFile,
+              };
+            } else {
+              return {
+                ...UserPost,
+                post_photo: postFile,
+              };
+            }
           }),
         );
         console.log(updatedPic);
@@ -436,29 +676,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
     const filmExtensions = ["mp4", "avi", "mov", "mkv"];
     return filmExtensions.includes(fileType.toLowerCase());
   };
-  // const fetchData = async () => {
-  //   const profileData = await getUserProfile();
-  //   if (profileData) {
-  //     setUserProfile((prev) => ({
-  //       ...prev,
-  //       profile_id: profileData?.profile_id,
-  //       description: profileData?.description,
-  //     }));
-  //   }
-  //   const userData = await getUser();
-  //   if (userData) {
-  //     console.log(userData);
 
-  //     const pictureData = await getUserProfilePicUrl(
-  //       userData?.profile?.picture_id,
-  //     );
-  //     if (pictureData) {
-  //       setUserProfile((prev) => ({ ...prev, profile_pic: pictureData }));
-  //       console.log(profileData);
-  //     }
-  //     return pictureData;
-  //   }
-  // };
   return (
     <UserProfileContext.Provider
       value={{
@@ -470,10 +688,19 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
         receivePostPicture,
         fetchPost,
         userPosts,
-        setOpenState,
+        setOpenPreview,
         userProfileFollows,
-        getUser,
-        openState,
+        getUserWithPic,
+        openPreview,
+        changeEmail,
+        changeUsername,
+        changePassword,
+        readUserFollowers,
+        followUserHandler,
+        followUser,
+        followedProfiles,
+        setFollowedProfiles,
+        delay,
       }}
     >
       {children}

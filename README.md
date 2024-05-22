@@ -1,30 +1,81 @@
-# React + TypeScript + Vite
+# React Frontend Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Welcome to the React Frontend Project! This guide will walk you through the steps to set up and run the project using npm.
 
-Currently, two official plugins are available:
+## Table of Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Running the Project](#running-the-project)
+- [Building for Production](#building-for-production)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Expanding the ESLint configuration
+## Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+Before you begin, ensure you have the following installed on your machine:
 
-- Configure the top-level `parserOptions` property like this:
+- **Node.js** (v14 or higher)
+- **npm** (v6 or higher)
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+You can download Node.js and npm from the [official website](https://nodejs.org/).
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Installation
+
+1. **Clone the repository**
+
+   ```sh
+   git clone https://github.com/c0rlyy/Sociafy.git
+   cd Sociafy
+   ```
+
+## Building for Production
+
+To create an optimized production build, run:
+
+npm run build
+
+2. **Install dependencies**
+
+npm install;
+
+## Project Structure
+
+Here is an overview of the project's structure:
+
+Sociafy/
+├── public/
+│ ├── index.html
+│ └── ...
+├── src/
+│ ├── components/
+│ ├── pages/
+│ ├── App.js
+│ └── index.js
+├── .gitignore
+├── package.json
+├── README.md
+└── ...
+
+- public/: Contains the public assets and the main HTML file.
+- src/: Contains the React components and main application files.
+- .gitignore: Specifies files to be ignored by Git.
+- package.json: Contains the project metadata and dependencies.
+- README.md: Provides information about the project.
+
+## Contributing
+
+We welcome contributors to this project! To contribute:
+
+    1.  Fork the repository.
+    2. Create a new branch (git checkout -b feature-branch).
+    3. Commit your changes (git commit -m 'Add some feature').
+    4. Push to the branch (git push origin feature-branch).
+    5. Open a pull request.
+
+    Please ensure your code adheres to the existing code style and includes tests where applicable.
+
+    ## License
+
+    This project is licensed under the MIT License. See the LICENSE file for details.

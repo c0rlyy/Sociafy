@@ -11,24 +11,19 @@ import React, {
   useEffect,
   useState,
 } from "react";
-
-import { PostContext } from "../../../store/PostContext";
+import { PostContext, UpdatedPosts, usePost } from "../../../store/PostContext";
 import { useQuery } from "@tanstack/react-query";
-// type fetchUserNameProps = {
-//   email: string;
-//   user_name: string;
-//   id: number;
-//   profile: {
-//     description: string;
-//     profile_id: number;
-//     user_id: number;
-//   };
-// };
-// import classes from "./Post.module.css";
-// Fetching Posts
-
+import PostPreview from "../../../pages/UserProfile/PostModal/PostPreview";
+import { UpdatedPost, useProfile } from "../../../store/UserProfile-context";
 const Post: React.FC<CurrentUserPost> = () => {
-  const { receivePostPicture } = useContext(PostContext);
+  const {
+    receivePostPicture,
+    likePost,
+    openPreview,
+    setOpenPreview,
+    fetchPost,
+    readPostComments,
+  } = useContext(PostContext);
   const [buttonsState, setButtonsState] = useState<{
     [key: string]: {
       likeState: boolean;
@@ -36,61 +31,66 @@ const Post: React.FC<CurrentUserPost> = () => {
       shareState: boolean;
     };
   }>({});
-
-  const likeButtonHandler = (post_id: string) => {
-    setButtonsState((prev) => ({ ...prev, [post_id]: !prev[post_id] }));
-    console.log(post_id);
-  };
+  const { fetchMe } = useProfile();
+  const [selectedPost, setSelectedPost] = useState();
   const { data: postsData, isLoading: pictureLoading } = useQuery({
     queryKey: ["posts"],
     queryFn: async () => {
       const loaderData = await fetchPosts();
 
-      const updatedPostsData = await receivePostPicture(loaderData);
+      const updatedPostsData: UpdatedPosts[] =
+        await receivePostPicture(loaderData);
 
       return updatedPostsData;
     },
   });
+  const { data: UserProfile, isLoading: isUserProfileLoading } = useQuery({
+    queryKey: ["profile"],
+    queryFn: async () => {
+      const UserProf = await fetchMe();
+      return UserProf;
+    },
+  });
+  const { data: previewPost, isLoading: isProfilePostsLoading } = useQuery({
+    queryKey: ["previewPost"],
+    queryFn: async () => {
+      if (selectedPost) {
+        const post = await fetchPost(selectedPost);
+        console.log(post);
+        return post;
+      }
+    },
+    enabled: !!selectedPost,
+  });
   useEffect(() => {
     console.log(buttonsState);
   }, [buttonsState]);
-  const eventButtonHandlerAction = (action, post_id) => {
-    switch (action) {
-      case "like":
-        setButtonsState((prev) => ({
-          ...prev, // Saving previous state for other buttons
-          [post_id]: {
-            ...prev[post_id], // Previous state for posts on specific post_id
-            likeState: !prev[post_id]?.likeState, // Toggle like state
-          },
-        }));
-        break;
-      case "comment":
-        setButtonsState((prev) => ({
-          ...prev,
-          [post_id]: { ...prev[post_id], commentState: true },
-        }));
-        break;
-      case "share":
-        setButtonsState((prev) => ({
-          ...prev,
-          [post_id]: {
-            ...prev[post_id],
-            shareState: !prev[post_id]?.shareState,
-          },
-        }));
-        break;
-      default:
-        break;
+  // HandlePostForPreview
+  const handlePost = (post_id: MouseEvent<HTMLDivElement>) => {
+    const Comment = post_id.target.getAttribute("data-postid");
+    if (Comment) {
+      console.log(Comment);
+      console.log(selectedPost);
+      setSelectedPost(Comment);
+      setOpenPreview(true);
     }
   };
+  const { eventButtonHandlerAction } = usePost();
+
+  useEffect(() => {
+    if (!openPreview) {
+      setSelectedPost(null);
+    }
+  }, [openPreview]);
+
   if (pictureLoading) {
     return <div>Loading</div>;
   }
   return (
     <>
       <div
-        className={`col-[1/-1] grid grid-rows-mainPageCentreContainer p-4  sm:col-[2/3] sm:grid-cols-mainPageCenterContainer`}
+        onClick={(post_id) => handlePost(post_id)}
+        className={`col-[1/-1] grid grid-rows-mainPageCentreContainer  sm:col-[2/3] sm:grid-cols-mainPageCenterContainer sm:p-4`}
       >
         <div className="col-[1/2] row-[1/2] hidden gap-4 place-self-start font-bold md:col-[2/3] md:flex">
           <h1>For you</h1>
@@ -115,26 +115,50 @@ const Post: React.FC<CurrentUserPost> = () => {
                   }
                 />
               ))
-            : postsData.map((post) => (
+            : postsData?.map((post: UpdatedPosts) => (
                 <PostItem
-                  userID={post.user_id}
-                  key={post.post_id}
-                  postTITLE={post.post_title}
-                  postID={post.post_id}
-                  postDESC={post.post_title}
-                  profileID={post.post_id}
-                  userIMG={post.profile_picture}
-                  username={post.username}
-                  postPhotos={post.post_photo}
-                  postFilms={post.post_film?.fileUrl}
-                  likeState={buttonsState?.likeState}
-                  commentState={buttonsState?.commentState}
-                  shareState={buttonsState?.shareState}
+                  userID={post?.user_id}
+                  key={post?.post_id}
+                  postTITLE={post?.post_title}
+                  postID={post?.post_id}
+                  postDESC={post?.post_title}
+                  profileID={post?.post_id}
+                  userIMG={post?.profile_picture}
+                  username={post?.username}
+                  postPhotos={post?.post_photo}
+                  postFilms={post?.post_film?.fileUrl}
+                  postLikes={post?.likes?.post_likes_count}
                   eventButtonHandler={(action) =>
                     eventButtonHandlerAction(action, post.post_id)
                   }
+                  profilePicture={UserProfile?.profile_picture}
                 />
               ))}
+          {previewPost?.map((post) => (
+            <PostPreview
+              key={selectedPost}
+              postIMAGEID={0}
+              postID={selectedPost}
+              userID={post?.User_ID}
+              profileID={post?.Profile_ID}
+              postDESCRIPTION={post?.Post_Description}
+              postIMAGE={post?.Post_Photo}
+              isOpened={openPreview}
+              postFILMS={post?.Post_Film}
+              profileIMAGE={post?.Post_Photo}
+              postTITLE={post?.Post_Title}
+              profileUSERNAME={post.Username}
+              likeStatePreview={buttonsState.likeState}
+              shareStatePreview={buttonsState.shareState}
+              commentStatePreview={buttonsState.commentState}
+              profileFILM={post?.Post_Film}
+              postLikes={post?.post_likes}
+              postComments={post?.PostComments}
+              eventButtonHandler={(post, action) =>
+                eventButtonHandlerAction(post.Post_ID, action)
+              }
+            />
+          ))}
         </div>
       </div>
     </>

@@ -1,5 +1,6 @@
 import React from "react";
 import { FaUser } from "react-icons/fa";
+import FollowButton from "../FollowButton/FollowButton";
 type RecommendedUserProps = {
   recommendedUserPhoto: string | undefined;
   recommendedUser: string;
@@ -11,6 +12,7 @@ type FollowState = boolean;
 const RecommendedItem: React.FC<RecommendedUserProps> = ({
   recommendedUserPhoto,
   recommendedUser,
+  recommendedId,
   handleFollowClick,
   isFollowed,
 }) => {
@@ -33,17 +35,8 @@ const RecommendedItem: React.FC<RecommendedUserProps> = ({
           </h1>
         </div>
       </div>
-      <div className="justify-self-center">
-        <button
-          onClick={() => {
-            handleFollowClick();
-          }}
-          className={` ${
-            isFollowed ? "bg-[#f4f5f7] text-black" : "bg-[#009fe3] text-white"
-          } rounded-md border px-3 py-2`}
-        >
-          {isFollowed ? "Followed ✔" : "Follow"}
-        </button>
+      <div className="place-self-center">
+        <FollowButton profileID={recommendedId} />
       </div>
     </>
   );

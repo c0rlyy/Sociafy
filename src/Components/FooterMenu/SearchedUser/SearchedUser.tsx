@@ -8,12 +8,7 @@ type Props = {
   userId: number;
 };
 
-const SearchedUser: React.FC<Props> = ({
-  userEmail,
-  userImage,
-  userName,
-  userId,
-}) => {
+const SearchedUser: React.FC<Props> = ({ userImage, userName, userId }) => {
   let { params } = useParams();
   return (
     <Link to={`/User/${userId}`}>
@@ -31,7 +26,6 @@ const SearchedUser: React.FC<Props> = ({
         </picture>
         <div>
           <span className="font-bold text-inherit">{userName}</span>
-          <span className="italic">{userEmail}</span>
         </div>
       </div>
     </Link>

@@ -1,7 +1,15 @@
-import React, { ChangeEvent, ReactEventHandler, useState } from "react";
-import { AiOutlineHeart, AiOutlineLike } from "react-icons/ai";
+import React, {
+  ChangeEvent,
+  ReactEventHandler,
+  useEffect,
+  useState,
+} from "react";
+import { AiFillHeart, AiOutlineHeart, AiOutlineLike } from "react-icons/ai";
 import { FaHeart, FaRegComment } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
+import { usePost } from "../../../store/PostContext";
+import Comments from "../Comments/Comments";
+import CreateComment from "../Comments/CreateComment/CreateComment";
 export type ButtonsEventNamesAndFuncs = {
   like: "like";
   comment: "comment";
@@ -12,6 +20,7 @@ export type ButtonsEventNamesAndFuncs = {
   commentStateProp: boolean;
   shareStateProp: boolean;
 };
+
 const Buttons: React.FC<ButtonsEventNamesAndFuncs> = ({
   like,
   comment,
@@ -20,41 +29,55 @@ const Buttons: React.FC<ButtonsEventNamesAndFuncs> = ({
   postId,
   eventButtonClick,
   likeStateProp,
-  commentStateProps,
+  commentStateProp,
   shareStateProp,
+  postComments,
+  handleClick,
+  eventButtonHandlerActionProp,
 }) => {
-  //
-  const handleButtonClick = (action: string) => {
-    // Callback Prop function
-    eventButtonClick(postId /*<- passing postId prop for PostItem*/, action);
-    console.log(`postId: ${postId} action:${action}`);
-    console.log(action);
-  };
+  const [likeStatus, setlikeStatus] = useState();
+  useEffect(() => {
+    console.log(like);
+  }, [like]);
+  const {
+    buttonsState,
+    likeButtonToggleHandler,
+    shareButtonToggleHandler,
+    commentButtonToggleHandler,
+    isShareModalOpened,
+  } = usePost();
+  useEffect(() => {
+    console.log(isShareModalOpened);
+  }, [isShareModalOpened]);
   return (
     // Event delegation on parent div element
     <div
+      className="row-[3/4] flex gap-5 self-center"
       onClick={(e) => {
-        // Getting name attrib from buttons
-        const buttonName = e.target.getAttribute("name");
-        if (buttonName) {
-          handleButtonClick(buttonName);
+        const ActionButtonType = e.target.getAttribute("name");
+        if (ActionButtonType) {
+          eventButtonHandlerActionProp(ActionButtonType, postId);
         }
       }}
-      className="row-[3/4] flex gap-5 self-center"
     >
-      <AiOutlineHeart name={(like = "like")} size={"2rem"} />
+      {/* Toggle between outline and filled heart icons based on likeStateProp */}
+      {buttonsState?.[postId]?.isLiked ? (
+        <AiFillHeart
+          onClick={() => likeButtonToggleHandler(postId)}
+          name="like"
+          size={"2rem"}
+          color={"red"}
+        />
+      ) : (
+        <AiOutlineHeart
+          onClick={() => likeButtonToggleHandler(postId)}
+          name="like"
+          size={"2rem"}
+        />
+      )}
       <FaRegComment name={(comment = "comment")} size={"2rem"} />
-      {commentStateProps
-        ? {
-            /*Here Logic for comment Section*/
-          }
-        : ""}
       <FiSend name={(share = "share")} size={"2rem"} />
-      {shareStateProp
-        ? console.log("Opening Share")
-        : console.log("Closed Share")}
     </div>
   );
 };
-
 export default Buttons;

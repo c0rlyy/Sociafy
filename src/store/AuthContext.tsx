@@ -29,6 +29,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 // In future automation of headers authorization needs to be provide
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [logged, setIsLogged] = useState<boolean>(false);
+  // const navigation = useNavigate();
   const setTokenToLS = (server_token: string, token_type: string) => {
     const token = {
       access_token: localStorage.setItem("access_token", server_token),
@@ -41,12 +42,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (!token) {
       return redirect("/");
     }
+    console.log(token);
     return token;
   };
   const logoutHandler = () => {
     setIsLogged(false);
-    localStorage.clear();
-    return redirect("/");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("token_type");
+    // navigation("/");
   };
   const loginAction = async (data: loginForm) => {
     console.log(data);
@@ -93,7 +96,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   const registerAction = async (
     formData: RegisterState,
-  ): Promise<SuccessfullRegister | Response| undefined> => {
+  ): Promise<SuccessfullRegister | Response | undefined> => {
     const submission = {
       email: formData.email,
       user_name: formData.username,
@@ -123,12 +126,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return data;
         }
       } catch (error: any) {
-        console.error(error?.message);
+        console.error(error);
       }
     };
-    const fetchAddUserValid= await fetchAddUser()
-    if(fetchAddUserValid){
-      setTokenToLS(fetchAddUserValid.access_token, fetchAddUserValid.token_type);
+    const fetchAddUserValid = await fetchAddUser();
+    if (fetchAddUserValid) {
+      setTokenToLS(
+        fetchAddUserValid.access_token,
+        fetchAddUserValid.token_type,
+      );
     }
     return fetchAddUserValid;
   };

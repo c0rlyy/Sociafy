@@ -1,8 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
+import { LineWave } from "react-loader-spinner";
+import { User } from "../../store/UserProfile-context";
 import RecommendedItem from "./RecommendedItem";
 
 type UserProfileProps = {
+  user_id: number;
   user_name: string | null;
   picture_id: number | null;
   picture: string;
@@ -13,11 +16,53 @@ const Recommended: React.FC = () => {
   const [recommendedUsers, setRecommendedUsers] = useState<UserProfileProps[]>(
     [],
   );
+  const [shuffledUsers, setShuffledUsers] = useState([]);
   const [followState, setFollowState] = useState<{ [key: string]: boolean }>(
     {},
   ); // Store isFollowed state by userId
-
-  const fetchUsers = async (): Promise<void> => {
+  const { data: CurrentUser, isLoading: isCurrentUserLoading } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/v1/users/me", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const responseData: User = await response.json();
+        // Avoid logging sensitive information like access tokens
+        console.log("Data from fetchMe:", responseData);
+        if (responseData) {
+          return responseData;
+        }
+      } catch (error: any) {
+        console.error(error?.message);
+      }
+    },
+  });
+  const shuffleRecommendedUsers = (users: User[]) => {
+    const shuffledArray = [...users];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArray[i], shuffledArray[j]] = [
+        shuffledArray[j],
+        shuffledArray[i],
+      ];
+    }
+    return shuffledArray;
+  };
+  const filterCurrentUser = (users: UserProfileProps[], currentUser: User) => {
+    const FilteredUsers = users.filter((user) => {
+      return user.user_name !== currentUser.user_name;
+    });
+    return FilteredUsers;
+  };
+  const fetchUsers = async (): Promise<
+    UserProfileProps[] | undefined | null
+  > => {
     try {
       const resp = await fetch(
         "http://localhost:8000/api/v1/users?skip=0&limit=4",
@@ -25,16 +70,18 @@ const Recommended: React.FC = () => {
       if (!resp.ok) {
         throw new Error(`HTTP error! Status: ${resp.status}`);
       }
-      const users: UserProfileProps[] = await resp.json();
-
+      const users: User[] = await resp.json();
       if (users && users.length > 0) {
-        const transformedUsers = users.map((item) => ({
+        const transformedUsers: UserProfileProps[] = users.map((item) => ({
+          user_id: item?.id,
           user_name: item?.user_name,
           picture_id: item?.profile?.picture_id,
           picture: "",
+          profile_id: item?.profile.profile_id,
           isFollowed: false, // Initialize isFollowed with false
         }));
-        setRecommendedUsers(transformedUsers);
+        const filteredUsers = filterCurrentUser(transformedUsers, CurrentUser);
+        setRecommendedUsers(filteredUsers);
         await fetchUserProfileImage(transformedUsers);
       } else {
         console.log("No users fetched");
@@ -84,7 +131,14 @@ const Recommended: React.FC = () => {
     }));
   };
 
-  const { data: RecommendedUsers, isLoading: RecommendedLoading } = useQuery({
+  useEffect(() => {
+    if (recommendedUsers.length > 0) {
+      setShuffledUsers(shuffleRecommendedUsers(recommendedUsers));
+      console.log(shuffledUsers);
+    }
+  }, [recommendedUsers]);
+
+  const { data: Recommended, isLoading: RecommendedLoading } = useQuery({
     queryKey: ["recommended"],
     queryFn: async () => {
       const RecommendedUsers = await fetchUsers();
@@ -102,15 +156,20 @@ const Recommended: React.FC = () => {
         <h1 className="col-start-1 col-end-4 font-bold">
           People you might know
         </h1>
-        {recommendedUsers.map((recommend, index) => (
-          <RecommendedItem
-            key={index}
-            recommendedUser={recommend?.user_name}
-            recommendedUserPhoto={recommend?.picture}
-            isFollowed={followState[recommend?.user_name]}
-            handleFollowClick={() => followHandler(recommend.user_name)}
-          />
-        ))}
+        {RecommendedLoading ? (
+          <LineWave color="blue" />
+        ) : (
+          shuffledUsers?.map((recommend, index) => (
+            <RecommendedItem
+              key={recommend.user_id}
+              recommendedUser={recommend?.user_name}
+              recommendedUserPhoto={recommend?.picture}
+              isFollowed={followState[recommend?.user_name]}
+              handleFollowClick={() => followHandler(recommend.user_name)}
+              recommendedId={recommend.profile_id}
+            />
+          ))
+        )}
       </div>
     </div>
   );

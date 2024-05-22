@@ -10,7 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@hookform/resolvers": "^3.3.4",
+    "@mui/material": "^5.15.18",
     "@tanstack/react-query": "^5.32.1",
     "axios": "^1.6.8",
     "eslint-plugin-react": "^7.34.1",
@@ -21,6 +24,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.4",
     "react-icons": "^5.0.1",
+    "react-intersection-observer": "^9.10.2",
     "react-lazy-load-image-component": "^1.6.0",
     "react-loader-spinner": "^6.1.6",
     "react-responsive": "^9.0.2",

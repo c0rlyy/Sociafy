@@ -1,8 +1,15 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { FaHeart } from "react-icons/fa";
 import Buttons from "../Buttons/Buttons";
 import { Link, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { usePost } from "../../../store/PostContext";
+import CreateComment from "../Comments/CreateComment/CreateComment";
+import { Modal } from "@mui/base";
+import { Dialog } from "@mui/material";
+import ShareModal from "../../Modals/ShareModal/ShareModal";
+import { useInView } from "react-intersection-observer";
 type postItemProps = {
   postTITLE: string;
   postID: number;
@@ -18,6 +25,8 @@ type postItemProps = {
   postPhotos: string;
   postFilms: string;
   userID: string;
+  postLikes: number;
+  postComments: string;
 };
 type postFiles = {
   path: string;
@@ -35,12 +44,27 @@ const PostItem: React.FC<postItemProps> = ({
   commentState,
   postFilms,
   userID,
+  postLikes,
+  postComments,
+  profilePicture,
   eventButtonHandler,
 }: postItemProps) => {
+  const [postLikesState, setPostLikesState] = useState<number>(postLikes);
+  const { buttonsState, isShareModalOpened } = usePost();
+  const { ref, inView } = useInView({ threshold: 0.225 });
+  // const { data: likesCount, isLoading: isPostsLikesLoading } = useQuery({
+  //   queryKey: ["likes"],
+  //   queryFn: async () => {
+  //     const CountPostLikes = await countPostLikes(postID);
+  //     return CountPostLikes;
+  //   },
+  // });
+  useEffect(() => {
+    console.log(`Is inView: ${inView}`);
+  }, [inView]);
   return (
     <div
-      data-userid={userID}
-      data-postid={postID}
+      ref={ref}
       className="grid min-h-[50vh] grid-rows-postCard sm:grid-cols-PostCardColumns  "
     >
       <div className=" col-[1/-1] row-span-4 grid grid-cols-subgrid grid-rows-subgrid sm:col-[2/3]">
@@ -57,7 +81,7 @@ const PostItem: React.FC<postItemProps> = ({
         <picture className="row-[2/3] h-full w-full">
           {postPhotos && (
             <img
-              className="h-full max-h-full w-full max-w-full object-cover"
+              className={`h-full max-h-full w-full max-w-full object-cover transition-all ${!inView ? "blur-3xl" : ""}`}
               src={postPhotos}
               alt=""
             />
@@ -67,7 +91,7 @@ const PostItem: React.FC<postItemProps> = ({
               controls
               src={postFilms}
               playsInline
-              className="h-full w-full"
+              className={`h-full w-full ${!inView ? "blur-3xl" : ""}`}
               title="Post Film"
               loop
             ></video>
@@ -78,22 +102,29 @@ const PostItem: React.FC<postItemProps> = ({
           comment={"comment"}
           share={"share"}
           postId={postID}
-          eventButtonClick={(action) =>
-            eventButtonHandler(
-              action,
-              postID /*<- That postID from Buttons component */,
-            )
-          }
           likeStateProp={likeState}
           commentStateProp={commentState}
           shareStateProp={shareState}
+          eventButtonHandlerActionProp={(action: string, post_id: number) => {
+            eventButtonHandler(action, postID);
+          }}
         />
         <div>
-          <h1>{`Likes: ${1133}`}</h1>
+          {buttonsState?.[postID]?.isCreateCommentOpened && (
+            <CreateComment userProfileImage={profilePicture} postID={postID} />
+          )}
+          <ShareModal open={isShareModalOpened} />
+
+          <h1>{`Likes: ${postLikes}`}</h1>
           <div>
             <span className="text-bold flex gap-2">
               {username}:<p>{postDESC}</p>
             </span>
+            <span
+              data-userid={userID}
+              data-postid={postID}
+              className="font-thin italic"
+            >{`See comments `}</span>
           </div>
         </div>
       </div>

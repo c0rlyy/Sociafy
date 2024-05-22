@@ -22,7 +22,6 @@ function FooterMenu({ openedSearch, openedSearchHandler }) {
   const [openPost, setOpenPost] = useState(false);
   const [, setIsLogout] = useState(false);
   const { theme, toggleTheme } = useTheme();
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -71,7 +70,7 @@ function FooterMenu({ openedSearch, openedSearchHandler }) {
     <>
       <motion.footer
         role="navigation"
-        className={`bottom-0 z-50 flex w-full place-items-center bg-inherit pl-3 text-center max-smScreen:fixed sm:sticky sm:top-0 sm:col-[1] sm:row-[1/-1] sm:h-[100vh] sm:flex-col sm:place-items-center sm:justify-evenly sm:border-r-[.1px] md:place-items-start`}
+        className={`fixed bottom-0 z-50 flex w-full place-items-center bg-inherit pl-3 text-center sm:sticky sm:top-0 sm:col-[1] sm:row-[1/-1] sm:h-[100vh] sm:flex-col sm:place-items-center  sm:justify-evenly sm:border-r-[.1px] md:place-items-start`}
       >
         <picture className={`sm:grid sm:w-1/2`}>
           <svg

@@ -1,13 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useEffect } from "react";
 import PreviewModal from "../../../Components/Modals/PreviewModal/PreviewModal";
 import PostPreviewModal from "../../../Components/Modals/PreviewModal/PreviewModal.module.css";
 import Buttons from "../../../Components/Post/Buttons/Buttons";
+import Comments from "../../../Components/Post/Comments/Comments";
+import CreateComment from "../../../Components/Post/Comments/CreateComment/CreateComment";
 import Post from "../../../Components/Post/PostLayout/Post";
 import PostModal from "../../../Components/Post/PostModal/PostModal";
 import { useProfile } from "../../../store/UserProfile-context";
 import { UserProfilePostProps } from "../UserPosts";
-type Props = {};
 
 const PostPreview: React.FC<UserProfilePostProps> = ({
   postDESCRIPTION,
@@ -19,51 +20,63 @@ const PostPreview: React.FC<UserProfilePostProps> = ({
   profileFILM,
   postTITLE,
   userID,
+  postLikes,
+  postComments,
+  eventButtonHandler,
+  likeStatePreview,
+  shareStatePreview,
+  commentStatePreview,
 }) => {
   return (
     <PreviewModal>
       <picture className={PostPreviewModal.postPicture}>
-        {profileIMAGE && (
-          <img
-            className={PostPreviewModal.postImage}
-            src={profileIMAGE}
-            alt=""
-          />
+        {postIMAGE && (
+          <img className={PostPreviewModal.postImage} src={postIMAGE} alt="" />
+        )}
+        {profileFILM && (
+          <video
+            className={PostPreviewModal.postFilm}
+            controls
+            src={profileFILM}
+            autoPlay
+          ></video>
         )}
       </picture>
+      <div className={PostPreviewModal.userPictureContainer}>
+        <picture className={PostPreviewModal.userPicture}>
+          <img className={PostPreviewModal.userImg} src={profileIMAGE} alt="" />
+        </picture>
+        <span className={PostPreviewModal.username}>{profileUSERNAME}</span>
+      </div>
       <aside className={PostPreviewModal.previewPostInfo}>
-        <div className={PostPreviewModal.userPictureContainer}>
-          <picture className={PostPreviewModal.userPicture}>
-            <img className={PostPreviewModal.userImg} src={postIMAGE} alt="" />
-          </picture>
-          <span className={PostPreviewModal.username}>{profileUSERNAME}</span>
-        </div>
-        <div className={PostPreviewModal.postTitle}>
-          <picture className={PostPreviewModal.userPicture}>
+        <div className={PostPreviewModal.previewPostDescription}>
+          {/* Profile Pic And Desc Here */}
+          <picture className="size-10 overflow-hidden rounded-full">
             <img
-              className={PostPreviewModal.userImg}
+              className="h-full w-full object-cover"
               src={profileIMAGE}
               alt=""
             />
           </picture>
-          <span className={PostPreviewModal.username}>{profileUSERNAME}</span>
-          <p>{postTITLE}</p>
-        </div>
-        <div className={PostPreviewModal.likes}>
-          <p>Likes: 10000;</p>
+          <h2>{postTITLE}</h2>
         </div>
         <div className={PostPreviewModal.buttons}>
-          <Buttons />
+          <Buttons
+            like={"like"}
+            comment={"comment"}
+            share={"share"}
+            eventButtonClick={(post_id, action) =>
+              eventButtonHandler(post_id, action)
+            }
+            postId={postID}
+            likeStateProp={likeStatePreview}
+            commentStateProp={commentStatePreview}
+            shareStateProp={shareStatePreview}
+            postComments={postComments}
+          />
         </div>
-        <div className={PostPreviewModal.userPictureContainer}>
-          <picture className={PostPreviewModal.userPicture}>
-            <img
-              className={PostPreviewModal.userImg}
-              src={profileIMAGE}
-              alt=""
-            />
-          </picture>
-          <span className={PostPreviewModal.username}>Danielson</span>
+        <div className={PostPreviewModal.likes}>
+          <span>Likes:{postLikes}</span>
         </div>
       </aside>
     </PreviewModal>

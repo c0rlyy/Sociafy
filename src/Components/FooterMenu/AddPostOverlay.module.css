@@ -25,10 +25,10 @@
 }
 .content {
   display: grid;
-  grid-template-columns: minmax(1fr, 200px) minmax(1fr, 200px);
-  grid-template-rows: minmax(100px, 1fr);
-  height: 100%;
+  grid-template-columns: minmax(200px, 300px) minmax(1fr, 200px);
+  grid-template-rows: minmax(0, 1fr);
   place-items: center;
+  height: 100%;
 }
 .form {
   padding: 1.5rem;
@@ -71,7 +71,9 @@
 
 @media (min-width: 768px) {
   .modal {
-    height: 60%;
+    width: 85%;
+    height: 80%;
+    right: 5vw;
   }
   .form {
     grid-template-rows: minmax(0, 8ch) minmax(0, 20ch) minmax(10%, 30%);

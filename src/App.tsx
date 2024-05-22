@@ -25,6 +25,10 @@ import PostsProvider from "./store/PostContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import UserProfileProvider from "./store/UserProfile-context";
 import MyProfile from "./pages/MyProfile/MyProfile";
+import Settings from "./pages/Settings/Settings";
+import ChangeEmail from "./pages/Settings/ChangeEmail/ChangeEmail";
+import ChangeUsername from "./pages/Settings/ChangeUsername/ChangeUsername";
+import ChangePassword from "./pages/Settings/ChangePassword/ChangePassword";
 
 // import { loginAction } from "./pages/Forms/LoginForm/loginAction";
 function App() {
@@ -76,6 +80,30 @@ function App() {
           </UserProfileProvider>
         </ProtectedRoute>
       ),
+    },
+    {
+      path: "/Settings",
+      element: (
+        <ProtectedRoute>
+          <UserProfileProvider>
+            <Settings />
+          </UserProfileProvider>
+        </ProtectedRoute>
+      ),
+      children: [
+        {
+          path: "/Settings/ChangeEmail",
+          element: <ChangeEmail />,
+        },
+        {
+          path: "/Settings/ChangeUsername",
+          element: <ChangeUsername />,
+        },
+        {
+          path: "/Settings/ChangePassword",
+          element: <ChangePassword />,
+        },
+      ],
     },
   ]);
   return (

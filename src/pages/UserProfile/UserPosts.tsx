@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import UserProfileProps from "../Fetch/fetchUsers";
 import { CurrentUserProfilePosts } from "../Fetch/fetchMyPosts";
 import PostPreview from "./PostModal/PostPreview";
@@ -13,7 +13,11 @@ export type UserProfilePostProps = {
   postDESCRIPTION: string;
   postIMAGE: string;
   isOpened: boolean;
-  postFILMS: string;
+  postFILMS: {
+    fileId: number;
+    fileUrl: string;
+    filePath: string;
+  };
   profileIMAGE: string;
   postTITLE: string;
   profileUSERNAME: string;
@@ -32,32 +36,25 @@ const UserPosts: React.FC<UserProfilePostProps> = ({
   profileUSERNAME,
   postTITLE,
 }) => {
-  const { openState } = useProfile();
+  useEffect(() => {
+    console.log(postFILMS);
+  }, [postFILMS]);
   return (
-    <>
-      <picture
-        data-id={postID}
-        className={userProfile.profile__image_container}
-      >
-        {postIMAGE && (
-          <img
-            className={userProfile.profile__image_film}
-            src={postIMAGE}
-            alt=""
-          />
-        )}
-        {postFILMS && (
-          <img
-            controls
-            src={postFILMS}
-            playsInline
-            className={userProfile.profile__image_film}
-            title="Post Film"
-            loop
-          />
-        )}
-      </picture>
-    </>
+    <picture data-id={postID} className={userProfile.profile__image_container}>
+      {postIMAGE && (
+        <img
+          className={userProfile.profile__image_film}
+          src={postIMAGE}
+          alt=""
+        />
+      )}
+      {postFILMS && (
+        <video
+          className={userProfile.profile__image_film}
+          src={postFILMS.fileUrl}
+        ></video>
+      )}
+    </picture>
   );
 };
 

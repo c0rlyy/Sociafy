@@ -15,7 +15,7 @@ export const theme = {
     gridTemplateColumns: {
       landing: `minmax(0,20rem) minmax(20ch,70ch) minmax(20ch,60ch) minmax(0,5rem)`,
       postColumns: `minmax(0,50%) minmax(17rem,40rem) minmax(0,50%)`,
-      userProfile: `repeat(auto-fit, minmax(200px,1fr))`,
+      userProfile: `repeat(auto-fill, minmax(200px,1fr))`,
       layout: `minmax(min-content,18%) minmax(30rem,1fr) minmax(20ch,40ch)`,
       mobileLayout: `minmax(min-content,18%) minmax(30rem,1fr)`,
       PostCardColumns: `minmax(0,5ch) minmax(350px, auto) minmax(0,10ch)`,
@@ -26,12 +26,13 @@ export const theme = {
       userProfileLayoutGrid: `minmax(0,30%) minmax(0rem,1fr) minmax(0,30ch) `,
       fileUploaderLayout: `minmax(0,30ch) minmax(0,1fr)`,
       SignUpLayout: `minmax(0,40vw) minmax(0,1fr)`,
+      settingsLayout: `minmax(10vw,25vw) minmax(0,1fr)`,
     },
     gridTemplateRows: {
       userProfileRows: `auto`,
       userProfileContainerRows: `minmax(0,20rem) minmax(0,1fr)`,
       PostPageRows: `minmax(5rem,15rem)`,
-      postCard: `minmax(10ch, 15ch) minmax(150px,1fr) minmax(5ch, 10ch) minmax(5ch, 15ch)`,
+      postCard: `minmax(10ch, 15ch) minmax(150px,400px) minmax(5ch, 10ch) minmax(5ch, 15ch)`,
       footer: `minmax(15ch,30ch) minmax(0,1fr)`,
       layout: ` minmax(5ch, 8ch) minmax(1fr, auto)`,
       mobileLayout: `minmax(10rem,1fr) minmax(1fr, auto)`,
@@ -53,7 +54,10 @@ export const theme = {
       extraSm: "400px",
       smScreen: "640px",
     },
+    maxWidth: {
+      extraSmWidth: "400px",
+    },
   },
 };
 export const darkMode = "class";
-export const plugins = [];
+export const plugins = ["prettier-plugin-tailwindcss"];

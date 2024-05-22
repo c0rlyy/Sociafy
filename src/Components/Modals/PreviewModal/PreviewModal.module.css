@@ -11,34 +11,52 @@
 .modal {
   position: fixed;
   top: 10%;
-  right: 10%;
+  right: 12.5%;
   width: 70%;
   height: 85%;
   background-color: white;
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
   z-index: 99999;
-  animation: slide-down 300ms ease-out forwards;
   margin: 0 auto;
-  overflow: hidden;
+  animation: pop-up 700ms ease-out forwards;
   /* overflow: hidden; */
 }
-/* Stylowanko dalej 10.05.2024  */
 .content {
   display: grid;
-  grid-template-columns: minmax(300px, 50%) minmax(300px, 50%);
-  grid-template-rows: auto;
+  grid-template-columns: minmax(200px, 500px) minmax(300px, 1fr);
+  grid-template-rows: minmax(3rem, 5rem) minmax(auto, 1fr);
   width: 100%;
   height: 100%;
 }
 .postPicture {
   grid-column: 1/2;
+  grid-row: 1/-1;
+  position: relative;
+  width: 100%;
+  height: 100%; /* Ensure the container fills its parent */
   border: 1px solid lime;
 }
 .postImage {
-  width: 100%;
-  object-fit: cover;
-  height: 100%;
+  position: absolute; /* Position the image relative to its container */
+  width: 100%; /* Ensure the image fills its container horizontally */
+  height: 100%; /* Ensure the image fills its container vertically */
+  object-fit: cover; /* Scale the image while preserving aspect ratio and cropping as needed */
+  object-position: center; /* Center the image within its container */
+}
+.postFilm {
+  position: absolute; /* Position the image relative to its container */
+  width: 100%; /* Ensure the image fills its container horizontally */
+  height: 100%; /* Ensure the image fills its container vertically */
+  object-fit: cover; /* Scale the image while preserving aspect ratio and cropping as needed */
+  object-position: center; /* Center the image within its container */
+}
+.userPictureContainer {
+  display: flex;
+  place-items: center;
+  gap: 1.3rem;
+  grid-row: 1/2;
+  grid-column: 2/3;
 }
 .userPicture {
   border: 1px solid black;
@@ -52,19 +70,18 @@
   border-radius: 999px;
   object-fit: cover;
 }
-.userPictureContainer {
-  display: flex;
-  place-items: center;
-  gap: 1.3rem;
-  border: 1px solid red;
-}
 .previewPostInfo {
   grid-column: 2/3;
+  grid-row: 2/-1;
   display: grid;
-  border: 1px solid black;
-  grid-template-rows:
-    minmax(auto, 10ch) minmax(auto, 10rem) minmax(auto, 5rem) minmax(auto, 3rem)
-    minmax(auto, 7rem);
+  grid-template-rows: minmax(auto, 13rem) minmax(auto, 5rem) minmax(0, 1fr);
+  padding: 0.4rem;
+}
+.previewPostDescription {
+  grid-row: 1/2;
+  display: flex;
+  place-items: center;
+  gap: 0.5rem;
 }
 .username {
   font-weight: bolder;
@@ -73,16 +90,62 @@
   display: flex;
   place-items: center;
   gap: 0.5rem;
+  padding: 0 0 0.5rem 0.3rem;
 }
 .likes {
-  border: 1px solid green;
   font-weight: bold;
+  padding: 0 0 0.5rem 0.3rem;
+  grid-row: 3/4;
 }
 .buttons {
+  padding: 0.5rem 0.7rem 0.5rem 0.7rem;
   display: flex;
   place-items: center;
+  grid-row: 2/3;
   gap: min(1.3rem);
 }
-.comments {
-  border: 1px solid blue;
+.commentSection {
+  grid-column: 2/3;
+  grid-row: 3;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+@media (max-width: 768px) {
+  .modal {
+    height: 100%;
+    top: 0;
+  }
+  .content {
+    /* grid-template-rows: minmax(200px, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr); */
+  }
+  .userPictureContainer {
+    grid-column: 1/-1;
+    grid-row: 1/2;
+  }
+  .postPicture {
+    grid-row: 2/3;
+    grid-column: 1/-1;
+  }
+  .previewPostInfo {
+    grid-row: 3/4;
+    grid-column: 1/-1;
+  }
+}
+@media (max-width: 400px) {
+  .modal {
+    width: 100%;
+    height: 100%;
+    right: 0;
+    top: 0;
+  }
+}
+@keyframes pop-up {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

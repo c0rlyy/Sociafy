@@ -1,5 +1,5 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
-import React, { SyntheticEvent, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import Layout from "../../Components/Layout/Layout";
 import { UpdatedPosts } from "../../store/PostContext";
 import { useProfile } from "../../store/UserProfile-context";
@@ -10,30 +10,37 @@ import UserBio from "../UserProfile/UserBio/UserBio";
 import UserInfo from "../UserProfile/UserInfo/UserInfo";
 import UserPosts from "../UserProfile/UserPosts";
 import { LineWave } from "react-loader-spinner";
+import FollowButton from "../../Components/FollowButton/FollowButton";
 const MyProfile = (props: Props) => {
-  const [isOpenModal, setIsOpenModal] = useState(false);
-  const openModalHandler = () => {
-    setIsOpenModal(true);
-    console.log(isOpenModal);
-  };
   const [selectedPost, setSelectedPost] = useState();
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const {
+    fetchMe,
+    fetchMyPosts,
+    fetchPost,
+    getUserProfilePicUrl,
+    postControlHandler,
+    openPreview,
+    setOpenPreview,
+    receivePostPicture,
+    getUserWithPic,
+    userProfileFollows,
+  } = useProfile();
   const handlePost = async (post_id: number) => {
-    const postID = post_id.target.parentElement.getAttribute("data-id");
-    if (postID)
-      console.log(post_id.target.parentElement.getAttribute("data-id"));
-    setSelectedPost(postID);
-    setOpenState(true);
-  };
-  const handleOpenPost = async (e: MouseEvent) => {
-    const target = e.target.parentElement.getAttribute("data-id");
-    if (target) {
-      console.log(target);
-      setOpenState(true);
-      setSelectedPost(target);
-      const displayResult = await displayPostResult();
-      console.log(displayResult);
+    const postID = post_id.target.getAttribute("data-id");
+    console.log(postID);
+
+    if (postID) {
+      console.log(postID);
+      setOpenPreview(true);
+      setSelectedPost(postID);
     }
   };
+  useEffect(() => {
+    if (!openPreview) {
+      setSelectedPost(null);
+    }
+  }, [openPreview]);
   const { data: previewPost, isLoading: isProfilePostsLoading } = useQuery({
     queryKey: ["previewPost"],
     queryFn: async () => {
@@ -52,17 +59,6 @@ const MyProfile = (props: Props) => {
   //     return Post;
   //   }
   // };
-  const {
-    fetchMe,
-    fetchMyPosts,
-    fetchPost,
-    getUserProfilePicUrl,
-    postControlHandler,
-    openState,
-    setOpenState,
-    receivePostPicture,
-    userProfileFollows,
-  } = useProfile();
   const { data: userData, isLoading: userLoading } = useQuery({
     queryKey: ["user"],
     queryFn: async () => {
@@ -86,24 +82,29 @@ const MyProfile = (props: Props) => {
     isError: isFollowError,
   } = useQuery({
     queryKey: ["follows"],
-    queryFn: async () => userProfileFollows(userProfile?.profile.profile_id),
+    queryFn: async () => {
+      const UserProfileFollows = await userProfileFollows(
+        userProfile?.profile.profile_id,
+      );
+      return UserProfileFollows;
+    },
   });
   return (
     <Layout>
       {userLoading ? (
         <Loader />
       ) : (
-        <div className={`col-[2/-1] row-[1] p-4`}>
+        <div className={`col-[2/-1] row-[1/-1] py-1 pl-1 md:p-4`}>
           <div className="col-[2/3] row-[1/-1] grid grid-cols-userProfileUpperMenu grid-rows-3 items-center ">
             <div className="flex items-center ">
-              <div className=" flex size-20 rounded-full border border-inherit">
+              <picture className=" flex size-20 rounded-full border border-inherit">
                 <img
                   onClick={() => setIsOpenModal(true)}
                   className="flex h-full w-full justify-center overflow-hidden rounded-full object-cover"
                   alt=""
                   src={userProfile?.profile_picture}
                 />
-              </div>
+              </picture>
               {isOpenModal ? (
                 <ChooseImg onClose={() => setIsOpenModal(false)} />
               ) : (
@@ -118,22 +119,22 @@ const MyProfile = (props: Props) => {
               <LineWave color="blue" />
             ) : (
               <UserInfo
-                postsNumber={0}
-                followers={isFollowError ? 0 : profileFollows?.followers}
-                following={isFollowError ? 0 : profileFollows?.followed}
+                postsNumber={userData?.length}
+                followers={isFollowError ? 0 : userProfile.followers.length}
+                following={isFollowError ? 0 : userProfile.followed.length}
               />
             )}
             <UserBio desc={userData?.post_description} />
           </div>
-          <div className="sm:col[2/3] col-[1/-1] grid auto-rows-userProfileRows grid-cols-userProfile ">
+          <div className="sm:col[2/3] col-[1/-1] grid  grid-cols-userProfile ">
             <div
               onClick={(postId) => handlePost(postId)}
-              className="col-[1/-1] row-span-2 grid grid-cols-subgrid grid-rows-subgrid py-3"
+              className="col-[1/-1] grid auto-rows-[300px] grid-cols-userProfile sm:col-[1/-1]"
             >
               {userData?.length > 0 ? (
-                userData.map((userPost: UpdatedPosts, index) => (
+                userData.map((userPost: UpdatedPosts) => (
                   <UserPosts
-                    key={index}
+                    key={userPost.post_id}
                     postDESCRIPTION={userPost.post_description}
                     postIMAGE={userPost.post_photo}
                     postIMAGEID={userPost.post_files["picture_id"]}
@@ -149,20 +150,21 @@ const MyProfile = (props: Props) => {
                   No posts were found
                 </h1>
               )}
-              {openState &&
+              {openPreview &&
                 previewPost?.map((post) => (
                   <PostPreview
-                    key={post.post_id}
-                    postID={post.post_id}
-                    userID={post.profile_id}
-                    profileID={post.profile_id}
-                    postDESCRIPTION={post.post_description}
-                    postIMAGE={post.post_picture}
-                    isOpened={openState}
-                    profileIMAGE={post.post_picture}
-                    postTITLE={post.post_title}
-                    profileFILM={"previewPost.profileFILM"}
-                    profileUSERNAME={post.username}
+                    key={post?.post_id}
+                    postID={post?.post_id}
+                    userID={post?.profile_id}
+                    profileID={post?.profile_id}
+                    postDESCRIPTION={post?.post_description}
+                    postIMAGE={post?.post_photo}
+                    isOpened={openPreview}
+                    profileIMAGE={userProfile?.profile_picture}
+                    postTITLE={post?.post_title}
+                    profileFILM={post?.post_film}
+                    profileUSERNAME={post?.username}
+                    postLikes={post?.post_likes}
                   />
                 ))}
             </div>

@@ -17,19 +17,55 @@ import UserPosts from "./UserPosts";
 import useFetchMyPost from "../../Hooks/useFetchMyPost";
 import fetchUrl from "../Fetch/fetchUrl";
 import ChooseImg from "./ChooseImg";
+import { ReadComments } from "../../store/PostContext";
 import {
   useProfile,
   UserProfileContext,
 } from "../../store/UserProfile-context";
 import { useQuery } from "@tanstack/react-query";
+import PostPreview from "./PostModal/PostPreview";
+import FollowButton from "../../Components/FollowButton/FollowButton";
 function UserProfile() {
-  const [isOpenModal, setIsOpenModal] = useState(false);
-
-  const handleOpenPost = (e: SyntheticEvent) => {
-    console.log(e.target.tagName);
+  const {
+    getUserWithPic,
+    getUserProfilePicUrl,
+    userPosts,
+    receivePostPicture,
+    openPreview,
+    setOpenPreview,
+    fetchPost,
+    userProfileFollows,
+  } = useProfile();
+  const [selectedPost, setSelectedPost] = useState();
+  const handlePost = async (post_id: number) => {
+    const postID = post_id.target.getAttribute("data-id");
+    if (postID) {
+      console.log(postID);
+      setSelectedPost(postID);
+      setOpenPreview(true);
+    }
   };
-  const { getUser, getUserProfilePicUrl, userPosts, receivePostPicture } =
-    useProfile();
+  const { data: previewPost, isLoading: isProfilePostsLoading } = useQuery({
+    queryKey: ["previewPost"],
+    queryFn: async () => {
+      if (selectedPost) {
+        const post = await fetchPost(selectedPost);
+        console.log(post);
+        return post;
+      }
+    },
+    enabled: !!selectedPost,
+  });
+  const { data: FollowsNumber, isLoading: isFollowsLoading } = useQuery({
+    queryKey: ["follows"],
+    queryFn: async () => {},
+  });
+  // Sets selectedPost null, after closing modal
+  useEffect(() => {
+    if (!openPreview) {
+      setSelectedPost(null);
+    }
+  }, [openPreview]);
   let { user_id } = useParams();
   const { data: userProfilePosts, isLoading: isUserProfilePostsLoading } =
     useQuery({
@@ -40,6 +76,13 @@ function UserProfile() {
         return UserData;
       },
     });
+  const { data: userProfile, isLoading: isUserProfileLoading } = useQuery({
+    queryKey: ["userProfile"],
+    queryFn: async () => {
+      const userProfile = await getUserWithPic(user_id);
+      return userProfile;
+    },
+  });
   if (isUserProfilePostsLoading) {
     return <div>Loading</div>;
   }
@@ -47,24 +90,29 @@ function UserProfile() {
     <Layout>
       <div className={`col-[2/-1] row-[1] p-4`}>
         <div className="col-[2/3] row-[1/-1] grid grid-cols-userProfileUpperMenu grid-rows-3 items-center">
-          <div className="flex items-center ">
-            <div className="flex size-20 rounded-full border border-inherit">
+          <div className="flex items-center gap-3 ">
+            <picture className="flex size-20 rounded-full border border-inherit">
               <img
                 className="h-full w-full overflow-hidden rounded-full object-cover"
                 alt=""
-                src={userProfilePosts?.profile_picture}
+                src={userProfile?.profile_picture}
               />
-            </div>
+            </picture>
           </div>
-          <h1 className="font-bold">{userProfilePosts?.username}</h1>
+          <h1 className="pl-3 font-bold">{userProfile?.user_name}</h1>
           {/* result of request here */}
-          <UserInfo postsNumber={0} followers={0} following={0} />
+          <UserInfo
+            postsNumber={userProfilePosts.length}
+            followers={userProfile?.followers.length}
+            following={userProfile?.following}
+          />
           <UserBio desc={userProfilePosts?.post_description} />
+          <FollowButton profileID={userProfile?.profile.profile_id} />
         </div>
-        <div className="col-[2/3] grid auto-rows-userProfileRows grid-cols-userProfile ">
+        <div className="sm:col[2/3] col-[1/-1] grid  grid-cols-userProfile ">
           <div
-            onClick={handleOpenPost}
-            className="col-[1/-1] row-span-2 grid grid-cols-subgrid grid-rows-subgrid py-3"
+            onClick={(postId) => handlePost(postId)}
+            className="col-[1/-1] grid auto-rows-[300px] grid-cols-userProfile sm:col-[1/-1]"
           >
             {userProfilePosts?.length > 0 ? (
               userProfilePosts?.map((userPost) => (
@@ -83,6 +131,24 @@ function UserProfile() {
             ) : (
               <h1>No posts were found</h1>
             )}
+            {openPreview &&
+              selectedPost &&
+              previewPost?.map((post) => (
+                <PostPreview
+                  key={post?.post_id}
+                  postID={post?.post_id}
+                  userID={post?.profile_id}
+                  profileID={post?.profile_id}
+                  postDESCRIPTION={post?.post_description}
+                  postIMAGE={post?.post_photo}
+                  isOpened={openPreview}
+                  profileIMAGE={userProfile?.profile_picture}
+                  postTITLE={post?.post_title}
+                  profileFILM={post?.post_film}
+                  profileUSERNAME={post?.username}
+                  postLikes={post?.post_likes}
+                />
+              ))}
           </div>
         </div>
       </div>

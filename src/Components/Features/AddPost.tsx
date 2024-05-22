@@ -15,6 +15,7 @@ import { redirect } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import { useProfile } from "../../store/UserProfile-context";
 import { useQuery } from "@tanstack/react-query";
+import AddPostPopover from "../Dialogs/AddPostPopover";
 interface AddPostType {
   onClose: MouseEventHandler<SVGAElement>;
 }
@@ -28,7 +29,11 @@ const AddPost: React.FC<AddPostType> = ({ onClose }: { onClose: () => {} }) => {
     images: [],
     textData: "",
   });
+  const [isSuccessfullyAdded, setIsSuccessfullyAdded] = useState(false);
+
   const [isSelected, setIsSelected] = useState(false);
+  const [isSubmissionError, setIsSubmissionError] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = event.target.files;
@@ -61,11 +66,21 @@ const AddPost: React.FC<AddPostType> = ({ onClose }: { onClose: () => {} }) => {
     e.preventDefault();
     const formData = new FormData();
     const { images, textData } = addPostState;
+    if (textData?.length === 0) {
+      setIsSuccessfullyAdded(false);
+      setIsSubmissionError(true);
+      throw new Error("Fill the gap bro");
+    }
     images.forEach((image, index) => {
       formData.append(`uploaded_files`, image);
     });
     formData.append("data", JSON.stringify({ post_title: `${textData}` }));
-    await addPostFetch(formData);
+    const FetchedData = await addPostFetch(formData);
+    if (FetchedData) {
+      setIsSuccessfullyAdded(true);
+      setIsSubmissionError(false);
+      setOpenModal(true);
+    }
   };
   const closeButtonPostScreen = useMediaQuery({
     query: "(max-width:600px)",
@@ -75,13 +90,22 @@ const AddPost: React.FC<AddPostType> = ({ onClose }: { onClose: () => {} }) => {
     queryKey: ["profileData"],
     queryFn: async () => {
       const profileData = await fetchMe();
-      const profilePic = await getUserProfilePicUrl(
-        profileData?.profile.picture_id,
-      );
-
-      return { profileData: profileData, profilePic: profilePic };
+      return profileData;
     },
   });
+  if (isSuccessfullyAdded) {
+    return (
+      <AddPostPopover
+        open={openModal}
+        handleClose={() => setOpenModal(false)}
+      />
+    );
+  }
+  // useEffect(() => {
+  //   if (isSuccessfullyAdded) {
+  //     return;
+  //   }
+  // }, [isSuccessfullyAdded]);
   return (
     <AddPostModal onClosePropFc={onClose}>
       {closeButtonPostScreen && (
@@ -98,10 +122,10 @@ const AddPost: React.FC<AddPostType> = ({ onClose }: { onClose: () => {} }) => {
         <CiImageOn z={100} size={"100%"} fill={"black"} />
       </div>
       {isSelected ? (
-        <picture className=" h-1/2 w-1/2  justify-self-center pt-2 ">
+        <picture className="h-full w-full justify-self-center  ">
           {addPostState.images.map((image: File, index: number) => (
             <img
-              className="h-full w-full object-cover"
+              className=" h-full w-[540px] object-cover"
               key={index}
               src={URL.createObjectURL(image)}
               alt=""
@@ -123,11 +147,11 @@ const AddPost: React.FC<AddPostType> = ({ onClose }: { onClose: () => {} }) => {
           <picture className={PostOverlay.userImgPictureBox}>
             <img
               className={PostOverlay?.userImg}
-              src={myData?.profilePic}
+              src={myData?.profile_picture}
               alt=""
             />
           </picture>
-          <span>{myData?.profileData?.user_name}</span>
+          <span>{myData?.username}</span>
         </div>
         <textarea
           onChange={dataTextHandler}
@@ -153,12 +177,20 @@ const AddPost: React.FC<AddPostType> = ({ onClose }: { onClose: () => {} }) => {
         >
           Add
         </button>
+        {isSubmissionError && (
+          <p className="text-red-500 ">
+            No image inserted or description is empty
+          </p>
+        )}
       </form>
     </AddPostModal>
   );
 };
 const addPostFetch = async (formData: FormData) => {
   // FormData musi być stringowanym JSONem (?) (JSON.stringify(textData))**
+  const delay = (ms: number) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+  await delay(4000);
   console.log(formData);
   try {
     const response = await fetch(
@@ -171,13 +203,13 @@ const addPostFetch = async (formData: FormData) => {
         body: formData,
       },
     );
-    const data = await response.json();
-    console.log(data);
     if (!response.ok) {
       throw new Error("Your post cannot be added");
-    } else {
-      alert("Added post :)");
-      return redirect("/MainPage");
+    }
+    const data = await response.json();
+    console.log(data);
+    if (data) {
+      return true;
     }
   } catch (error) {
     console.log(error);
