@@ -1,21 +1,14 @@
-from typing import Annotated, Literal
-
 from fastapi import BackgroundTasks, Depends, HTTPException, Header, APIRouter
 
 from sqlalchemy.orm import Session
 
 from crud import file_crud, post_crud, profile_crud, like_crud, comment_crud
-from service.web_token import decode
-from service.file_utils import FileProccesor
-from service.web_token import decode, encode
 
-from crud import user_crud, follow_crud
 
 from models.user_model import User as UserModel
 from models.comment_model import Comment as CommentModel
 from models.post_model import Post as PostModel
 from models.like_model import Like as LikeModel
-
 from models.file_model import File as FileModel
 from models.profile_model import Profile as ProfileModel
 from models.follow_model import Follow as FollowModel
@@ -49,14 +42,13 @@ def create_comment(
 
 
 # @router.get("/api/v1/comment/post/{post_id}", response_model=list[comment_schema.CommentWithProfile])
-@router.get("/api/v1/comment/post/{post_id}",response_model= list[comment_schema.CommentWithProfile])
+@router.get("/api/v1/comment/post/{post_id}", response_model=list[comment_schema.CommentWithProfile])
 def read_post_comments(
     post_id: int,
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
 ):
-
     # select user_name, users_id from users join comments on comments.profile_id = users.user_id
     # where comment.post_id = Value(?)
 
@@ -68,7 +60,7 @@ def read_post_comments(
     return post_comments
 
 
-@router.delete("/api/v0/comment/{comment_id}")
+@router.delete("/api/v1/comment/{comment_id}")
 def delete_post(
     comment_id: int,
     curren_user: UserModel = Depends(get_current_user),

@@ -37,8 +37,5 @@ def find_like(db: Session, post_id: int, current_user: UserModel) -> LikeModel |
 def create_like(db: Session, post_id: int, current_user: UserModel):
     like = LikeModel(post_id=post_id, profile_id=current_user.profile.profile_id)
     db.add(like)
-    db.flush()
-    post: PostModel = like.post
-    post.post_likes_count += 1  # type: ignore
     db.commit()
     return like

@@ -1,4 +1,5 @@
 from typing import Optional
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from schemas.file_schema import FileOut
 
@@ -15,7 +16,6 @@ class PostBase(BaseModel):
 
 class PostAllInfo(PostBase):
     post_id: int
-    post_description: str | None
     profile_id: int
     user_id: int
     post_files: list[FileOut]
@@ -43,3 +43,7 @@ class PostOut(Post):
 
 class PostCountLikes(BaseModel):
     post_likes_count: int
+
+
+class PostTest(PostAllInfo):
+    post_files: list[bytes]

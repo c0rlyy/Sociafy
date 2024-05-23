@@ -2,6 +2,7 @@ from typing import Annotated, Literal
 
 from fastapi import BackgroundTasks, Depends, HTTPException, Header, APIRouter
 
+from sqlalchemy import TextClause, text
 from sqlalchemy.orm import Session
 
 from crud import file_crud, post_crud, profile_crud
@@ -115,10 +116,19 @@ def read_followed(profile_id: int, skip: int = 0, limit: int = 100, db: Session 
     return users_followed
 
 
-@router.get("/api/v1/follows/follow-counts/{profile_id}", summary="temporart solution, will imporve logic later")
+@router.get("/api/v1/follows/follow-counts/{profile_id}" )
 def get_follow_counts(profile_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
-    followed: list[FollowModel] = follow_crud.find_followed(db, profile_id, 0, 10000000)
-    followers: list[FollowModel] = follow_crud.find_followers(db, profile_id, 0, 10000000)
+    followers_sql_statement: TextClause = text(
+        'SELECT count(*) AS count_1 FROM "follows" WHERE follows.profile_followed_id = :value'
+    )
+    follows_sql_statement: TextClause = text(
+        'SELECT count(*) AS count_1 FROM "follows" WHERE follows.follower_profile_id = :value'
+    )
+    followers = db.execute(followers_sql_statement, {"value": profile_id})
+    follows = db.execute(follows_sql_statement, {"value": profile_id})
 
-    return {"followers:": len(followers), "followed": len(followed)}
+    count_of_followers = followers.scalar()
+    count_of_follows = follows.scalar()
+
+    return {"followers:": count_of_followers, "followed": count_of_follows}

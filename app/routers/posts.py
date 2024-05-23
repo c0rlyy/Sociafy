@@ -23,6 +23,14 @@ from dependencies.user_dependency import get_current_user
 router = APIRouter(tags=["post"])
 
 
+@router.get("/api/v1/posts", response_model=list[post_schema.PostAllInfo])
+def test_post(skip: int | None = 0, limit: int = 100, db: Session = Depends(get_db)) -> list[PostModel]:
+    posts: list[PostModel] = post_crud.get_posts(skip=skip, limit=limit, db=db)
+    if not posts:
+        raise HTTPException(status_code=404, detail="no post were found")
+    return posts
+
+
 @router.get("/api/v1/posts/me", response_model=list[post_schema.PostAllInfo])
 def read_posts_me(
     current_user: Annotated[UserModel, Depends(get_current_user)],
@@ -63,9 +71,11 @@ async def uploading_file_with_post(
 
 @router.get("/api/v1/posts/{post_id}/files", response_model=dict[str, list[int]])
 async def get_files_id(post_id: int, db: Session = Depends(get_db)):
+
     db_files: list[FileModel] | None = file_crud.get_post_files(db, post_id)
     if not db_files:
         raise HTTPException(status_code=404, detail="no file with that post id was found")
+
     file_id_list: list[int] = []
     for file in db_files:
         file_id_list.append(file.file_id)  # type: ignore

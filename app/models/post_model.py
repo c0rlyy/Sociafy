@@ -17,8 +17,6 @@ class Post(Base):
     post_title = Column(String, nullable=False)
     post_description = Column(String)
 
-    post_likes_count = Column(Integer, default=0)
-
     post_profile = relationship("Profile", back_populates="posts", uselist=False)
     post_files = relationship("File", back_populates="file_post", uselist=True, cascade="all, delete-orphan")
 
