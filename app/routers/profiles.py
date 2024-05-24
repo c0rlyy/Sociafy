@@ -22,9 +22,9 @@ from service.file_utils import FileProccesor
 router = APIRouter(tags=["profile"])
 
 
-@router.get("/api/v1/profile/{user_id}", response_model=profile_schema.ProfileWithUser)
-def read_profile(user_id: int, db: Session = Depends(get_db)) -> user_crud.ProfileModel:
-    user_profile: user_crud.ProfileModel | None = profile_crud.get_profile(db, user_id)
+@router.get("/api/v1/profile/{profile_id}", response_model=profile_schema.ProfileWithUser)
+def read_profile(profile_id: int, db: Session = Depends(get_db)) -> user_crud.ProfileModel:
+    user_profile: user_crud.ProfileModel | None = profile_crud.get_profile(db, profile_id)
     if user_profile is None:
         raise HTTPException(status_code=404, detail="No profile was found try again")
     return user_profile
@@ -33,6 +33,7 @@ def read_profile(user_id: int, db: Session = Depends(get_db)) -> user_crud.Profi
 @router.get("/api/v1/profile/{profile_id}/posts", response_model=profile_schema.ProfileWithPost)
 def read_profile_and_posts(profile_id: int, db: Session = Depends(get_db)) -> ProfileModel:
     profile_with_posts: ProfileModel | None = profile_crud.get_profile_with_posts(db, profile_id)
+
     if profile_with_posts is None:
         raise HTTPException(status_code=404, detail="wrong id, try again")
 
@@ -58,6 +59,19 @@ async def add_profile_pic(
 
     profile_pic_data: FileModel = db_file[0]
 
-    db.query(ProfileModel).filter(ProfileModel.user_id == current_user.id).update({"picture_id": profile_pic_data.file_id})
+    db.query(ProfileModel).filter(ProfileModel.user_id == current_user.id).update(
+        {"picture_id": profile_pic_data.file_id}
+    )
     db.commit()
     return {"message": "Profile picture updated successfully.", "profile": current_user.profile}
+
+
+@router.patch("/api/v1/profile/profile-description", response_model=profile_schema.ProfileOut)
+def update_profile_description(
+    req_data: profile_schema.ChangeDescription,
+    current_user: Annotated[UserModel, Depends(get_current_user)],
+    db: Session = Depends(get_db),
+) -> ProfileModel:
+
+    profile: ProfileModel = profile_crud.update_profile_desc(db, current_user, req_data)
+    return profile

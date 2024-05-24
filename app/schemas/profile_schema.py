@@ -53,3 +53,6 @@ class ProfileWithUserIn(BaseModel):
     picture_id:int | None
     description:str | None
     user: Us
+
+class ChangeDescription(BaseModel):
+    new_description:str

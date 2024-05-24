@@ -37,6 +37,23 @@ Python packages:
 
 Follow these steps to set up the project:
 
+**Start start_server.py script:**
+
+run python start_server.py
+- linux :
+
+```bash
+python3 start_server.py
+```
+
+- windows:
+
+```bash
+py start_server.py
+```
+
+**Alternatively:**
+
 1. **Add Directory `db`:**
 
    - Create a directory named `db` in the root directory of the project.
