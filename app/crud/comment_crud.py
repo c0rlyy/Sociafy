@@ -2,6 +2,7 @@ from typing import Annotated, Literal
 
 from fastapi import BackgroundTasks, Depends, HTTPException, Header, APIRouter
 
+from sqlalchemy import TextClause, text
 from sqlalchemy.orm import Session
 
 from crud import file_crud, post_crud
@@ -37,8 +38,30 @@ def add_comment(
     return comment
 
 
-def read_post_comments(post_id: int, skip: int, limit: int, db: Session) -> list[CommentModel]:
-    post_comments: list[CommentModel] = (
-        db.query(CommentModel).filter(CommentModel.post_id == post_id).offset(skip).limit(limit).all()
+def read_post_comments(post_id: int, skip: int, limit: int, db: Session): 
+
+    s1: TextClause = text(
+        """
+    SELECT users.user_name ,users.id ,profiles.user_id ,profiles.description, profiles.picture_id , comments.post_id, comments.profile_id, comments.comment_content
+    FROM users 
+    LEFT JOIN profiles on users.id = profiles.user_id 
+    LEFT JOIN comments ON profiles.profile_id = comments.profile_id WHERE comments.post_id = :value 
+    LIMIT :limit OFFSET :offset
+    """
     )
-    return post_comments
+    result = db.execute(s1, {"value": post_id, "limit": limit, "offset": skip})
+
+    res = []
+    for row in result:
+        res_dict = {
+            "username": row[0],
+            "user_id": row[1],
+            "profile_id": row[6],
+            "profile_description": row[3],
+            "profile_picture_id": row[4],
+            "post_id": row[5],
+            "comment_content": row[7],
+        }
+        res.append(res_dict)
+
+    return res

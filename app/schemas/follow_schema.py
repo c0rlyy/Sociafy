@@ -22,5 +22,14 @@ class Followed(BaseModel):
     profile_followed_id: int
 
 
-class Test(BaseModel):
-    followed_profiles_ids: list[int]
+class FollowedProfile(BaseModel):
+    username: str
+    user_id: int
+    profile_description: str | None
+    picture_id: str | None
+    profile_id: int
+    follower_id: int
+
+
+class ListFollowedProfiles(BaseModel):
+    followed: list[FollowedProfile]

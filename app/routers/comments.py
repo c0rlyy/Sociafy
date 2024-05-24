@@ -1,5 +1,6 @@
 from fastapi import BackgroundTasks, Depends, HTTPException, Header, APIRouter
 
+from sqlalchemy import TextClause, text
 from sqlalchemy.orm import Session
 
 from crud import file_crud, post_crud, profile_crud, like_crud, comment_crud
@@ -36,32 +37,28 @@ def create_comment(
 
     comment: CommentModel = comment_crud.add_comment(post_id, current_user, reqest, db)
     if not comment:
-        raise HTTPException(status_code=500, detail="server Error while trying to add post :)")
+        raise HTTPException(status_code=500, detail="server Error while trying to add comment :)")
 
     return comment
 
 
-# @router.get("/api/v1/comment/post/{post_id}", response_model=list[comment_schema.CommentWithProfile])
-@router.get("/api/v1/comment/post/{post_id}", response_model=list[comment_schema.CommentWithProfile])
+@router.get("/api/v1/comment/post/{post_id}")
 def read_post_comments(
     post_id: int,
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
 ):
-    # select user_name, users_id from users join comments on comments.profile_id = users.user_id
-    # where comment.post_id = Value(?)
+    posts_comments = comment_crud.read_post_comments(post_id, skip, limit, db)
 
-    post_comments: list[CommentModel] = comment_crud.read_post_comments(post_id, skip, limit, db)
-
-    if len(post_comments) < 1:
+    if len(posts_comments) < 1:
         raise HTTPException(status_code=404, detail="this post has no comments")
 
-    return post_comments
+    return posts_comments
 
 
 @router.delete("/api/v1/comment/{comment_id}")
-def delete_post(
+def delete_comment(
     comment_id: int,
     curren_user: UserModel = Depends(get_current_user),
     db: Session = Depends(get_db),

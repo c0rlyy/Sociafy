@@ -1,4 +1,4 @@
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 
 from fastapi import BackgroundTasks, Depends, HTTPException, Header, APIRouter
 
@@ -80,44 +80,30 @@ def delete_follow(profile_id: int, current_user: UserModel = Depends(get_current
     return {"msg": "sucesfully unfollowed the user, LEARN COBAL "}
 
 
-# import logging
-
-
-@router.get("/api/v1/follows/profile-followers/{profile_id}", response_model=list[user_schema.UserOut])
+@router.get("/api/v1/follows/profile-followers/{profile_id}")
 def read_followers(profile_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    user_followers: list[UserModel] = []
-    followers: list[FollowModel] = follow_crud.find_followers(db, profile_id, skip, limit)
+
+    followers = follow_crud.get_profile_followers(db, profile_id, skip, limit)
 
     if len(followers) < 1:
-        raise HTTPException(status_code=404, detail="no followers were found")
+        raise HTTPException(status_code=404, detail="no followers were fund")
 
-    for follower in followers:
-        user_followers.append(follower.follower.user)
-
-    return user_followers
+    return followers
 
 
-# logging.basicConfig()
-# logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
-
-
-@router.get("/api/v1/follows/profile-followed/{profile_id}", response_model=list[user_schema.UserOut])
+@router.get("/api/v1/follows/profile-followed/{profile_id}")
 def read_followed(profile_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    users_followed: list[UserModel] = []
 
-    followed: list[FollowModel] = follow_crud.find_followed(db, profile_id, skip, limit)
-    if len(followed) < 1:
+    profiles_followed = follow_crud.get_profiles_followed(db, profile_id, skip, limit)
+
+    if len(profiles_followed) < 1:
         raise HTTPException(status_code=404, detail="no followers were found")
 
-    # folloer is PROfileMOdel
-    for follow in followed:
-        users_followed.append(follow.followed.user)
-
-    return users_followed
+    return profiles_followed
 
 
-@router.get("/api/v1/follows/follow-counts/{profile_id}" )
-def get_follow_counts(profile_id: int, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+@router.get("/api/v1/follows/follow-counts/{profile_id}")
+def get_follow_counts(profile_id: int, db: Session = Depends(get_db)):
 
     followers_sql_statement: TextClause = text(
         'SELECT count(*) AS count_1 FROM "follows" WHERE follows.profile_followed_id = :value'
@@ -128,7 +114,7 @@ def get_follow_counts(profile_id: int, skip: int = 0, limit: int = 100, db: Sess
     followers = db.execute(followers_sql_statement, {"value": profile_id})
     follows = db.execute(follows_sql_statement, {"value": profile_id})
 
-    count_of_followers = followers.scalar()
-    count_of_follows = follows.scalar()
+    count_of_followers: int | None = followers.scalar()
+    count_of_follows: int | None = follows.scalar()
 
     return {"followers:": count_of_followers, "followed": count_of_follows}
