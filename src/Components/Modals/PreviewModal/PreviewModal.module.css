@@ -10,10 +10,10 @@
 
 .modal {
   position: fixed;
-  top: 10%;
-  right: 12.5%;
-  width: 70%;
-  height: 85%;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100vh;
   background-color: white;
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
@@ -24,25 +24,23 @@
 }
 .content {
   display: grid;
-  grid-template-columns: minmax(200px, 500px) minmax(300px, 1fr);
-  grid-template-rows: minmax(3rem, 5rem) minmax(auto, 1fr);
-  width: 100%;
-  height: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows:
+    minmax(auto, 100px) minmax(auto, 200px) minmax(0, 1fr)
+    minmax(0, 1fr);
+  padding: 0.5rem;
 }
 .postPicture {
-  grid-column: 1/2;
-  grid-row: 1/-1;
+  grid-column: 1/-1;
+  grid-row: 2/3;
   position: relative;
-  width: 100%;
-  height: 100%; /* Ensure the container fills its parent */
-  border: 1px solid lime;
+  height: 100%;
+  padding-top: 0.6rem;
 }
 .postImage {
-  position: absolute; /* Position the image relative to its container */
-  width: 100%; /* Ensure the image fills its container horizontally */
-  height: 100%; /* Ensure the image fills its container vertically */
-  object-fit: cover; /* Scale the image while preserving aspect ratio and cropping as needed */
-  object-position: center; /* Center the image within its container */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .postFilm {
   position: absolute; /* Position the image relative to its container */
@@ -56,7 +54,7 @@
   place-items: center;
   gap: 1.3rem;
   grid-row: 1/2;
-  grid-column: 2/3;
+  grid-column: 1/-1;
 }
 .userPicture {
   border: 1px solid black;
@@ -67,14 +65,18 @@
 .userImg {
   width: 100%;
   height: 100%;
+  max-width: 100%;
   border-radius: 999px;
   object-fit: cover;
 }
 .previewPostInfo {
-  grid-column: 2/3;
-  grid-row: 2/-1;
+  grid-column: 1/-1;
+  grid-row: 3/4;
   display: grid;
-  grid-template-rows: minmax(auto, 13rem) minmax(auto, 5rem) minmax(0, 1fr);
+  grid-template-rows: minmax(4rem, 5rem) minmax(auto, 5rem) minmax(auto, 3rem) minmax(
+      auto,
+      11.2rem
+    );
   padding: 0.4rem;
 }
 .previewPostDescription {
@@ -95,42 +97,63 @@
 .likes {
   font-weight: bold;
   padding: 0 0 0.5rem 0.3rem;
-  grid-row: 3/4;
+  grid-row: 2/3;
 }
 .buttons {
   padding: 0.5rem 0.7rem 0.5rem 0.7rem;
   display: flex;
   place-items: center;
-  grid-row: 2/3;
+  grid-row: 3/4;
   gap: min(1.3rem);
 }
 .commentSection {
-  grid-column: 2/3;
-  grid-row: 3;
+  grid-column: 1/-1;
+  grid-row: 4/5;
   overflow: hidden;
   width: 100%;
-  height: 100%;
+  height: 20vh;
 }
-@media (max-width: 768px) {
-  .modal {
-    height: 100%;
-    top: 0;
-  }
+.userPictureContainer {
+  grid-column: 1/-1;
+  grid-row: 1/2;
+}
+.postPicture {
+  grid-row: 2/3;
+  grid-column: 1/-1;
+}
+.previewPostInfo {
+  grid-row: 3/4;
+  grid-column: 1/-1;
+  grid-template-rows:
+    minmax(auto, 7rem) minmax(auto, 3rem) minmax(auto, 3rem)
+    minmax(auto, 1fr);
+}
+@media (min-width: 768px) {
   .content {
-    /* grid-template-rows: minmax(200px, 1fr) minmax(0, 1fr) minmax(0, 1fr);
-    grid-template-columns: minmax(0, 1fr); */
+    grid-template-columns: minmax(400px, 1fr) minmax(200px, 1fr);
+    grid-template-rows: minmax(0, 4rem) minmax(0, 1fr);
+    padding: 0;
+  }
+  .modal {
+    height: 85%;
+    width: 85%;
+    top: 5vh;
+    right: 12.5%;
   }
   .userPictureContainer {
-    grid-column: 1/-1;
+    grid-column: 2/3;
     grid-row: 1/2;
   }
   .postPicture {
-    grid-row: 2/3;
-    grid-column: 1/-1;
+    grid-row: 1/-1;
+    grid-column: 1/2;
   }
   .previewPostInfo {
-    grid-row: 3/4;
-    grid-column: 1/-1;
+    grid-row: 2/3;
+    grid-column: 2/3;
+    grid-template-rows:
+      minmax(auto, 13rem) minmax(auto, 5rem) minmax(auto, 3rem)
+      minmax(auto, 11.2rem);
   }
 }
 @media (max-width: 400px) {

@@ -35,6 +35,7 @@ function UserProfile() {
     setOpenPreview,
     fetchPost,
     userProfileFollows,
+    autoScroll,
   } = useProfile();
   const [selectedPost, setSelectedPost] = useState();
   const handlePost = async (post_id: number) => {
@@ -61,11 +62,7 @@ function UserProfile() {
     queryFn: async () => {},
   });
   // Sets selectedPost null, after closing modal
-  useEffect(() => {
-    if (!openPreview) {
-      setSelectedPost(null);
-    }
-  }, [openPreview]);
+  autoScroll();
   let { user_id } = useParams();
   const { data: userProfilePosts, isLoading: isUserProfilePostsLoading } =
     useQuery({
@@ -103,7 +100,7 @@ function UserProfile() {
           {/* result of request here */}
           <UserInfo
             postsNumber={userProfilePosts.length}
-            followers={userProfile?.followers.length}
+            followers={userProfile?.followers}
             following={userProfile?.following}
           />
           <UserBio desc={userProfilePosts?.post_description} />

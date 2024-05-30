@@ -17,9 +17,12 @@ import Policy from "../../policy/Policy";
 import { AuthContext, useAuth } from "../../store/AuthContext";
 import ProtectedRoute from "../Secret/ProtectedRoute";
 import PostProvider, { PostContext } from "../../store/PostContext";
+import { useProfile } from "../../store/UserProfile-context";
 
 const MainPage: React.FC = () => {
+  const { autoScroll } = useProfile();
   const { theme } = useTheme();
+  autoScroll();
   return (
     <Layout>
       <HeaderNavigation children={undefined} />

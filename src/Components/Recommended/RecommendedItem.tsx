@@ -13,8 +13,6 @@ const RecommendedItem: React.FC<RecommendedUserProps> = ({
   recommendedUserPhoto,
   recommendedUser,
   recommendedId,
-  handleFollowClick,
-  isFollowed,
 }) => {
   return (
     <>

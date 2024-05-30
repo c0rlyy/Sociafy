@@ -36,15 +36,16 @@ const Buttons: React.FC<ButtonsEventNamesAndFuncs> = ({
   eventButtonHandlerActionProp,
 }) => {
   const [likeStatus, setlikeStatus] = useState();
-  useEffect(() => {
-    console.log(like);
-  }, [like]);
+  // useEffect(() => {
+  //   console.log(like);
+  // }, [like]);
   const {
     buttonsState,
     likeButtonToggleHandler,
     shareButtonToggleHandler,
     commentButtonToggleHandler,
     isShareModalOpened,
+    eventButtonHandlerAction,
   } = usePost();
   useEffect(() => {
     console.log(isShareModalOpened);
@@ -56,7 +57,7 @@ const Buttons: React.FC<ButtonsEventNamesAndFuncs> = ({
       onClick={(e) => {
         const ActionButtonType = e.target.getAttribute("name");
         if (ActionButtonType) {
-          eventButtonHandlerActionProp(ActionButtonType, postId);
+          eventButtonHandlerAction(ActionButtonType, postId);
         }
       }}
     >

@@ -17,14 +17,14 @@ type postItemProps = {
   profileID: number;
   eventButtonHandler: () => void;
   userIMG: string;
-  username: string;
+  username: string ;
   // postFiles: postFiles[];
   likeState: boolean;
   commentState: boolean;
   shareState: boolean;
   postPhotos: string;
   postFilms: string;
-  userID: string;
+  userID: number,
   postLikes: number;
   postComments: string;
 };
@@ -59,9 +59,9 @@ const PostItem: React.FC<postItemProps> = ({
   //     return CountPostLikes;
   //   },
   // });
-  useEffect(() => {
-    console.log(`Is inView: ${inView}`);
-  }, [inView]);
+  // useEffect(() => {
+  //   console.log(`Is inView: ${inView}`);
+  // }, [inView]);
   return (
     <div
       ref={ref}
@@ -117,8 +117,13 @@ const PostItem: React.FC<postItemProps> = ({
 
           <h1>{`Likes: ${postLikes}`}</h1>
           <div>
-            <span className="text-bold flex gap-2">
-              {username}:<p>{postDESC}</p>
+            <span className={`text-bold flex gap-2`}>
+              {username}:
+              <p>
+                {postDESC.length > 30
+                  ? postDESC.slice(0, 25) + "..."
+                  : postDESC}
+              </p>
             </span>
             <span
               data-userid={userID}

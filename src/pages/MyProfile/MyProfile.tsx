@@ -2,7 +2,7 @@ import { useQueries, useQuery } from "@tanstack/react-query";
 import React, { SyntheticEvent, useEffect, useState } from "react";
 import Layout from "../../Components/Layout/Layout";
 import { UpdatedPosts } from "../../store/PostContext";
-import { useProfile } from "../../store/UserProfile-context";
+import { UpdatedPost, useProfile } from "../../store/UserProfile-context";
 import Loader from "../Loader/Loader";
 import ChooseImg from "../UserProfile/ChooseImg";
 import PostPreview from "../UserProfile/PostModal/PostPreview";
@@ -27,7 +27,7 @@ const MyProfile = (props: Props) => {
     userProfileFollows,
   } = useProfile();
   const handlePost = async (post_id: number) => {
-    const postID = post_id.target.getAttribute("data-id");
+    const postID = post_id.target.getAttribute("data-postid");
     console.log(postID);
 
     if (postID) {
@@ -41,6 +41,9 @@ const MyProfile = (props: Props) => {
       setSelectedPost(null);
     }
   }, [openPreview]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const { data: previewPost, isLoading: isProfilePostsLoading } = useQuery({
     queryKey: ["previewPost"],
     queryFn: async () => {
@@ -76,19 +79,6 @@ const MyProfile = (props: Props) => {
     },
     staleTime: 5000,
   });
-  const {
-    data: profileFollows,
-    isLoading: isFollowsLoading,
-    isError: isFollowError,
-  } = useQuery({
-    queryKey: ["follows"],
-    queryFn: async () => {
-      const UserProfileFollows = await userProfileFollows(
-        userProfile?.profile.profile_id,
-      );
-      return UserProfileFollows;
-    },
-  });
   return (
     <Layout>
       {userLoading ? (
@@ -115,13 +105,13 @@ const MyProfile = (props: Props) => {
               {userProfile?.username}
             </h1>
             {/* result of request here */}
-            {isFollowsLoading ? (
+            {isUserProfileLoading ? (
               <LineWave color="blue" />
             ) : (
               <UserInfo
                 postsNumber={userData?.length}
-                followers={isFollowError ? 0 : userProfile.followers.length}
-                following={isFollowError ? 0 : userProfile.followed.length}
+                followers={userProfile?.followers.length}
+                following={userProfile?.followed.length}
               />
             )}
             <UserBio desc={userData?.post_description} />
@@ -151,20 +141,26 @@ const MyProfile = (props: Props) => {
                 </h1>
               )}
               {openPreview &&
-                previewPost?.map((post) => (
+                previewPost?.map((post: UpdatedPost) => (
                   <PostPreview
-                    key={post?.post_id}
-                    postID={post?.post_id}
-                    userID={post?.profile_id}
+                    key={selectedPost}
+                    postIMAGEID={0}
+                    postID={selectedPost as number}
+                    userID={post?.user_id}
                     profileID={post?.profile_id}
                     postDESCRIPTION={post?.post_description}
                     postIMAGE={post?.post_photo}
                     isOpened={openPreview}
-                    profileIMAGE={userProfile?.profile_picture}
+                    postFILMS={post?.post_film?.fileUrl}
+                    profileIMAGE={post?.profile_picture}
                     postTITLE={post?.post_title}
+                    profileUSERNAME={post.username}
                     profileFILM={post?.post_film}
-                    profileUSERNAME={post?.username}
-                    postLikes={post?.post_likes}
+                    postLikes={post?.post_likes?.post_likes_count}
+                    postComments={post?.post_comments}
+                    eventButtonHandler={(action) =>
+                      eventButtonHandlerAction(post.post_id, action)
+                    }
                   />
                 ))}
             </div>

@@ -18,7 +18,7 @@ const CommentItem: React.FC<CommentProps> = ({ profile, comment_content }) => {
         </picture>
         <p className="text-sm">{comment_content}</p>
       </div>
-    </div>
+  </div>
   );
 };
 

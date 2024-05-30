@@ -7,9 +7,10 @@ import Comments from "../../../Components/Post/Comments/Comments";
 import CreateComment from "../../../Components/Post/Comments/CreateComment/CreateComment";
 import Post from "../../../Components/Post/PostLayout/Post";
 import PostModal from "../../../Components/Post/PostModal/PostModal";
+import { usePost } from "../../../store/PostContext";
 import { useProfile } from "../../../store/UserProfile-context";
 import { UserProfilePostProps } from "../UserPosts";
-
+import usePreventScroll from "../../../Hooks/usePreventScroll";
 const PostPreview: React.FC<UserProfilePostProps> = ({
   postDESCRIPTION,
   postIMAGE,
@@ -26,7 +27,10 @@ const PostPreview: React.FC<UserProfilePostProps> = ({
   likeStatePreview,
   shareStatePreview,
   commentStatePreview,
+  isOpened,
 }) => {
+  const { buttonsState } = usePost();
+  usePreventScroll(isOpened);
   return (
     <PreviewModal>
       <picture className={PostPreviewModal.postPicture}>
@@ -66,7 +70,7 @@ const PostPreview: React.FC<UserProfilePostProps> = ({
             comment={"comment"}
             share={"share"}
             eventButtonClick={(post_id, action) =>
-              eventButtonHandler(post_id, action)
+              eventButtonHandler(postID, action)
             }
             postId={postID}
             likeStateProp={likeStatePreview}
@@ -78,6 +82,10 @@ const PostPreview: React.FC<UserProfilePostProps> = ({
         <div className={PostPreviewModal.likes}>
           <span>Likes:{postLikes}</span>
         </div>
+        {buttonsState?.[postID]?.isCreateCommentOpened && (
+          <CreateComment userProfileImage={profileIMAGE} postID={postID} />
+        )}
+        <Comments post_comments={postComments} />
       </aside>
     </PreviewModal>
   );

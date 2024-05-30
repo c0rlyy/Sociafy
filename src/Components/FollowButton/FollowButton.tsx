@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useProfile } from "../../store/UserProfile-context";
 
 type Props = {};
-const FollowButton = ({ profileID }: { profileID: number }) => {
+const FollowButton = ({ profileID }: { profileID: number | null }) => {
   const { followedProfiles, followUserHandler } = useProfile();
   //   const [isUserFollowed, setIsUserFollowed] = useState(false);
   //   const isUserFollowed=()=>{
@@ -20,6 +20,7 @@ const FollowButton = ({ profileID }: { profileID: number }) => {
       <Button
         onClick={() => followUserHandler(profileID)}
         className="col-[2/3] row-[3] w-1/4 self-start bg-blue-400"
+        style={{ padding: 8 }}
         variant={`${followedProfiles[profileID]?.isFollowed ? "outlined" : "contained"}`}
       >
         {followedProfiles[profileID]?.isFollowed ? "Followed" : "Follow"}

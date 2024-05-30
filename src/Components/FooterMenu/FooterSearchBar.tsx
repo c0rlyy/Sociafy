@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoMdClose } from "react-icons/io";
+import { useProfile, UserPosts } from "../../store/UserProfile-context";
 import SearchedUser from "./SearchedUser/SearchedUser";
 const SearchForm = ({
   setOpenedSearchFuncProp,
@@ -28,33 +29,61 @@ const SearchForm = ({
       picture_id: number | null;
     };
   };
+
   const { register, handleSubmit } = useForm();
   const ref = useRef(null);
   const [searched, setSearched] = useState();
-  const controllerRef = useRef<AbortController>();
+  const searchPosts = async (url: string): Promise<UserPosts[] | undefined> => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(
+          `Failed to search posts: ${response.status}: ${response.statusText}`,
+        );
+      }
+      const searchedPosts: UserPosts[] = await response.json();
+      return searchedPosts;
+    } catch (error: any) {
+      console.error(`Error in searchPosts: ${error?.message}`);
+    }
+  };
+
   const fetchUsers = async (
     searchTerm: string | null,
   ): Promise<UpdatedSearchUser[] | undefined> => {
     try {
       let url = `http://localhost:8000/api/v1/users`;
+
       if (searchTerm) {
-        url = `http://localhost:8000/api/v1/search/users?q=${searchTerm}&skip=0&limit=100`;
+        if (searchTerm.startsWith("#")) {
+          url = `http://localhost:8000/api/v1/search/posts?q=${searchTerm.slice(1, searchTerm.length)}&skip=0&limit=100`;
+          const searchedPost = await searchPosts(url);
+          console.log(searchedPost);
+          return searchedPost as unknown as UpdatedSearchUser[];
+        } else {
+          url = `http://localhost:8000/api/v1/search/users?q=${searchTerm}&skip=0&limit=5`;
+          const response = await fetch(url);
+          if (!response.ok) {
+            throw new Error(
+              `Failed to search users: ${response.status}: ${response.statusText}`,
+            );
+          }
+          const data: SearchedUserProp[] = await response.json();
+          return await updatedSearchedUser(data);
+        }
       }
-      if (searchTerm?.slice(0) === "#") {
-        url = `http://localhost:8000/api/v1/search/posts?q=${searchTerm.slice(1, searchTerm.length)}&skip=0&limit=100`;
-      }
+
+      // Fetch default users if no search term is provided
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(
-          `HTTP Failed to searchedUser: ${response.status}: ${response.statusText}`,
+          `Failed to fetch users: ${response.status}: ${response.statusText}`,
         );
       }
-      const data: SearchedUserProp[] = await response.json();
-      if (data) {
-        return await updatedSearchedUser(data);
-      }
-    } catch (error) {
-      console.log(error);
+      const users: UpdatedSearchUser[] = await response.json();
+      return users;
+    } catch (error: any) {
+      console.error(`Error in fetchUsers: ${error?.message}`);
     }
   };
 
@@ -109,8 +138,8 @@ const SearchForm = ({
   const onSubmit = async (formData: any) => {
     try {
       setSearched(ref.current.value);
-      const searchedUsers = await fetchUsers(formData.q);
-      console.log("Searched Users:", searchedUsers);
+      const searchedUsers = await fetchUsers(searched);
+      console.log("Searched Users:", searched);
     } catch (error) {
       console.error("Error while searching users:", error);
       return null;
@@ -140,18 +169,19 @@ const SearchForm = ({
       <h1 className=" text-2xl font-bold">Search</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <input
-          className="w-3/4 border border-slate-500 align-middle text-black  "
+          className="w-full border border-slate-500 align-middle text-black  "
           ref={ref}
         />
       </form>
       <div className="flex h-full flex-col gap-5">
         {users && users.length > 0 ? (
-          users.map((result, index) => (
+          users.map((result) => (
             <SearchedUser
-              key={result.user_id}
-              userId={result.user_id}
+              key={result?.user_id}
+              userId={result?.user_id}
               userImage={result?.profile_pic}
-              userName={result.username}
+              userName={result?.username}
+              postName={result?.post_title}
             />
           ))
         ) : (

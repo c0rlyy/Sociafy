@@ -11,9 +11,10 @@ export type CurrentUserProfilePosts = {
   post_files: [] | PostFilesProps[];
   post_photo: "";
 };
+const countPosts=()
 const FetchMyPosts = async ({
   params,
-}): Promise<CurrentUserProfilePosts | null> => {
+}): Promise<CurrentUserProfilePosts[] | null> => {
   try {
     const resp = await fetch(
       `http://localhost:8000/posts/me?skip=0&limit=100`,

@@ -36,6 +36,7 @@ const RegisterForm: React.FC<RegisterState> = () => {
   const onRegisterSubmit = async (data: loginForm) => {
     try {
       const token = await registerAction(data);
+
       if (token) {
         console.log("Wstaje rano ale nie do pracy");
         return navigate("/MainPage");

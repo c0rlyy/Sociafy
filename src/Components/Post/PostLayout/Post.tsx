@@ -18,7 +18,6 @@ import { UpdatedPost, useProfile } from "../../../store/UserProfile-context";
 const Post: React.FC<CurrentUserPost> = () => {
   const {
     receivePostPicture,
-    likePost,
     openPreview,
     setOpenPreview,
     fetchPost,
@@ -32,7 +31,8 @@ const Post: React.FC<CurrentUserPost> = () => {
     };
   }>({});
   const { fetchMe } = useProfile();
-  const [selectedPost, setSelectedPost] = useState();
+  const [selectedPost, setSelectedPost] = useState<number>();
+  const [previewPost, setPreviewPost] = useState<UpdatedPost[]>();
   const { data: postsData, isLoading: pictureLoading } = useQuery({
     queryKey: ["posts"],
     queryFn: async () => {
@@ -51,35 +51,26 @@ const Post: React.FC<CurrentUserPost> = () => {
       return UserProf;
     },
   });
-  const { data: previewPost, isLoading: isProfilePostsLoading } = useQuery({
-    queryKey: ["previewPost"],
-    queryFn: async () => {
-      if (selectedPost) {
-        const post = await fetchPost(selectedPost);
-        console.log(post);
-        return post;
-      }
-    },
-    enabled: !!selectedPost,
-  });
   useEffect(() => {
     console.log(buttonsState);
   }, [buttonsState]);
   // HandlePostForPreview
-  const handlePost = (post_id: MouseEvent<HTMLDivElement>) => {
+  const handlePost = async (post_id: MouseEvent<HTMLDivElement>) => {
     const Comment = post_id.target.getAttribute("data-postid");
     if (Comment) {
       console.log(Comment);
-      console.log(selectedPost);
       setSelectedPost(Comment);
       setOpenPreview(true);
+      console.log(selectedPost);
+      const previewPost = await fetchPost(Comment);
+      setPreviewPost(previewPost);
     }
   };
   const { eventButtonHandlerAction } = usePost();
 
   useEffect(() => {
-    if (!openPreview) {
-      setSelectedPost(null);
+    if (openPreview) {
+      console.log(openPreview);
     }
   }, [openPreview]);
 
@@ -122,9 +113,9 @@ const Post: React.FC<CurrentUserPost> = () => {
                   postTITLE={post?.post_title}
                   postID={post?.post_id}
                   postDESC={post?.post_title}
-                  profileID={post?.post_id}
+                  profileID={post?.profile_id}
                   userIMG={post?.profile_picture}
-                  username={post?.username}
+                  username={post?.username as string}
                   postPhotos={post?.post_photo}
                   postFilms={post?.post_film?.fileUrl}
                   postLikes={post?.likes?.post_likes_count}
@@ -134,31 +125,32 @@ const Post: React.FC<CurrentUserPost> = () => {
                   profilePicture={UserProfile?.profile_picture}
                 />
               ))}
-          {previewPost?.map((post) => (
-            <PostPreview
-              key={selectedPost}
-              postIMAGEID={0}
-              postID={selectedPost}
-              userID={post?.User_ID}
-              profileID={post?.Profile_ID}
-              postDESCRIPTION={post?.Post_Description}
-              postIMAGE={post?.Post_Photo}
-              isOpened={openPreview}
-              postFILMS={post?.Post_Film}
-              profileIMAGE={post?.Post_Photo}
-              postTITLE={post?.Post_Title}
-              profileUSERNAME={post.Username}
-              likeStatePreview={buttonsState.likeState}
-              shareStatePreview={buttonsState.shareState}
-              commentStatePreview={buttonsState.commentState}
-              profileFILM={post?.Post_Film}
-              postLikes={post?.post_likes}
-              postComments={post?.PostComments}
-              eventButtonHandler={(post, action) =>
-                eventButtonHandlerAction(post.Post_ID, action)
-              }
-            />
-          ))}
+          {openPreview &&
+            previewPost?.map((post: UpdatedPost) => (
+              <PostPreview
+                key={selectedPost}
+                postIMAGEID={0}
+                postID={selectedPost as number}
+                userID={post?.user_id}
+                profileID={post?.profile_id}
+                postDESCRIPTION={post?.post_description}
+                postIMAGE={post?.post_photo}
+                isOpened={openPreview}
+                postFILMS={post?.post_film?.fileUrl}
+                profileIMAGE={post?.profile_picture}
+                postTITLE={post?.post_title}
+                profileUSERNAME={post.username}
+                likeStatePreview={buttonsState.likeState}
+                shareStatePreview={buttonsState.shareState}
+                commentStatePreview={buttonsState.commentState}
+                profileFILM={post?.post_film}
+                postLikes={post?.post_likes?.post_likes_count}
+                postComments={post?.post_comments}
+                eventButtonHandler={(action) =>
+                  eventButtonHandlerAction(post.post_id, action)
+                }
+              />
+            ))}
         </div>
       </div>
     </>

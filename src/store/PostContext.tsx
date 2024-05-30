@@ -85,19 +85,16 @@ export type UpdatedPosts = {
   post_film: string;
   profile_picture: string;
   post_likes: number;
+  post_comments: ReadComments[];
 };
 export type ReadComments = {
-  post_id: number;
+  username: string;
+  user_id: number;
   profile_id: number;
+  profile_description: string | null;
+  profile_picture_id: number | null;
+  post_id: number;
   comment_content: string;
-  profile: {
-    picture_id: number;
-    description: string;
-    profile_picture: string | null;
-    user: {
-      user_name: string;
-    };
-  };
 };
 type ButtonsState = {
   [postId: number]: {
@@ -286,7 +283,7 @@ function PostsProvider({ children }: { children: ReactNode }) {
   ): Promise<UpdatedPost[] | undefined> => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/posts/${post_id}`,
+        `http://localhost:8000/api/v1/posts/${postID}`,
       );
       if (!response.ok) {
         throw new Error(
@@ -299,29 +296,31 @@ function PostsProvider({ children }: { children: ReactNode }) {
           userPost.post_files.map(async (post_file) => {
             const postFile = await postFileRetriver(post_file.file_id);
             const user = await userPostFetch(userPost.user_id);
-            const postLikes = await countPostLikes(post_id);
+            const postLikes = await countPostLikes(postID);
             const userPhoto = await postFileRetriver(user.profile.picture_id);
-            const postComments = await readPostComments(post_id);
+            const postComments = await readPostComments(postID);
             const UserPost = {
-              Post_ID: userPost.post_id,
-              Post_Description: userPost.post_description,
-              Post_Title: userPost.post_title,
-              Profile_ID: userPost.profile_id,
-              User_ID: userPost.user_id,
-              Username: user?.user_name,
-              UserPicture: userPhoto,
-              PostLikes: postLikes,
-              PostComments: postComments,
+              post_id: userPost.post_id,
+              post_description: userPost.post_description,
+              post_title: userPost.post_title,
+              profile_id: userPost.profile_id,
+              user_id: userPost.user_id,
+              username: user?.user_name,
+              profile_picture: userPhoto,
+              post_likes: {
+                post_likes_count: postLikes?.post_likes_count,
+              },
+              post_comments: postComments,
             };
             if (post_file.file_type === "mp4") {
               return {
                 ...UserPost,
-                Post_Film: postFile,
+                post_film: postFile,
               };
             } else {
               return {
                 ...UserPost,
-                Post_Photo: postFile,
+                post_photo: postFile,
               };
             }
           }),
@@ -485,18 +484,16 @@ function PostsProvider({ children }: { children: ReactNode }) {
         const updatedComments = Promise.all(
           comments.map(async (comment: ReadComments) => {
             const updatedCommentObj = {
-              post_id: comment.post_id,
-              profile_id: comment.profile_id,
-              comment_content: comment.comment_content,
+              username: comment?.username,
+              profile_id: comment?.profile_id,
+              comment_content: comment?.comment_content,
+              post_id: comment?.post_id,
               profile: {
-                picture_id: comment.profile.picture_id,
-                description: comment.profile.description,
+                picture_id: comment?.profile_picture_id,
+                description: comment?.profile_description,
                 profile_picture: await postFileRetriver(
-                  comment.profile.picture_id,
+                  comment?.profile_picture_id,
                 ),
-                user: {
-                  user_name: comment.profile.user.user_name,
-                },
               },
             };
             return updatedCommentObj;
@@ -510,7 +507,7 @@ function PostsProvider({ children }: { children: ReactNode }) {
   };
   const createComment = async (
     post_id: number,
-    body: string,
+    body: { comment_content: string },
   ): Promise<createdComment | null | undefined> => {
     try {
       const response = await fetch(
@@ -518,11 +515,10 @@ function PostsProvider({ children }: { children: ReactNode }) {
         {
           method: "POST",
           headers: {
-            Authentication: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-          body: new URLSearchParams({
-            comment_content: body,
-          }),
+          body: JSON.stringify(body),
         },
       );
       if (!response.ok) {
@@ -531,6 +527,8 @@ function PostsProvider({ children }: { children: ReactNode }) {
         );
       }
       const comment: createdComment = await response.json();
+      console.log(comment);
+
       if (comment) {
         return comment;
       }

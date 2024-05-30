@@ -5,11 +5,12 @@ import React, {
   useContext,
   SetStateAction,
   Dispatch,
+  useEffect,
 } from "react";
 import { useParams } from "react-router-dom";
 import { CurrentUserPostProps } from "../pages/Fetch/fetchPosts";
 import { useAuth } from "./AuthContext";
-import { UpdatedPosts, usePost } from "./PostContext";
+import { ReadComments, UpdatedPosts, usePost } from "./PostContext";
 
 // Define types
 
@@ -32,6 +33,8 @@ export type User = {
     picture_id: string | null;
   };
   profile_picture: string | null;
+  followers: Followers[];
+  followed: Followed[];
 };
 export type UserProfile = {
   profile_id: string;
@@ -91,6 +94,7 @@ type UserProfileContextType = {
   setFollowedProfiles: React.Dispatch<SetStateAction<FollowsState>>;
   followedProfiles: FollowsState;
   delay: (ms: number) => Promise<void>;
+  autoScroll: () => void;
 };
 export type UserPosts = {
   post_title: string;
@@ -106,13 +110,40 @@ export type UserPosts = {
     },
   ];
 };
-export type Followers = User[];
+export type Followers = {
+  username: string;
+  user_id: string;
+  profile_description: string | null;
+  picture_id: number | null;
+  profile_id: number;
+  follows_profile_id: number;
+};
+export type Followed = {
+  username: string;
+  user_id: number;
+  profile_description: null | string;
+  picture_id: number;
+  profile_id: number;
+  follower_id: number;
+};
 export type UpdatedPost = {
-  post_title: string;
-  post_description: string;
   post_id: string;
-  profile_id: string;
-  post_picture: string;
+  post_description: string;
+  post_title: string;
+  profile_id: number;
+  user_id: number;
+  profile_picture: string;
+  username: string;
+  post_likes: {
+    post_likes_count: number;
+  };
+  post_photo: string;
+  post_film: {
+    fileId: number;
+    fileUrl: string;
+    filePath: string;
+  };
+  post_comments: ReadComments[];
 };
 type UserProfileFollows = {
   followers: number;
@@ -258,7 +289,6 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error(error?.message);
     }
   };
-
   const getUserProfilePicUrl = async (
     pictureId: string,
   ): Promise<string | null> => {
@@ -302,19 +332,18 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       console.log(`getUser: ${user}`);
       if (user) {
         const updatedProfilePic = await getUserProfilePicUrl(
-          user.profile.picture_id,
+          user?.profile.picture_id,
         );
-        const UserFollows = await userProfileFollows(user.profile.profile_id);
         const UserProfileFollowers = await readUserFollowers(
-          user.profile.profile_id,
+          user?.profile.profile_id,
         );
         const UserProfileFollowed = await readUserFollowed(
-          user.profile.profile_id,
+          user?.profile.profile_id,
         );
         return {
           ...user,
           profile_picture: updatedProfilePic,
-          followers: UserProfileFollowers,
+          followers: UserProfileFollowers?.length,
           following: UserProfileFollowed?.length,
         };
       }
@@ -365,10 +394,10 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       // Avoid logging sensitive information like access tokens
       console.log("Data from fetchMe:", responseData);
       if (responseData) {
-        const MyProfileFollows = readUserFollowers(
+        const MyProfileFollows = await readUserFollowers(
           responseData.profile.profile_id,
         );
-        const MyProfileFollowings = readUserFollowed(
+        const MyProfileFollowings = await readUserFollowed(
           responseData.profile.profile_id,
         );
         const updatedProfile = {
@@ -387,6 +416,11 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       console.log("Error fetching data:", error?.message);
       throw error; // Rethrow the error so the calling component can handle it
     }
+  };
+  const autoScroll = () => {
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
   };
   // userProfileFollows
   const userProfileFollows = async (
@@ -411,7 +445,9 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error(error?.message);
     }
   };
-  const readUserFollowers = async (profile_id: number) => {
+  const readUserFollowers = async (
+    profile_id: number,
+  ): Promise<Followers[] | undefined> => {
     try {
       const response = await fetch(
         `http://localhost:8000/api/v1/follows/profile-followers/${profile_id}`,
@@ -421,7 +457,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
           `Failed to fetch followers: ${response.status}: ${response.statusText}`,
         );
       }
-      const Followers: User[] = await response.json();
+      const Followers: Followers[] = await response.json();
       if (Followers) {
         return Followers;
       }
@@ -429,7 +465,9 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       console.error(error?.message);
     }
   };
-  const readUserFollowed = async (profile_id: number) => {
+  const readUserFollowed = async (
+    profile_id: number,
+  ): Promise<Followed[] | undefined> => {
     try {
       const response = await fetch(
         `http://localhost:8000/api/v1/follows/profile-followed/${profile_id}`,
@@ -439,7 +477,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
           `Failed to fetch followers: ${response.status}: ${response.statusText}`,
         );
       }
-      const Followers: User[] = await response.json();
+      const Followers: Followed[] = await response.json();
       if (Followers) {
         return Followers;
       }
@@ -488,6 +526,45 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     } catch (error: any) {
       console.error(error);
+    }
+  };
+  const readPostComments = async (
+    post_id: number,
+  ): Promise<ReadComments[] | undefined> => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/comment/post/${post_id}`,
+      );
+      if (!response.ok) {
+        throw Error(
+          `Failed to fetch PostComments: ${response.status}: ${response.statusText}`,
+        );
+      }
+      const comments: ReadComments[] = await response.json();
+      console.log(comments);
+      if (comments) {
+        const updatedComments = Promise.all(
+          comments.map(async (comment: ReadComments) => {
+            const updatedCommentObj = {
+              username: comment?.username,
+              profile_id: comment?.profile_id,
+              comment_content: comment?.comment_content,
+              post_id: comment?.post_id,
+              profile: {
+                picture_id: comment?.profile_picture_id,
+                description: comment?.profile_description,
+                profile_picture: await getUserProfilePicUrl(
+                  comment?.profile_picture_id,
+                ),
+              },
+            };
+            return updatedCommentObj;
+          }),
+        );
+        return updatedComments;
+      }
+    } catch (error: any) {
+      console.error(error?.message);
     }
   };
   const countPosts = (posts: UserPosts[]) => {
@@ -574,11 +651,16 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
       }
       const userPost: UserPosts = await response.json();
       if (userPost) {
-        const updatedPic: UpdatedPost[] = await Promise.all(
+        const updatedPic: UpdatedPost = await Promise.all(
           userPost.post_files.map(async (post_file) => {
             const postFile = await getUserProfilePicUrl(post_file.file_id);
             const UserPostLikes = await countPostLikes(userPost.post_id);
             const user = await userPostFetch(userPost.user_id);
+            const postComments = await readPostComments(userPost.post_id);
+            const userPhoto = await getUserProfilePicUrl(
+              user.profile.picture_id,
+            );
+
             const UserPost = {
               post_id: userPost.post_id,
               post_description: userPost.post_description,
@@ -586,7 +668,11 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
               profile_id: userPost.profile_id,
               user_id: userPost.user_id,
               username: user?.user_name,
-              post_likes: UserPostLikes.post_likes_count,
+              profile_picture: userPhoto,
+              post_likes: {
+                post_likes_count: UserPostLikes?.post_likes_count,
+              },
+              post_comments: postComments,
             };
             if (post_file.file_type === "mp4") {
               return {
@@ -701,6 +787,7 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({
         followedProfiles,
         setFollowedProfiles,
         delay,
+        autoScroll,
       }}
     >
       {children}

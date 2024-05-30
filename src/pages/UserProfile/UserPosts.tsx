@@ -46,6 +46,7 @@ const UserPosts: React.FC<UserProfilePostProps> = ({
           className={userProfile.profile__image_film}
           src={postIMAGE}
           alt=""
+          data-postid={postID}
         />
       )}
       {postFILMS && (
