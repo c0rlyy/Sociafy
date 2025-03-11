@@ -4,21 +4,21 @@
   position: relative;
 }
 .loginForm {
-  display: grid;
-  grid-template-rows: minmax(0, 20ch) minmax(0, 1fr) minmax(0, 5ch);
+    padding:2rem;
+    display: flex;
+    flex-direction: column;
+    gap:.5rem;
+    width: 100%;
 }
 .logoContainer {
-  width: 100%;
+  width: 400px;
+  height:75px;
   align-self: center;
+
 }
-.logo {
-  grid-row: 1/2;
-  place-self: center;
-}
-.inputs {
-  grid-row: 2 / 3;
-  justify-self: center;
-  align-self: center;
+.logo{
+    width:100%;
+    height:100%;
 }
 .login::before {
   position: absolute;
@@ -30,36 +30,39 @@
   width: 100%;
   height: 100%;
 }
-/* label {
-  position: absolute;
+label {
   pointer-events: none;
-  left: 10px;
-  padding-bottom: 10px;
-  transform: translateY(10px);
-  line-height: 6px;
-  transition: all ease-out 0.1s;
-  font-size: 14px;
+  position: absolute;
+  left: 0;
+  transform: translateY(5px);
+  transition: all ease-in 200ms;
+
+  font-size: 1.5px;
   color: #999;
   padding-top: 2px;
   z-index: 10000;
-} */
+}
 .loginField {
   margin: 10px 0;
   position: relative;
-  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap:15px;
+  font-size: 12px;
   text-overflow: ellipsis;
-  place-self: center;
-}
-/* label final position */
-/* input:not(:placeholder-shown) + label {
-  transform: translateY(0);
-  font-size: 11px;
-} */
 
-/* input padding increases if placeholder is not shown */
-/* input:not(:placeholder-shown) {
-  padding-top: 23px;
-  padding-bottom: 10px;
+
+}
+input:not(:placeholder-shown) + label {
+    transform: translateY(-5px);
+    font-size: 14px;
+    transition: all ease-in 200ms;
+
+}
+
+input:not(:placeholder-shown) {
+  padding-top: 24px;
+  padding-bottom: 4px;
 }
 
 input::placeholder {
@@ -67,20 +70,19 @@ input::placeholder {
 }
 input::placeholder {
   visibility: hidden;
-} */
+}
 
 /* hiding  placeholder in mozilla */
-/* input::-moz-placeholder,
+input::-moz-placeholder,
 textarea::-moz-placeholder {
   color: transparent;
-} */
+}
 .loginInput {
-  padding: 0.5rem 1rem;
-  font-size: 12px;
-  outline: none;
+    padding: 0.75rem 1rem;
+    width: 100%;
+  font-size: 1.125rem;
   border-radius: 3px;
   border-bottom: 1px solid #efefef;
-  background-color: #f3f4f6;
 }
 .loginInput:focus {
   outline: none;
@@ -89,10 +91,8 @@ textarea::-moz-placeholder {
   display: grid;
   place-self: center;
   width: 100%;
-  border: 1px solid black;
   text-decoration: none;
   background: #04aa6d; /* Green */
-  border: 1px solid black;
   color: black;
   padding: 15px 32px;
   text-align: center;
@@ -105,6 +105,4 @@ textarea::-moz-placeholder {
   height: 1px;
   width: 40%;
   background-color: #dbdbdb;
-}
-.loginButtonsContainer {
 }

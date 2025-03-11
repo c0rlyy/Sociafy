@@ -3,7 +3,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-input {
-  vertical-align: initial;
-}

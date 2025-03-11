@@ -8,11 +8,11 @@ TODO: Post
  TODO:Funkcje dla like,comment, share
     1. Jesli pojawi się event (like/share/comment) wykonac odpowiednia funkcje
     2. Funkcja eventButtonHandler(event)
-    3. 
+    3.
 
 
 
-TODO: Security: 
+TODO: Security:
 1. Do MainPage mozna dostac sie przez url
 2. Po zamknięciu kart usunac token z LS,(window=>beforeunload w useEffect)
 
@@ -24,7 +24,7 @@ TODO: Errory
 1. LoginForm/RegisterForm(Deleted States and added useForm )- OPTYMALIZACJA
 2. UserProfileContext and PostContext
 3. AuthContext
-4. React Querying 
+4. React Querying
 5. Protected Routes
 6. Post Preview
 
@@ -35,4 +35,8 @@ Likes
 4. Jesli kliknieto w button, to +=1 do posta
 5. Przetrzymywac state dla posta
 6. User nie moze drugi raz polajkowac posta, jezeli juz to zrobił
-7. 
+7.
+
+FIX:
+1. Disabled button for sign-in page processing users credentials
+2. Sign up should be a modal window
