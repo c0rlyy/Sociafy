@@ -6,21 +6,11 @@ import LandingPage from "./pages/LandingPage/LandingPage";
 import MainPage from "./pages/MainPage/MainPage";
 // import styled, { ThemeProvider } from "styled-components";
 // import { useState } from "react";
-import RegisterForm, {
-  registerAction,
-} from "./pages/Forms/SignUp/RegisterForm";
-// import useLoading from "./customHooks/useLoading";
-// import Loader from "./pages/Loader";
+import RegisterForm from "./pages/Forms/SignUp/RegisterForm";
 import UserProfile from "./pages/UserProfile/UserProfile";
-import fetchPosts from "./pages/Fetch/fetchPosts";
-import SignUp from "./pages/SignUp/SignUp";
 import ThemeProvider from "./store/themeContext";
-import fetchMe from "./pages/Fetch/fetchMe";
-import FetchMyPosts from "./pages/Fetch/fetchMyPosts";
-
 import { AuthProvider, useAuth } from "./store/AuthContext";
 import ProtectedRoute from "./pages/Secret/ProtectedRoute";
-import User from "./Components/FooterMenu/User";
 import PostsProvider from "./store/PostContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import UserProfileProvider from "./store/UserProfile-context";
@@ -29,20 +19,7 @@ import Settings from "./pages/Settings/Settings";
 import ChangeEmail from "./pages/Settings/ChangeEmail/ChangeEmail";
 import ChangeUsername from "./pages/Settings/ChangeUsername/ChangeUsername";
 import ChangePassword from "./pages/Settings/ChangePassword/ChangePassword";
-
-// import { loginAction } from "./pages/Forms/LoginForm/loginAction";
 function App() {
-  // useEffect(() => {
-  //   const removeTokenOnUnload = () => {
-  //     return localStorage.removeItem("access_token");
-  //   };
-  //   window.addEventListener("beforeunload", removeTokenOnUnload);
-
-  //   return () => {
-  //     window.removeEventListener("beforeunload", removeTokenOnUnload);
-  //   };
-  // }, []);
-  const { loginAction } = useAuth();
   const queryClient = new QueryClient();
   const router = createBrowserRouter([
     {
@@ -54,7 +31,7 @@ function App() {
       element: <RegisterForm />,
     },
     {
-      path: "/MainPage",
+      path: "/home",
       element: (
         <ProtectedRoute>
           <MainPage />

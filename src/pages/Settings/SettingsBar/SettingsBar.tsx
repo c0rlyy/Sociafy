@@ -11,7 +11,6 @@ import { useAuth } from "../../../store/AuthContext";
 const SettingsBar = (props: Props) => {
   const ref = useRef(null);
   const handleChange = () => {
-    console.log(ref.current);
   };
   const { logoutHandler } = useAuth();
   return (

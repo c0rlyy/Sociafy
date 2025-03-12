@@ -10,8 +10,6 @@ import {
   useEffect,
 } from "react";
 import PostOverlay from "../FooterMenu/AddPostOverlay.module.css";
-import useMe from "../../Hooks/useMe";
-import { redirect } from "react-router-dom";
 import { useMediaQuery } from "react-responsive";
 import { useProfile } from "../../store/UserProfile-context";
 import { useQuery } from "@tanstack/react-query";
@@ -24,7 +22,7 @@ type addPostStateProps = {
   textData: null | string;
 };
 // Adding Post Logic
-const AddPost: React.FC<AddPostType> = ({ onClose }: { onClose: () => {} }) => {
+const AddPost: React.FC<AddPostType> = ({ onClose }) => {
   const [addPostState, setAddPostState] = useState<addPostStateProps>({
     images: [],
     textData: "",
@@ -37,7 +35,7 @@ const AddPost: React.FC<AddPostType> = ({ onClose }: { onClose: () => {} }) => {
   const fileRef = useRef<HTMLInputElement>(null);
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = event.target.files;
-    console.log(selectedFiles);
+
     if (selectedFiles) {
       setIsSelected(true);
       const fileReader = new FileReader();
@@ -53,8 +51,6 @@ const AddPost: React.FC<AddPostType> = ({ onClose }: { onClose: () => {} }) => {
     }
   };
   useEffect(() => {
-    console.log(addPostState.images);
-    console.log(isSelected);
   }, [isSelected]);
   const handleClick: React.MouseEventHandler<HTMLButtonElement> = () => {
     fileRef.current?.click();
@@ -191,7 +187,6 @@ const addPostFetch = async (formData: FormData) => {
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
   await delay(4000);
-  console.log(formData);
   try {
     const response = await fetch(
       "http://localhost:8000/api/v1/posts/create-optional-file",
@@ -207,12 +202,10 @@ const addPostFetch = async (formData: FormData) => {
       throw new Error("Your post cannot be added");
     }
     const data = await response.json();
-    console.log(data);
     if (data) {
       return true;
     }
   } catch (error) {
-    console.log(error);
   }
 };
 export default AddPost;

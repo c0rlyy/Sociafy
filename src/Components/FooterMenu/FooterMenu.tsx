@@ -37,8 +37,6 @@ function FooterMenu({ openedSearch, openedSearchHandler }) {
         }
         const data = await response.json();
         if (data && data.profile && data.profile.picture_id !== null) {
-          // console.log(typeof data.profile.picture_id);
-          // console.log(data.profile.picture_id);
           setPictureId(data.profile.picture_id);
         }
       } catch (error) {

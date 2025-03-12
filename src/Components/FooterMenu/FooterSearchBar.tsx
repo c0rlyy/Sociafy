@@ -58,7 +58,6 @@ const SearchForm = ({
         if (searchTerm.startsWith("#")) {
           url = `http://localhost:8000/api/v1/search/posts?q=${searchTerm.slice(1, searchTerm.length)}&skip=0&limit=100`;
           const searchedPost = await searchPosts(url);
-          console.log(searchedPost);
           return searchedPost as unknown as UpdatedSearchUser[];
         } else {
           url = `http://localhost:8000/api/v1/search/users?q=${searchTerm}&skip=0&limit=5`;

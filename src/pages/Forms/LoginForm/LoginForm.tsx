@@ -1,11 +1,15 @@
-import login from "../LoginForm/LoginForm.module.css";
+import loginCSS from "../LoginForm/LoginForm.module.css"
 import { Link, Form, redirect, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import SociafyLogo from "../../../assets/SVG 2/Sociafy.svg";
 import { loginForm, useAuth } from "../../../store/AuthContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ZodError, z } from "zod";
+import { ZodError} from "zod";
+import { login } from "../../../api/auth";
+import Cookies from "js-cookie";
+import { loginSchema } from "../../../schemas/schemas";
+
 type loginFormScreen = {
   mdScreen: boolean;
 };
@@ -17,12 +21,8 @@ type loginType = {
   username: string;
   password: string;
 };
-const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
-  const { loginAction } = useAuth();
-  const loginSchema = z.object({
-    username: z.string().min(3),
-    password: z.string().min(8),
-  });
+const LoginForm: React.FC<loginFormScreen> = () => {
+
   const {
     register,
     handleSubmit,
@@ -33,35 +33,34 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
   const navigation = useNavigate();
   const onSubmit = async (data: loginForm) => {
     try {
-      console.log(isSubmitting)
-      const token = await loginAction(data);
+      const token = await login(data);
       if (token) {
-        navigation("/MainPage");
-        console.log("Successfully logged in");
+        Cookies.set("ACCESS_TOKEN",token?.access_token)
+        Cookies.set("REFRESH_TOKEN",token?.refresh_token)
+        navigation("/home");
       } else {
         throw new Error("Sorry, something went wrong");
       }
     } catch (error) {
       if (error instanceof ZodError) {
-        throw new Error(`Check if your credentials met requirements: ${error}`)
+        throw new Error(`Check if your credentials met requirements: ${error.message}`)
       }
-      else {
-        throw new Error(error)
-      }
+        throw new Error(error?.message)
+
     }
   };
   return (
     <div
-      className={" lg:col-[3/4] md:col-[3/3] sm:col-[1/-1] col-[1/-1] flex h-1/2 w-screen flex-col items-center gap-3 rounded-lg bg-[#F3F4F6] p-3 shadow-md  shadow-[#329CE5] lg:h-1/2  lg:w-full lg:justify-start "}
+      className={" lg:col-[3/4] col-[1/-1] flex h-1/2 w-screen flex-col items-center gap-3 rounded-lg bg-[#F3F4F6] p-3 m-4 shadow-md  shadow-[#329CE5] lg:h-1/2 lg:w-full md:w-1/2 sm:w-1/2 lg:justify-start "}
     >
-      <form onSubmit={handleSubmit(onSubmit)} className={login.loginForm}>
-        <picture className={login.logoContainer}>
-          <img className={login.logo} src={`${SociafyLogo}`} alt="sociafy-logo" />
+      <form onSubmit={handleSubmit(onSubmit)} className={loginCSS.loginForm}>
+        <picture className={loginCSS.logoContainer}>
+          <img className={loginCSS.logo} src={`${SociafyLogo}`} alt="sociafy-logo" />
         </picture>
-        <div className={login.inputs}>
-          <div className={login.loginField}>
+        <div className={loginCSS.inputs}>
+          <div className={loginCSS.loginField}>
             <input
-              className={login.loginInput}
+              className={loginCSS.loginInput}
               type="text"
               {...register("username")}
             />
@@ -72,9 +71,9 @@ const LoginForm: React.FC<loginFormScreen> = ({ mdScreen }) => {
               <p className="text-sm text-red-500">{errors.username.message}</p>
             )}
           </div>
-          <div className={login.loginField}>
+          <div className={loginCSS.loginField}>
             <input
-              className={login.loginInput}
+              className={loginCSS.loginInput}
               type="password"
               {...register("password")}
             />

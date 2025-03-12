@@ -1,7 +1,5 @@
 import { Backdrop, Button, Fade, Modal, Typography } from "@mui/material";
-import { Box, width } from "@mui/system";
-import React from "react";
-
+import { Box } from "@mui/system";
 const AddPostPopover = ({
   open,
   handleClose,
@@ -10,7 +8,7 @@ const AddPostPopover = ({
   handleClose: () => void;
 }) => {
   const style = {
-    position: "absolute" as "absolute",
+    position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",

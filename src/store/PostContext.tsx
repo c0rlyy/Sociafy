@@ -39,7 +39,7 @@ type PostContextTypes = {
   receivePostPicture: (
     loaderData: CurrentUserPostProps[],
   ) => Promise<UpdatedPosts[] | null>;
-  filePostReaderFetch: () => Promise<(string & true) | (null & false)>;
+  filePostReaderFetch: () => Promise<(string & true)  >;
   postState: null | CurrentUserPostProps[];
   fetchPost: (post_id: number) => Promise<UpdatedPost>;
   likePostToggler: (

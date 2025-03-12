@@ -15,11 +15,9 @@ const UserLowerMenu: React.FC<CurrentUserProfilePosts> = () => {
   //   localStorage.setItem("user_name", `${userPosts.}`);
   //   localStorage.setItem("exp", `${userPosts.exp}`);
   // }, []);
-  const handleClick = (e) => {
-    console.log(e.target);
-  };
+
   return (
-    
+
   );
 };
 export default UserLowerMenu;
