@@ -1,8 +1,6 @@
 import { Button } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useProfile } from "../../store/UserProfile-context";
-
-type Props = {};
 const FollowButton = ({ profileID }: { profileID: number | null }) => {
   const { followedProfiles, followUserHandler } = useProfile();
   //   const [isUserFollowed, setIsUserFollowed] = useState(false);

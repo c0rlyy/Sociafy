@@ -5,10 +5,9 @@ import { MdOutlineEmail } from "react-icons/md";
 import { TbPassword } from "react-icons/tb";
 import { FaUserAlt } from "react-icons/fa";
 import { IoMdArrowBack } from "react-icons/io";
-type Props = {};
 import Settings from "./Settings.json";
 import { useAuth } from "../../../store/AuthContext";
-const SettingsBar = (props: Props) => {
+const SettingsBar = () => {
   const ref = useRef(null);
   const handleChange = () => {
   };

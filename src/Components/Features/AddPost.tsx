@@ -183,7 +183,6 @@ const AddPost: React.FC<AddPostType> = ({ onClose }) => {
   );
 };
 const addPostFetch = async (formData: FormData) => {
-  // FormData musi być stringowanym JSONem (?) (JSON.stringify(textData))**
   const delay = (ms: number) =>
     new Promise((resolve) => setTimeout(resolve, ms));
   await delay(4000);

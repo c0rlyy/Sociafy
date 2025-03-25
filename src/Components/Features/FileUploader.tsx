@@ -10,7 +10,6 @@ const FileUploader: React.FC<FileUploaderType> = ({ setFile }) => {
   };
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     const selectedFile = e.target.files?.[0];
-    console.log(selectedFile);
   };
   return (
     <div>

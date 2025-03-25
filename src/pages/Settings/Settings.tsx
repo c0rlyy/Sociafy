@@ -2,7 +2,6 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import SettingsBar from "./SettingsBar/SettingsBar";
 
-type Props = {};
 
 const Settings = () => {
   return (

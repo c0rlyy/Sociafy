@@ -103,32 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       password: formData.password,
     };
     console.log(submission);
-    const fetchAddUser = async () => {
-      try {
-        const response = await fetch("http://localhost:8000/api/v1/users", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify({
-            email: submission?.email,
-            password: submission?.password,
-            user_name: submission?.user_name,
-          }),
-        });
-        if (!response.ok) {
-          throw new Error(
-            `HTTP Failed to create Profile ${response.status}: ${response.statusText}`,
-          );
-        }
-        const data: SuccessfullRegister = await response.json();
-        if (data) {
-          return data;
-        }
-      } catch (error: any) {
-        console.error(error);
-      }
-    };
+
     const fetchAddUserValid = await fetchAddUser();
     if (fetchAddUserValid) {
       setTokenToLS(

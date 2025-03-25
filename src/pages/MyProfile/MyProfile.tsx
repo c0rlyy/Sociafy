@@ -28,10 +28,7 @@ const MyProfile = (props: Props) => {
   } = useProfile();
   const handlePost = async (post_id: number) => {
     const postID = post_id.target.getAttribute("data-postid");
-    console.log(postID);
-
     if (postID) {
-      console.log(postID);
       setOpenPreview(true);
       setSelectedPost(postID);
     }

@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import registerModule from "../SignUp/RegisterForm.module.css";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginForm, useAuth } from "../../../store/AuthContext";
+import { registerSchema } from "../../../schemas/schemas";
 export type RegisterState = {
   email?: string;
   username?: string;
@@ -15,38 +16,9 @@ export type SuccessfullRegister = {
   access_token: string;
   token_type: string;
 };
-const Schema = z.object({
-  email: z.string().email(),
-  username: z.string().min(3),
-  password: z.string().min(8),
-});
-const RegisterForm: React.FC<RegisterState> = () => {
-  const { registerAction } = useAuth();
-  const [userForm, setUserForm] = useState({
-    email: "",
-    username: "",
-    password: "",
-  });
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<RegisterState>({ resolver: zodResolver(Schema) });
-  const navigate = useNavigate();
-  const onRegisterSubmit = async (data: loginForm) => {
-    try {
-      const token = await registerAction(data);
 
-      if (token) {
-        console.log("Wstaje rano ale nie do pracy");
-        return navigate("/MainPage");
-      } else {
-        throw new Error("Something went wrong");
-      }
-    } catch (error: any) {
-      console.log(error?.message);
-    }
-  };
+const RegisterForm: React.FC<RegisterState> = () => {
+
   return (
     <div className={registerModule.registerFormLayout}>
       <div className={registerModule.registerLogo}>

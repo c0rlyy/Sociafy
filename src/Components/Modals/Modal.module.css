@@ -5,16 +5,13 @@
   width: 100%;
   height: 100vh;
   z-index: 20;
-  background-color: rgba(0, 0, 0, 0.464);
+  background-color: rgba(0, 0, 0, 0.733);
 }
 
 .modal {
   position: absolute;
   top: 0vh;
   right: 0;
-  width: 100%;
-  height: 100%;
-  background-color: white;
   padding: 1rem;
   border-radius: 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
@@ -33,8 +30,8 @@
     max-width: 50%;
     width: 50%;
     height: 80%;
-    right: 20%;
-    top: 5%;
+    right: 25%;
+    top: 15%;
     overflow: hidden;
   }
 }

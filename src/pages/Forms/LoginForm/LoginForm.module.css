@@ -37,7 +37,7 @@ label {
   transform: translateY(5px);
   transition: all ease-in 200ms;
 
-  font-size: 1.5px;
+  font-size: 14px;
   color: #999;
   padding-top: 2px;
   z-index: 10000;
@@ -53,30 +53,30 @@ label {
 
 
 }
+input::placeholder {
+  color: transparent; /* Ensures placeholder is not visible */
+  visibility: hidden
+}
 input:not(:placeholder-shown) + label {
     transform: translateY(-5px);
     font-size: 14px;
-    transition: all ease-in 200ms;
-
+    transition: all ease-in 75ms;
 }
 
 input:not(:placeholder-shown) {
-  padding-top: 24px;
-  padding-bottom: 4px;
+    padding-top: 24px;
+    padding-bottom: 4px;
 }
 
-input::placeholder {
-  visibility: hidden;
-}
-input::placeholder {
-  visibility: hidden;
+input::placeholder,
+input::-moz-placeholder {
+    color: transparent;
 }
 
-/* hiding  placeholder in mozilla */
-input::-moz-placeholder,
-textarea::-moz-placeholder {
-  color: transparent;
+input:-webkit-autofill {
+    transition: background-color 9999s ease-in-out 0s;
 }
+
 .loginInput {
     padding: 0.75rem 1rem;
     width: 100%;

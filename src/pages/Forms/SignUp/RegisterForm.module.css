@@ -1,40 +1,57 @@
-.registerField {
-  margin: 10px 0;
-  position: relative;
-  font-size: 14px;
-  text-overflow: ellipsis;
-  /* place-self: center; */
-}
-
+/* Style for the input container */
 .registerForm {
+    padding:1rem 1.75rem;
+    height:45vh;
+    width:100%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+}
+.registerField {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 3.5rem;
+  margin-bottom: 20px;
+  border-radius:.25rem
+}
+
+/* Input field styling */
+.registerInput {
   width: 100%;
-  place-self: center;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
 }
-.registerFormLayout {
-  display: grid;
-  grid-template-rows: minmax(0, 15rem) minmax(0, 40ch) minmax(0, 10ch) minmax(
-      0,
-      1fr
-    );
-  -webkit-box-shadow: 10px 10px 9px -14px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 10px 10px 9px -14px rgba(0, 0, 0, 0.75);
-  box-shadow: 10px 10px 9px -14px rgba(0, 0, 0, 0.75);
-  grid-column: 1/2;
-  height: 100vh;
-  gap: 1.25rem;
-  place-items: center;
+
+.registerField label {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: gray;
+  pointer-events: none; /* Prevent label from being clicked */
+  transition: all 0.2s ease-in-out;
 }
-.registerLogo {
-  display: flex;
-  justify-self: center;
-  align-self: center;
+
+.registerInput:not(:placeholder-shown) + label,
+.registerInput:focus + label {
+  top: 5px;
+  left: 12px;
+  font-size: 12px;
+  color: gray;
+  outline:none
 }
-@media (width<500px) {
-  .registerFormLayout {
-    grid-column: 1/-1;
-  }
+
+.registerInput::placeholder {
+  color: transparent;
+}
+.registerInput:focus{
+    outline:none
+}
+.registerInput:-webkit-autofill {
+  transition: background-color 9999s ease-in-out 0s;
 }

@@ -9,6 +9,7 @@ import { ZodError} from "zod";
 import { login } from "../../../api/auth";
 import Cookies from "js-cookie";
 import { loginSchema } from "../../../schemas/schemas";
+import useModalStore from "../../../modalStore/modalStore";
 
 type loginFormScreen = {
   mdScreen: boolean;
@@ -22,15 +23,18 @@ type loginType = {
   password: string;
 };
 const LoginForm: React.FC<loginFormScreen> = () => {
-
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<loginType>({
-    resolver: zodResolver(loginSchema),
-  });
+  } = useForm<RegisterState>({ resolver: zodResolver(loginSchema) });
+
   const navigation = useNavigate();
+  const { open, isOpen, modalData, modalType}=useModalStore()
+  const openModal = () => {
+    open()
+    console.log(isOpen)
+  }
   const onSubmit = async (data: loginForm) => {
     try {
       const token = await login(data);
@@ -94,13 +98,12 @@ const LoginForm: React.FC<loginFormScreen> = () => {
               Sign In
           </button>
             <button
-              type="submit"
+              type="button"
               className="w-1/2 cursor-pointer rounded-md bg-[#33BFFF] hover:bg-[#005F8A] p-2 text-center text-md font-normal hover:bg-[#A6A6A6] transition duration-300 text-white"
               value={"Sign Up"}
+              onClick={openModal}
             >
-          <Link to={"/Register"}>
               Sign Up
-          </Link>
             </button>
           </div>
         </div>
