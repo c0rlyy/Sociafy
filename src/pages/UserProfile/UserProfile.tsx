@@ -41,7 +41,6 @@ function UserProfile() {
   const handlePost = async (post_id: number) => {
     const postID = post_id.target.getAttribute("data-id");
     if (postID) {
-      console.log(postID);
       setSelectedPost(postID);
       setOpenPreview(true);
     }
@@ -51,7 +50,6 @@ function UserProfile() {
     queryFn: async () => {
       if (selectedPost) {
         const post = await fetchPost(selectedPost);
-        console.log(post);
         return post;
       }
     },
@@ -63,7 +61,7 @@ function UserProfile() {
   });
   // Sets selectedPost null, after closing modal
   autoScroll();
-  let { user_id } = useParams();
+  const { user_id } = useParams();
   const { data: userProfilePosts, isLoading: isUserProfilePostsLoading } =
     useQuery({
       queryKey: ["userPosts"],

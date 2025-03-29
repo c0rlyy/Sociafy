@@ -10,8 +10,5 @@ const UserUpperMenu = () => {
   };
   const userData = useLoaderData();
   const userName = (userData as UserProfileProps).user_name;
-  return (
-  
-  );
 };
 export default UserUpperMenu;

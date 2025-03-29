@@ -36,9 +36,6 @@ const UserPosts: React.FC<UserProfilePostProps> = ({
   profileUSERNAME,
   postTITLE,
 }) => {
-  useEffect(() => {
-    console.log(postFILMS);
-  }, [postFILMS]);
   return (
     <picture data-id={postID} className={userProfile.profile__image_container}>
       {postIMAGE && (

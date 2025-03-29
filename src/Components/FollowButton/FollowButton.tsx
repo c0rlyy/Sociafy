@@ -10,11 +10,6 @@ const FollowButton = ({ profileID }: { profileID: number | null }) => {
   //     // Map through followed
   //     //
   //   }
-  useEffect(() => {
-    if (followedProfiles) {
-      console.log(followedProfiles);
-    }
-  }, [followedProfiles]);
   return (
     <>
       <Button

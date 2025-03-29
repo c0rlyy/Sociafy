@@ -4,14 +4,6 @@ import Layout from "../../Components/Layout/Layout";
 import { useAuth } from "../../store/AuthContext";
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
-  // const { logged } = useAuth();
-  // const navigate = useNavigate();
-  // useEffect(() => {
-  //   console.log(logged);
-  //   if (logged === false) {
-  //     navigate("/", { replace: true });
-  //   }
-  // }, [navigate, logged]);
   return <>{children}</>;
 };
 

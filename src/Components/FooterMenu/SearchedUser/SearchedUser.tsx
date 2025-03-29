@@ -28,7 +28,7 @@ const SearchedUser: React.FC<Props> = ({
       return previewPost;
     },
   });
-  let { params } = useParams();
+  const { params } = useParams();
   useEffect(() => {
     if (postName) {
       console.log(postName);

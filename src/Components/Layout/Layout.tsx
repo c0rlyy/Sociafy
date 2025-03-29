@@ -10,7 +10,6 @@ const Layout: React.FC<Props> = ({ children }) => {
   const { theme } = useTheme();
   const searchBarHandler = () => {
     setOpenedSearch((prev) => !prev);
-    console.log(openedSearch);
   };
 
   const [openedSearch, setOpenedSearch] = useState(false);

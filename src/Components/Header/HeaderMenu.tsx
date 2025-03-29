@@ -16,13 +16,6 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ mdScreen }) => {
     setOpened(true);
   };
   const body = document.querySelector("body");
-  const handleOutsideClick = (e: Event) => {
-    console.log(e.currentTarget);
-    console.log(ref.current);
-    // if (e.currentTarget !== ref) {
-    //   setOpened(false);
-    // }
-  };
 
   const [dark, setDark] = useState(false);
   const DarkHandler = () => {

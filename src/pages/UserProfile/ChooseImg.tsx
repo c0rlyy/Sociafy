@@ -27,7 +27,6 @@ function ChooseImg({ onClose }: { onClose: () => void }) {
     const image = event.currentTarget.image.files?.[0];
     if (image) {
       formData.append("profile_pic", image);
-      console.log(image);
       const AddedProfilePic = await AddProfilePicture(formData);
       if (AddedProfilePic) {
         setHandleSubmitSuccess(true);
