@@ -19,6 +19,8 @@ import Settings from "./pages/Settings/Settings";
 import ChangeEmail from "./pages/Settings/ChangeEmail/ChangeEmail";
 import ChangeUsername from "./pages/Settings/ChangeUsername/ChangeUsername";
 import ChangePassword from "./pages/Settings/ChangePassword/ChangePassword";
+import ModalManager from "./Components/Modals/ModalManager";
+import { Toaster } from "react-hot-toast";
 function App() {
   const queryClient = new QueryClient();
   const router = createBrowserRouter([
@@ -89,6 +91,8 @@ function App() {
         <AuthProvider>
           <PostsProvider>
             <UserProfileProvider>
+              <ModalManager/>
+              <Toaster/>
               <RouterProvider router={router} />
             </UserProfileProvider>
           </PostsProvider>

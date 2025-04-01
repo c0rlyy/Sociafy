@@ -3,12 +3,11 @@ import type { ModalStore } from '../types'
 
 const useModalStore = create<ModalStore>((set) => ({
   isOpen: false,
-  open: () => set((state) => ({ isOpen: !state.isOpen })),
-  close: () => set({ isOpen: false }),
-  modalType:"sign-up",
-  modalData:"" ,
-  setModalData: () => { },
+  open: (type:string, data=null ) => set(() => ({ isOpen: true, modalType:type, modalData:data })),
+  close: () => set({ isOpen: false, modalType:"", modalData:"" }),
+  setModalData: (data: any) => set((modalData) => ({modalData:modalData})),
   onConfirm: () => { },
+  modalType:""
 }));
 
 export default useModalStore;

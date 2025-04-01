@@ -20,27 +20,16 @@
     width:100%;
     height:100%;
 }
-.login::before {
-  position: absolute;
-  content: "login";
-  top: 0;
-  left: 0;
-  bottom: 0;
-  background-color: black;
-  width: 100%;
-  height: 100%;
-}
-label {
-  pointer-events: none;
-  position: absolute;
-  left: 0;
-  transform: translateY(5px);
-  transition: all ease-in 200ms;
 
-  font-size: 14px;
-  color: #999;
-  padding-top: 2px;
-  z-index: 10000;
+.loginField label {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: gray;
+    pointer-events: none;
+    transition: all 0.2s ease-in-out;
 }
 .loginField {
   margin: 10px 0;
@@ -53,14 +42,17 @@ label {
 
 
 }
-input::placeholder {
+.loginField input::placeholder {
   color: transparent; /* Ensures placeholder is not visible */
   visibility: hidden
 }
-input:not(:placeholder-shown) + label {
-    transform: translateY(-5px);
-    font-size: 14px;
-    transition: all ease-in 75ms;
+.loginInput:not(:placeholder-shown) + label,
+.loginInput:focus + label {
+  top: 9px;
+  left: 12px;
+  font-size: 12px;
+  color: gray;
+  outline:none
 }
 
 input:not(:placeholder-shown) {
@@ -78,11 +70,12 @@ input:-webkit-autofill {
 }
 
 .loginInput {
-    padding: 0.75rem 1rem;
     width: 100%;
-  font-size: 1.125rem;
-  border-radius: 3px;
-  border-bottom: 1px solid #efefef;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
 }
 .loginInput:focus {
   outline: none;

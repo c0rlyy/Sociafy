@@ -1,12 +1,11 @@
-import { LineWave } from "react-loader-spinner";
-import LoaderModal from "../Modals/LoaderModal/LoaderModal";
+import { ClipLoader } from "react-spinners";
 
-function Loader() {
+
+function ButtonLoader() {
   return (
-    <LoaderModal>
-      <LineWave width={"100%"} height={"100%"} color="#009fe3" />
-    </LoaderModal>
+      <ClipLoader size={18} color="#00000" />
+
   );
 }
 
-export default Loader;
+export default ButtonLoader;

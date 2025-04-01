@@ -1,6 +1,5 @@
 import ReactDOM from "react-dom";
-import { ReactNode } from "react";
-import { IoMdClose } from "react-icons/io";
+import type { ReactNode } from "react";
 import useModalStore from "../../modalStore/modalStore";
 import classes from "./Modal.module.css";
 
@@ -13,10 +12,10 @@ interface OverlayProps {
 const overlays = document.getElementById("overlays") as HTMLElement;
 
 const Backdrop: React.FC = () => {
-  const { isOpen, close } = useModalStore();
+  const { close } = useModalStore();
   return (
     <div
-      className={`${classes.backdrop} ${isOpen ? "block" : "hidden"}`}
+      className={classes.backdrop}
       onClick={close}
     ></div>
   );
@@ -30,7 +29,7 @@ const Overlay: React.FC<OverlayProps> = ({ children, size, color }) => {
       case "md":
         return "w-[95%] h-[80%] max-w-[550px] sm:w-[75%] md:w-[60%] lg:w-[50%] h-auto top-[15%] right-[25%]";
       case "lg":
-        return "w-[95%] max-w-[800px] sm:w-[80%] md:w-[65%] lg:w-[55%] h-auto top-[15%] right-[23%] ";
+        return "w-full  max-w-[600px] sm:w-[60%] md:w-[65%] lg:w-[55%] h-auto lg:top-[26%] lg:right-[32%] md:top-[26%] md:right-[17%] sm:right-[17%] top-[26%] ";
       case "full":
         return "w-full h-full";
       default:
@@ -57,12 +56,9 @@ const Overlay: React.FC<OverlayProps> = ({ children, size, color }) => {
         return "bg-zinc-50"
     }
   }
-  console.log(color)
-  const { isOpen } = useModalStore();
   return (
     <div
-      className={`${setColor()} ${setSize()} absolute p-4 rounded-lg shadow-lg z-[30000] animate-slide-down m-0 mx-auto overflow-hidden ${
-        isOpen ? "block" : "hidden"
+      className={`${setColor()} ${setSize()} absolute p-4 rounded-lg shadow-lg z-[30000] animate-slide-down m-0 mx-auto overflow-hidden
       }`}
     >
       <div className={classes.content}>{children}</div>
@@ -77,10 +73,6 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ children, size, color }) => {
-  const { isOpen } = useModalStore();
-
-  if (!isOpen) return null;
-
   return (
     <>
       {ReactDOM.createPortal(<Backdrop />, overlays)}

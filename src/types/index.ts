@@ -4,19 +4,19 @@ export type User = {
   password:string |null
 }
 export type AuthorizedT = {
-  access_token:string | null,
-  refresh_token:string | null
+  access_token:string ,
+  refresh_token:string,
 }
 type ModalDataT = {
-  [key: string]:string
-}
+  [key: string]: string
+} | "";
+export type ModalType ="sign-up"|""
 export interface ModalStore {
+  open:(modalType:ModalType)=>void
   isOpen:boolean,
-  open:()=>void
-  close: () => void
   onConfirm:()=>void
-  modalType: string
-  modalData: string,
-  setModalData:()=>void
+  setModalData:(data:ModalDataT)=>void,
+  modalType:ModalType,
+  close:()=>void
 
 }

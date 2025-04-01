@@ -11,7 +11,6 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="relative grid min-h-screen max-h-full overflow-hidden lg:grid-cols-landing md:grid-cols-1 sm:grid-cols-1 items-center justify-items-center border border-slate-500 bg-gradient-to-r from-cyan-500 to-blue-500">
-      <SignUpModal/>
       {mdScreen ? (
         <>
           <TypeAnimation mdScreen={mdScreen} />
