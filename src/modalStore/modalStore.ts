@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { ModalStore } from '../types'
+import type { ModalStore } from '../types/auth'
 
 const useModalStore = create<ModalStore>((set) => ({
   isOpen: false,

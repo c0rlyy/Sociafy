@@ -1,39 +1,34 @@
 import loginCSSModule from "../LoginForm/LoginForm.module.css"
-import { Link, Form, redirect, useNavigate } from "react-router-dom";
-import React, { useEffect, useState } from "react";
-import SociafyLogo from "../../../assets/SVG 2/Sociafy.svg";
-import { loginForm, useAuth } from "../../../store/AuthContext";
+import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import SociafyLogo from "../../../../public/assets/SVG 2/Sociafy.svg";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ZodError} from "zod";
 import { login } from "../../../api/auth";
-import Cookies from "js-cookie";
 import { loginSchema } from "../../../schemas/schemas";
 import useModalStore from "../../../modalStore/modalStore";
 import toast from "react-hot-toast";
+import type { UserT } from "../../../types/auth";
+import { useAuthStore } from "../../../store/authStore";
 type loginFormScreen = {
   mdScreen: boolean;
 };
-export type LoginProps = {
-  access_token: string;
-  token_type: string;
-};
-
 const LoginForm: React.FC<loginFormScreen> = () => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(loginSchema) });
-
+  const { setToken, getUser}=useAuthStore()
   const navigation = useNavigate();
   const { open}=useModalStore()
-  const onSubmit = async (data: loginForm) => {
+  const onSubmit = async (data: UserT) => {
       const token = await login(data);
       if (token) {
-        Cookies.set("ACCESS_TOKEN",token?.access_token)
+        setToken(token.access_token)
         toast.success("Successfully Authorized")
-        navigation("/home");
+        await getUser()
+        navigation("/home")
       }
   };
   return (

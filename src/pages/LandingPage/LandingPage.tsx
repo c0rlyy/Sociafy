@@ -1,14 +1,21 @@
 import LoginForm from "../Forms/LoginForm/LoginForm";
 import { useMediaQuery } from "react-responsive";
-import React from "react";
+import React, { useEffect } from "react";
 import TypeAnimation from "../Animations/TypeAnimation";
-import SignUpModal from "../../Components/Modals/SignUpModal/SignUpModal";
-
+import { useAuthStore } from "../../store/authStore";
+import { useNavigate } from "react-router-dom";
 const LandingPage: React.FC = () => {
+  const {isLogged }=useAuthStore()
+  const navigate=useNavigate()
   const mdScreen = useMediaQuery({
-    query: `(min-width:1024px)`,
+    query: '(min-width:1024px)',
   });
-
+  useEffect(() => {
+    if (isLogged) {
+      console.log("Is logged", isLogged)
+      navigate("/home")
+    }
+  },[isLogged,navigate])
   return (
     <div className="relative grid min-h-screen max-h-full overflow-hidden lg:grid-cols-landing md:grid-cols-1 sm:grid-cols-1 items-center justify-items-center border border-slate-500 bg-gradient-to-r from-cyan-500 to-blue-500">
       {mdScreen ? (

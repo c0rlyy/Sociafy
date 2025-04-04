@@ -15,23 +15,10 @@ const Layout: React.FC<Props> = ({ children }) => {
   const [openedSearch, setOpenedSearch] = useState(false);
 
   return (
-    <div
-      className={`${
-        theme === "dark" ? "bg-slate-900 text-white" : "bg-white text-black"
-      } grid grid-cols-mobileLayout grid-rows-mobileLayout md:grid-cols-layout md:grid-rows-layout `}
+    <article className="grid grid-cols-2 border"
     >
-      <FooterMenu
-        openedSearchHandler={searchBarHandler}
-        openedSearch={openedSearch}
-      />
-      {openedSearch && (
-        <FooterSearchBar
-          setOpenedSearchFuncProp={searchBarHandler}
-          isOpened={openedSearch}
-        />
-      )}
-      {children}
-    </div>
+      { children}
+    </article>
   );
 };
 

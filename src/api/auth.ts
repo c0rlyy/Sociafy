@@ -1,20 +1,17 @@
-import axios, { AxiosError, AxiosPromise, isAxiosError } from "axios";
-import { authURL } from "../constants";
-import type {  AuthorizedT, User } from "../types";
+import { AxiosError, isAxiosError } from "axios";
+import api from "../axios-instance/axios"
+import type {  AuthorizedT, UserT } from "../types/auth";
 import toast from "react-hot-toast";
 
-const { loginURL, registerURL } = authURL;
-export const login = async (userData: User):Promise<AuthorizedT | undefined> => {
+export const login = async (userData: UserT):Promise<AuthorizedT | undefined> => {
   try {
-    const response = await axios.post(
-      loginURL,
-      new URLSearchParams(userData).toString(), // Convert to x-www-form-urlencoded
+    const response = await api.post(
+      "/login/access-token",
       {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
+        username:userData.username,
+        password:userData.password
+      },
+      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
     );
     return response.data;
   } catch (error) {
@@ -27,9 +24,9 @@ export const login = async (userData: User):Promise<AuthorizedT | undefined> => 
       throw new Error('Server error')
   }
 };
-export const addUser = async (data: User): Promise<AuthorizedT> => {
+export const addUser = async (data: UserT): Promise<AuthorizedT> => {
   try {
-    const response = await axios.post(registerURL, {
+    const response = await api.post("/users", {
       email: data.email,
       password: data.password,
       user_name: data.username,
@@ -45,3 +42,12 @@ export const addUser = async (data: User): Promise<AuthorizedT> => {
     throw new Error(`Unexpected error occurred: ${String(error)}`);
   }
 };
+export const getUserData = async ():Promise<UserT | undefined> => {
+  try {
+    const response= await api.get("/users/me")
+    return response.data
+  }
+  catch (error) {
+    console.error("Error fetching user data", error)
+  }
+}

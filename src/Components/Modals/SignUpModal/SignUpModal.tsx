@@ -9,31 +9,34 @@ import type { AuthorizedT, User } from "../../../types";
 import Cookies from "js-cookie";
 
 import ButtonLoader from "../../Loader/Loader";
+import { BrowserRouter,  } from "react-router-dom";
 function SignUpModal() {
-  const {modalType,close }=useModalStore()
+  const { modalType, close } = useModalStore();
+  const closeModal=()=>{
+    close()
+    reset()
+  }
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(registerSchema) });
-  const onSubmit:SubmitHandler<User> = async (data: User) => {
-      const token: AuthorizedT = await addUser(data);
-      console.log(token)
-      if (token) {
-        Cookies.set("ACCESS_TOKEN", token.access_token)
-        navigate("/home")
-      }
-  }
+  const onSubmit: SubmitHandler<User> = async (data: User) => {
+    const token: AuthorizedT = await addUser(data);
+    console.log(token);
+    if (token) {
+      Cookies.set("access_token", token.access_token);
+      // nav("/home");
+    }
+  };
   if (modalType !== "sign-up") {
     return null;
   }
-  const closeModal = () => {
-    close()
-    reset()
-  }
+
   return (
-    <Modal size="lg"  >
+    <BrowserRouter>
+    <Modal size="lg">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className={registerModule.registerForm}
@@ -47,7 +50,11 @@ function SignUpModal() {
             {...register("email")}
           />
           <label htmlFor="email">Email</label>
-        {errors.email && <span className={ registerModule.registerError}>{errors.email.message}</span>}
+          {errors.email && (
+            <span className={registerModule.registerError}>
+              {errors.email.message}
+            </span>
+          )}
         </div>
         <div className={registerModule.registerField}>
           <input
@@ -58,7 +65,12 @@ function SignUpModal() {
             {...register("username")}
           />
           <label htmlFor="username">Username</label>
-        {errors.username && <span className={registerModule.registerError}>{errors.username.message}</span>}
+
+          {errors.username && (
+            <span className={registerModule.registerError}>
+              {errors.username.message}
+            </span>
+          )}
         </div>
         <div className={registerModule.registerField}>
           <input
@@ -69,7 +81,11 @@ function SignUpModal() {
             {...register("password")}
           />
           <label htmlFor="password">Password</label>
-        {errors.password && <span className={ registerModule.registerError}>{errors.password.message}</span>}
+          {errors.password && (
+            <span className={registerModule.registerError}>
+              {errors.password.message}
+            </span>
+          )}
         </div>
         <div className={registerModule.registerField}>
           <input
@@ -114,6 +130,7 @@ function SignUpModal() {
         </div>
       </form>
     </Modal>
+    </BrowserRouter>
   )
 }
 export default SignUpModal
