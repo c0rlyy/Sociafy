@@ -1,0 +1,101 @@
+.loginContainer{
+  background-color: #fafafa;
+  border: 0.5px solid black;
+  position: relative;
+}
+.loginForm {
+    padding:2rem;
+    display: flex;
+    flex-direction: column;
+    gap:.5rem;
+    width: 100%;
+}
+.logoContainer {
+  width: 400px;
+  height:75px;
+  align-self: center;
+
+}
+.logo{
+    width:100%;
+    height:100%;
+}
+
+.loginField label {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    color: gray;
+    pointer-events: none;
+    transition: all 0.2s ease-in-out;
+}
+.loginField {
+  margin: 10px 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap:15px;
+  font-size: 12px;
+  text-overflow: ellipsis;
+
+
+}
+.loginField input::placeholder {
+  color: transparent; /* Ensures placeholder is not visible */
+  visibility: hidden
+}
+.loginInput:not(:placeholder-shown) + label,
+.loginInput:focus + label {
+  top: 9px;
+  left: 12px;
+  font-size: 12px;
+  color: gray;
+  outline:none
+}
+
+input:not(:placeholder-shown) {
+    padding-top: 24px;
+    padding-bottom: 4px;
+}
+
+input::placeholder,
+input::-moz-placeholder {
+    color: transparent;
+}
+
+input:-webkit-autofill {
+    transition: background-color 9999s ease-in-out 0s;
+}
+
+.loginInput {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    outline: none;
+}
+.loginInput:focus {
+  outline: none;
+}
+.signIn {
+  display: grid;
+  place-self: center;
+  width: 100%;
+  text-decoration: none;
+  background: #04aa6d; /* Green */
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.line {
+  height: 1px;
+  width: 40%;
+  background-color: #dbdbdb;
+}

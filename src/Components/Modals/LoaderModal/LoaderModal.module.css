@@ -1,0 +1,19 @@
+.backdrop {
+  background-color: black;
+  opacity: 0.25;
+  width: 100vw;
+  height: 100vh;
+}
+.modal {
+  width: 100%;
+  height: 100vh;
+  border: 1px solid black;
+  border-radius: 12px;
+  background-color: white;
+}
+.content {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}

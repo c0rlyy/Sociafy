@@ -1,0 +1,16 @@
+.button-upload {
+  /* Reset OS-specfic / browser-specific default style (see https://ishadeed.com/article/styling-the-good-old-button/#the-default-styles) */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: rgb(77, 181, 249);
+  border: 1px solid currentColor;
+  /* Signify interactivity */
+  border-radius: 4px; /* no physical button has a sharp corner; exact value to be replaced for your custom design */
+  cursor: pointer;
+  /* Match font style with the parent element */
+  font: inherit;
+  /* Make the button easy for touchscreen users to tap */
+  min-height: 48px;
+  min-width: 48px;
+}

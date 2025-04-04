@@ -1,0 +1,11 @@
+@import url("https://fonts.googleapis.com/css2?family=Agbalumo&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,500&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}

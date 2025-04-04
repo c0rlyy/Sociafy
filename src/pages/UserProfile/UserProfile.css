@@ -1,0 +1,19 @@
+.circle-container {
+  width: 100px; /* Set the width of the container */
+  height: 100px; /* Set the height of the container */
+  border-radius: 50%; /* Make the container a circle */
+  background-color: rgb(227, 235, 243); /* Optional background color */
+  position: relative;
+}
+.content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%; /* Make the content a circle */
+  overflow: hidden; /* Hide content outside the circle */
+}
+.circle-container:hover {
+  background-color: rgb(203, 210, 216);
+}

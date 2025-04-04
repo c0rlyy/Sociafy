@@ -1,0 +1,23 @@
+.registerSubmit {
+  background-color: blue;
+  border: 1px solid black;
+  font-weight: bolder;
+  color: black;
+  padding: 16px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  /* width: 100%; */
+}
+.loginSubmit {
+  background-color: rgb(26, 128, 230);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  width: 100%;
+}
+.signUpRedirect {
+  background-color: red;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  width: 100%;
+}

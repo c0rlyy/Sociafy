@@ -1,0 +1,67 @@
+.registerForm {
+    padding:1rem 1.75rem;
+    height:45vh;
+    width:100%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+}
+.registerField {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  border-radius:.25rem;
+}
+
+.registerInput {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.registerField label {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: gray;
+  pointer-events: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.registerInput:not(:placeholder-shown) + label,
+.registerInput:focus + label {
+  top: 9px;
+  left: 12px;
+  font-size: 12px;
+  color: gray;
+  outline:none
+}
+
+.registerInput::placeholder {
+  color: transparent;
+}
+.registerInput:focus{
+    outline:none
+}
+.registerInput:-webkit-autofill {
+  transition: background-color 9999s ease-in-out 0s;
+}
+.registerError{
+    position: absolute;
+    bottom:-30px;
+    padding:12px 6px 12px 6px;
+    font-size:0.75rem;
+    line-height: 1rem;
+    color: red;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
