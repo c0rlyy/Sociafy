@@ -19,7 +19,7 @@ const LoginForm: React.FC<loginFormScreen> = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(loginSchema) });
-  const { setToken, getUser}=useAuthStore()
+  const { setToken, getUser,user}=useAuthStore()
   const navigation = useNavigate();
   const { open}=useModalStore()
   const onSubmit = async (data: UserT) => {
@@ -28,6 +28,7 @@ const LoginForm: React.FC<loginFormScreen> = () => {
         setToken(token.access_token)
         toast.success("Successfully Authorized")
         await getUser()
+        console.log(user)
         navigation("/home")
       }
   };

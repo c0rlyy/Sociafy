@@ -3,34 +3,60 @@ import type { AuthStateT } from "../types/auth";
 import Cookies from "js-cookie";
 import { getUserData } from "../api/auth";
 
-export const useAuthStore = create<AuthStateT>((set,get) => ({
-  loading:false,
+export const useAuthStore = create<AuthStateT>((set, get) => ({
+  loading: false,
   user: null,
   isLogged: !!Cookies.get("ACCESS_TOKEN"),
-  setIsLogged: (value: boolean | undefined) => { set({isLogged:value})},
+  setIsLogged: (value: boolean | undefined) => {
+    set({ isLogged: value });
+  },
   getToken: () => Cookies.get("ACCESS_TOKEN") || null,
   setToken: (server_token: string) => {
-    Cookies.set("ACCESS_TOKEN", server_token, {secure:true, sameSite:"None"})
-    return server_token
+    Cookies.set("ACCESS_TOKEN", server_token, {
+      secure: true,
+      sameSite: "None",
+    });
+    return server_token;
   },
+
+  updateUser: async () => {
+    // set(() => ({ loading: true, user: null, isLogged: false }));
+    try {
+      const token = get().getToken();
+      if (!token) {
+        set(() => ({ user: null, loading: false, isLogged: false }));
+        return;
+      }
+      const userD = await getUserData();
+      set(() => ({ user: userD, loading: false, isLogged: true }));
+    } catch (error) {
+      set(() => ({ loading: false, isLogged: false, user: null }));
+    }
+
+    return null;
+  },
+
   logoutHandler: () => {
     Cookies.remove("ACCESS_TOKEN");
-    set({user:null, isLogged:false})
+    set({ user: null, isLogged: false });
   },
+
   getUser: async () => {
-    set({loading:true})
+    set((state) => ({ ...state, loading: true }));
+    console.log("will this rerender all the time?/");
     try {
-      const token= get().getToken()
+      const token = get().getToken();
       if (!token) {
-        set({user:null, loading:false, isLogged:false})
+        set(() => ({ user: null, loading: false, isLogged: false }));
+        return;
       }
-      const userData=await getUserData()
-      set({ user: userData, isLogged:true, loading:false})
-    }
-    catch (error) {
+      const userData = await getUserData();
+      set(() => ({ user: userData, loading: false, isLogged: true }));
+      return null;
+    } catch (error) {
       console.error("Failed to fetch user", error);
-      set({loading:false, user:null, isLogged:false})
-      return null
+      set(() => ({ user: null, loading: false, isLogged: false }));
+      return null;
     }
-  }
-}))
+  },
+}));
