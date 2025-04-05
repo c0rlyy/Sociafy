@@ -34,4 +34,5 @@ export interface AuthStateT {
   getUser: () => Promise<UserT | undefined | null>;
   user: UserT | null;
   loading: boolean;
+  loadingUserData:boolean
 }

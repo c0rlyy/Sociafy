@@ -5,6 +5,7 @@ import { getUserData } from "../api/auth";
 
 export const useAuthStore = create<AuthStateT>((set, get) => ({
   loading: false,
+  loadingUserData: false,
   user: null,
   isLogged: !!Cookies.get("ACCESS_TOKEN"),
   setIsLogged: (value: boolean | undefined) => {
@@ -18,22 +19,22 @@ export const useAuthStore = create<AuthStateT>((set, get) => ({
     });
     return server_token;
   },
-  userLoading: false,
 
-  updateUser: async () => {
-    set(() => ({ userLoading: true }));
+  getUser: async () => {
+    set(() => ({ loadingUserData: true }));
     try {
       const token = get().getToken();
       if (!token) {
-        set(() => ({ user: null, loading: false, isLogged: false }));
+        set(() => ({ user: null, isLogged: false }));
         return;
       }
       const userD = await getUserData();
-      set(() => ({ user: userD, loading: false, isLogged: true }));
+      set(() => ({ user: userD, isLogged: true }));
+      return userD;
     } catch (error) {
-      set(() => ({ loading: false, isLogged: false, user: null }));
+      set(() => ({ isLogged: false, user: null }));
     } finally {
-      set(() => ({ userLoading: false }));
+      set({ loadingUserData: false });
     }
 
     return null;
@@ -44,22 +45,22 @@ export const useAuthStore = create<AuthStateT>((set, get) => ({
     set({ user: null, isLogged: false });
   },
 
-  getUser: async () => {
-    set((state) => ({ ...state, loading: true }));
-    console.log("will this rerender all the time?/");
-    try {
-      const token = get().getToken();
-      if (!token) {
-        set(() => ({ user: null, loading: false, isLogged: false }));
-        return;
-      }
-      const userData = await getUserData();
-      set(() => ({ user: userData, loading: false, isLogged: true }));
-      return null;
-    } catch (error) {
-      console.error("Failed to fetch user", error);
-      set(() => ({ user: null, loading: false, isLogged: false }));
-      return null;
-    }
-  },
+  // getUser: async () => {
+  //   set((state) => ({ ...state, loading: true }));
+  //   console.log("will this rerender all the time?/");
+  //   try {
+  //     const token = get().getToken();
+  //     if (!token) {
+  //       set(() => ({ user: null, loading: false, isLogged: false }));
+  //       return;
+  //     }
+  //     const userData = await getUserData();
+  //     set(() => ({ user: userData, loading: false, isLogged: true }));
+  //     return null;
+  //   } catch (error) {
+  //     console.error("Failed to fetch user", error);
+  //     set(() => ({ user: null, loading: false, isLogged: false }));
+  //     return null;
+  //   }
+  // },
 }));

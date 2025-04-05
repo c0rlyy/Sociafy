@@ -6,18 +6,19 @@ import { useShallow } from "zustand/react/shallow";
 import { object } from "zod";
 
 export default function UserInfo() {
-  const updateUser = useAuthStore((state) => state.updateUser);
+  const getUser = useAuthStore((state) => state.getUser);
   const user = useAuthStore(useShallow((state) => state.user));
-  const userLoading = useAuthStore((state) => state.userLoading);
+  const userLoading = useAuthStore((state) => state.loadingUserData);
 
   useEffect(() => {
-    const fetchUs = async () => {
-      await updateUser();
+    const fetchUser = async () => {
+      await getUser();
     };
-    fetchUs();
+    fetchUser();
   }, []);
-  if((userLoading)){
-    return <h1>....Loading</h1>
+
+  if (userLoading) {
+    return <h1>....Loading</h1>;
   }
 
   return (
