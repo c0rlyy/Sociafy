@@ -8,6 +8,7 @@ import { object } from "zod";
 export default function UserInfo() {
   const updateUser = useAuthStore((state) => state.updateUser);
   const user = useAuthStore(useShallow((state) => state.user));
+  const userLoading = useAuthStore((state) => state.userLoading);
 
   useEffect(() => {
     const fetchUs = async () => {
@@ -15,6 +16,9 @@ export default function UserInfo() {
     };
     fetchUs();
   }, []);
+  if((userLoading)){
+    return <h1>....Loading</h1>
+  }
 
   return (
     <div className="flex w-full items-center justify-end gap-4 border ">

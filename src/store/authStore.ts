@@ -18,9 +18,10 @@ export const useAuthStore = create<AuthStateT>((set, get) => ({
     });
     return server_token;
   },
+  userLoading: false,
 
   updateUser: async () => {
-    // set(() => ({ loading: true, user: null, isLogged: false }));
+    set(() => ({ userLoading: true }));
     try {
       const token = get().getToken();
       if (!token) {
@@ -31,6 +32,8 @@ export const useAuthStore = create<AuthStateT>((set, get) => ({
       set(() => ({ user: userD, loading: false, isLogged: true }));
     } catch (error) {
       set(() => ({ loading: false, isLogged: false, user: null }));
+    } finally {
+      set(() => ({ userLoading: false }));
     }
 
     return null;
