@@ -1,0 +1,57 @@
+[
+  {
+    "id": "reel_001",
+    "username": "jane_doe",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/1.jpg",
+    "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "caption": "Sunset vibes 🌅✨",
+    "likes": 1024,
+    "comments": 87,
+    "createdAt": "2025-04-01T18:30:00Z",
+    "music": "Chillhop - Ocean Drive"
+  },
+  {
+    "id": "reel_002",
+    "username": "travel_bro",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/44.jpg",
+    "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+    "caption": "Bali mornings 😍 #travelgram",
+    "likes": 758,
+    "comments": 54,
+    "createdAt": "2025-03-29T10:15:00Z",
+    "music": "Kygo - Firestone"
+  },
+  {
+    "id": "reel_003",
+    "username": "fit.with.sam",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/12.jpg",
+    "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "caption": "Quick home workout! 💪🏽 #fitness",
+    "likes": 2043,
+    "comments": 132,
+    "createdAt": "2025-04-03T08:20:00Z",
+    "music": "Trap Beats - Pump Up"
+  },
+  {
+    "id": "reel_004",
+    "username": "cooking_with_ana",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/18.jpg",
+    "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+    "caption": "Creamy pasta recipe 🍝🔥",
+    "likes": 3120,
+    "comments": 289,
+    "createdAt": "2025-04-02T14:45:00Z",
+    "music": "Jazz Vibes - Kitchen Beats"
+  },
+  {
+    "id": "reel_005",
+    "username": "artsy.elle",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/65.jpg",
+    "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "caption": "Speed painting 🎨🖌️ #artreels",
+    "likes": 1854,
+    "comments": 147,
+    "createdAt": "2025-03-30T17:05:00Z",
+    "music": "Lo-fi - Midnight Palette"
+  }
+]

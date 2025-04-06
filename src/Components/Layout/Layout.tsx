@@ -15,7 +15,7 @@ const Layout: React.FC<Props> = ({ children }) => {
   const [openedSearch, setOpenedSearch] = useState(false);
 
   return (
-    <article className="grid grid-cols-2 border"
+    <article className="grid grid-cols-1 md:grid-cols-[280px_1fr] border"
     >
       { children}
     </article>

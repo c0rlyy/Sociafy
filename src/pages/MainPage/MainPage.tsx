@@ -5,8 +5,10 @@ import AddButton from "../../Components/Buttons/AddButton";
 import LogoutButton from "../../Components/Buttons/LogoutButton";
 import Logo from "../../../public/assets/Icons/SFy.png"
 import SettingsButton from "../../Components/Buttons/SettingsButton";
-import DefaultAvatar from "../../Components/Avatar/Avatar";
+
 import UserInfo from "../../Components/UserInfo/UserInfo";
+import Reels from "../../Components/Reels/reels";
+import Content from "../../Components/Content/Content";
 const MainPage = () => {
   return (
       <Layout>
@@ -22,12 +24,14 @@ const MainPage = () => {
           <SettingsButton/>
         </div>
       </main>
-      <aside className=" w-full border ">
-        <header className="flex items-center border border-slate-500">
+      <aside className=" w-full  flex flex-col ">
+        <header className="flex items-center ">
           <UserInfo/>
         </header>
+          <Reels/>
+          <Content/>
       </aside>
       </Layout>
-  );
+  )
 };
 export default MainPage;

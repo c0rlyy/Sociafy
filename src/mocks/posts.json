@@ -1,0 +1,50 @@
+[
+  {
+    "id": "post_001",
+    "username": "adventure.kate",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/21.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1501785888041-af3ef285b470",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+      "https://images.unsplash.com/photo-1549887534-57d4b152d1b6"
+    ],
+    "caption": "Exploring the Alps 🏔️ #wanderlust",
+    "likes": 1423,
+    "comments": 34,
+    "createdAt": "2025-04-03T10:15:00Z",
+    "location": "Switzerland",
+    "isLiked": false
+  },
+  {
+    "id": "post_002",
+    "username": "daily.brew",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/34.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1511920170033-f8396924c348",
+      "https://images.unsplash.com/photo-1509042239860-f550ce710b93",
+      "https://images.unsplash.com/photo-1573164713988-8665fc963095"
+    ],
+    "caption": "Nothing like a fresh pour ☕",
+    "likes": 789,
+    "comments": 12,
+    "createdAt": "2025-04-02T08:45:00Z",
+    "location": "Seattle, WA",
+    "isLiked": true
+  },
+  {
+    "id": "post_003",
+    "username": "chef.emma",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/7.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1576866209830-5349cded8a56",
+      "https://images.unsplash.com/photo-1555939594-58d7cb561ad1",
+      "https://images.unsplash.com/photo-1589308078051-d2593bff98c4"
+    ],
+    "caption": "Quick & easy pad thai recipe 🥡 #homecooking",
+    "likes": 2450,
+    "comments": 58,
+    "createdAt": "2025-04-01T19:00:00Z",
+    "location": "New York",
+    "isLiked": false
+  }
+]
