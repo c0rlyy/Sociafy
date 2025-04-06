@@ -7,10 +7,7 @@ import Logo from "../../../public/assets/Icons/SFy.png"
 import SettingsButton from "../../Components/Buttons/SettingsButton";
 
 import UserInfo from "../../Components/UserInfo/UserInfo";
-import ReelItem from "../../Components/Reels/reel-item";
 import Reels from "../../Components/Reels/reels";
-import Posts from "../../Components/Post/posts";
-import { Context } from "react-responsive";
 import Content from "../../Components/Content/Content";
 const MainPage = () => {
   return (
@@ -27,8 +24,8 @@ const MainPage = () => {
           <SettingsButton/>
         </div>
       </main>
-      <aside className=" w-full border flex flex-col ">
-        <header className="flex items-center border border-slate-500">
+      <aside className=" w-full  flex flex-col ">
+        <header className="flex items-center ">
           <UserInfo/>
         </header>
           <Reels/>
@@ -36,4 +33,5 @@ const MainPage = () => {
       </aside>
       </Layout>
   )
-};export default MainPage;
+};
+export default MainPage;

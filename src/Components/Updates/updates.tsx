@@ -1,10 +1,11 @@
-import latestupdates from "../../mocks/latest-updates.json"
+import { latestUpdates} from "../../mocks/latest-updates.json"
 import UpdateNotification from "./update-notification"
 export default function LatestUpdates() {
   return (
-    <aside className="flex flex-col px-2 py-3 gap-4">
+    <aside className="flex flex-col px-2 py-3 gap-4 h-screen min-h-[152px] ">
       <h1 className="text-4xl">Latest Updates</h1>
-      { latestupdates.map((notific)=>(
+      <div className="h-full overflow-y-scroll ">
+      { latestUpdates.map((notific)=>(
         <UpdateNotification
           key={notific.id}
           username={notific.username}
@@ -14,6 +15,7 @@ export default function LatestUpdates() {
           imageUrls={notific.imageUrls}
         />
       ))}
+      </div>
     </aside>
   )
 }
