@@ -1,0 +1,189 @@
+[
+  {
+    "id": "post1",
+    "username": "alex_adventure",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/32.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+      "https://images.unsplash.com/photo-1501785888041-af3ef285b470"
+    ],
+    "caption": "Exploring the mountains this weekend. The views were absolutely breathtaking! #nature #adventure #hiking",
+    "likes": 245,
+    "comments": 37,
+    "createdAt": "2 hours ago",
+    "location": "Rocky Mountains",
+    "isLiked": true,
+    "topics": ["Nature", "Adventure", "Hiking"]
+  },
+  {
+    "id": "post2",
+    "username": "foodie_central",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/44.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1482049016688-2d3e1b311543"
+    ],
+    "caption": "Homemade pasta with fresh ingredients from the farmer's market. Recipe in bio! #foodie #homecooking #delicious",
+    "likes": 513,
+    "comments": 49,
+    "createdAt": "4 hours ago",
+    "location": "Home Kitchen",
+    "isLiked": false,
+    "topics": ["Food", "Cooking", "Recipes"]
+  },
+  {
+    "id": "post3",
+    "username": "tech_guru",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/67.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1517694712202-14dd9538aa97",
+      "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
+      "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b"
+    ],
+    "caption": "Just upgraded my home office setup with three new monitors. Productivity level over 9000! #technology #homeoffice #workfromhome",
+    "likes": 762,
+    "comments": 128,
+    "createdAt": "6 hours ago",
+    "location": "Tech Hub",
+    "isLiked": true,
+    "topics": ["Technology", "Gadgets", "Productivity"]
+  },
+  {
+    "id": "post4",
+    "username": "fitness_fanatic",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/63.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438"
+    ],
+    "caption": "New personal record today! 5k in under 20 minutes. Hard work pays off! #running #fitness #goals",
+    "likes": 389,
+    "comments": 42,
+    "createdAt": "8 hours ago",
+    "location": "City Park",
+    "isLiked": false,
+    "topics": ["Fitness", "Running", "Training"]
+  },
+  {
+    "id": "post5",
+    "username": "travel_junkie",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/26.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1499856871958-5b9357976b82",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+      "https://images.unsplash.com/photo-1520454974749-611b7248ffdb"
+    ],
+    "caption": "Paradise found! This beach has the clearest water I've ever seen. Taking a much needed break from the hustle. #travel #beach #vacation",
+    "likes": 927,
+    "comments": 84,
+    "createdAt": "12 hours ago",
+    "location": "Tropical Beach",
+    "isLiked": true,
+    "topics": ["Travel", "Vacation", "Beach"]
+  },
+  {
+    "id": "post6",
+    "username": "pet_lover",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/22.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1529778873920-4da4926a72c2"
+    ],
+    "caption": "Meet the newest member of our family! This little guy needs a name, any suggestions? #pets #kitten #catlover",
+    "likes": 651,
+    "comments": 193,
+    "createdAt": "18 hours ago",
+    "location": "Home Sweet Home",
+    "isLiked": false,
+    "topics": ["Pets", "Lifestyle", "Family"]
+  },
+  {
+    "id": "post7",
+    "username": "art_enthusiast",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/89.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5",
+      "https://images.unsplash.com/photo-1501084817091-a4f3d1d19e07"
+    ],
+    "caption": "Visited the new exhibition at the modern art museum today. These installations really challenge your perception of space and time. #art #modernart #museum",
+    "likes": 342,
+    "comments": 29,
+    "createdAt": "22 hours ago",
+    "location": "Metropolitan Museum",
+    "isLiked": true,
+    "topics": ["Art", "Culture", "Museum"]
+  },
+  {
+    "id": "post8",
+    "username": "urban_gardener",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/52.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735"
+    ],
+    "caption": "First harvest from my balcony garden! Organic tomatoes taste so much better than store-bought. #urbangardening #organic #sustainability",
+    "likes": 276,
+    "comments": 38,
+    "createdAt": "1 day ago",
+    "location": "Urban Jungle",
+    "isLiked": false,
+    "topics": ["Gardening", "Sustainability", "Hobby"]
+  },
+  {
+    "id": "post9",
+    "username": "music_lover",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/72.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4"
+    ],
+    "caption": "Best concert of the year! The energy was incredible and they played all my favorite songs. #livemusic #concert #nightout",
+    "likes": 508,
+    "comments": 62,
+    "createdAt": "1 day ago",
+    "location": "Music Arena",
+    "isLiked": true,
+    "topics": ["Music", "Entertainment", "Nightlife"]
+  },
+  {
+    "id": "post10",
+    "username": "book_worm",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/37.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1526243741027-444d633d7365"
+    ],
+    "caption": "Just finished this incredible book. The character development was masterful and the ending left me speechless. Highly recommend! #reading #bookstagram #literature",
+    "likes": 187,
+    "comments": 45,
+    "createdAt": "2 days ago",
+    "location": "Cozy Reading Nook",
+    "isLiked": false,
+    "topics": ["Books", "Reading", "Literature"]
+  },
+  {
+    "id": "post11",
+    "username": "sports_fan",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/83.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff"
+    ],
+    "caption": "What a game! Our team pulled off a comeback win in the final seconds. The crowd went wild! #sports #basketball #gameday",
+    "likes": 422,
+    "comments": 67,
+    "createdAt": "2 days ago",
+    "location": "City Arena",
+    "isLiked": true,
+    "topics": ["Sports", "Basketball", "Team"]
+  },
+  {
+    "id": "post12",
+    "username": "fitness_coach",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/29.jpg",
+    "imageUrls": [
+      "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b",
+      "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61"
+    ],
+    "caption": "New training program launching next week! Focus on functional movements and strength building. Sign up link in bio. #fitness #training #strength",
+    "likes": 341,
+    "comments": 53,
+    "createdAt": "3 days ago",
+    "location": "Elite Gym",
+    "isLiked": false,
+    "topics": ["Sports", "Training", "Fitness"]
+  }
+]

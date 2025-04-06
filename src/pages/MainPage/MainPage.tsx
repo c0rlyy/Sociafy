@@ -1,4 +1,3 @@
-import { useAuthStore } from "../../store/authStore";
 import Layout from "../../Components/Layout/Layout";
 import HomeButton from "../../Components/Buttons/HomeButton";
 import MessagesButton from "../../Components/Buttons/MessagesButton";
@@ -6,8 +5,13 @@ import AddButton from "../../Components/Buttons/AddButton";
 import LogoutButton from "../../Components/Buttons/LogoutButton";
 import Logo from "../../../public/assets/Icons/SFy.png"
 import SettingsButton from "../../Components/Buttons/SettingsButton";
-import DefaultAvatar from "../../Components/Avatar/Avatar";
+
 import UserInfo from "../../Components/UserInfo/UserInfo";
+import ReelItem from "../../Components/Reels/reel-item";
+import Reels from "../../Components/Reels/reels";
+import Posts from "../../Components/Post/posts";
+import { Context } from "react-responsive";
+import Content from "../../Components/Content/Content";
 const MainPage = () => {
   return (
       <Layout>
@@ -23,12 +27,13 @@ const MainPage = () => {
           <SettingsButton/>
         </div>
       </main>
-      <aside className=" w-full border ">
+      <aside className=" w-full border flex flex-col ">
         <header className="flex items-center border border-slate-500">
           <UserInfo/>
         </header>
+          <Reels/>
+          <Content/>
       </aside>
       </Layout>
-  );
-};
-export default MainPage;
+  )
+};export default MainPage;
