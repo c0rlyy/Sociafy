@@ -1,5 +1,7 @@
 export type ProfileT = {
   description: string | null;
+  profile_id: number;
+  picture_id: number | null;
 };
 export type UserT = {
   email?: string | null;
@@ -34,5 +36,5 @@ export interface AuthStateT {
   getUser: () => Promise<UserT | undefined | null>;
   user: UserT | null;
   loading: boolean;
-  loadingUserData:boolean
+  loadingUserData: boolean;
 }

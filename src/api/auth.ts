@@ -1,27 +1,54 @@
 import { AxiosError, isAxiosError } from "axios";
-import api from "../axios-instance/axios"
-import type {  AuthorizedT, UserT } from "../types/auth";
+import api from "../axios-instance/axios";
+import type { AuthorizedT, UserT } from "../types/auth";
 import toast from "react-hot-toast";
 
-export const login = async (userData: UserT):Promise<AuthorizedT | undefined> => {
+export interface File {
+  path: string;
+  file_type: string;
+  file_id: number;
+}
+
+export interface FollowCounts {
+  followers: number;
+  followed: number;
+}
+
+export interface Post {
+  post_title: string;
+  post_description: string;
+  post_id: number;
+  profile_id: number;
+  user_id: number;
+  post_files: File[];
+}
+
+export interface UserProfileWithPosts {
+  description: string | null;
+  profile_id: number;
+  posts: Post[];
+}
+
+export const login = async (
+  userData: UserT,
+): Promise<AuthorizedT | undefined> => {
   try {
     const response = await api.post(
       "/login/access-token",
       {
-        username:userData.username,
-        password:userData.password
+        username: userData.username,
+        password: userData.password,
       },
-      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+      { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
     );
     return response.data;
   } catch (error) {
-    if (error instanceof AxiosError)
-    {
-      toast.error(error.response?.data.detail)
-      throw error.response?.data.detail
+    if (error instanceof AxiosError) {
+      toast.error(error.response?.data.detail);
+      throw error.response?.data.detail;
     }
-      toast.error("Server Error")
-      throw new Error('Server error')
+    toast.error("Server Error");
+    throw new Error("Server error");
   }
 };
 export const addUser = async (data: UserT): Promise<AuthorizedT> => {
@@ -31,23 +58,59 @@ export const addUser = async (data: UserT): Promise<AuthorizedT> => {
       password: data.password,
       user_name: data.username,
     });
-    console.log(response.data)
-    toast.success("Successfully registered account !")
-    return response?.data
+    console.log(response.data);
+    toast.success("Successfully registered account !");
+    return response?.data;
   } catch (error) {
     if (isAxiosError(error)) {
-      toast.error(error.response?.data?.detail)
+      toast.error(error.response?.data?.detail);
       throw new Error(error?.response?.data?.detail);
     }
     throw new Error(`Unexpected error occurred: ${String(error)}`);
   }
 };
-export const getUserData = async ():Promise<UserT | undefined> => {
+export const getUserData = async (): Promise<UserT | undefined> => {
   try {
-    const response= await api.get("/users/me")
-    return response.data
+    const response = await api.get("/users/me");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user data", error);
   }
-  catch (error) {
-    console.error("Error fetching user data", error)
+};
+
+export const getUserProfileWithPosts = async (
+  profileId: number,
+): Promise<UserProfileWithPosts | undefined> => {
+  try {
+    const response = await api.get(`/profile/${profileId}/posts`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch profile posts:", error);
+    // throw error;
   }
-}
+};
+
+export const getFileBlobData = async (
+  fileId: number,
+): Promise<Blob | undefined> => {
+  try {
+    const response = await api.get(`/file-retrive/${fileId}`, {
+      responseType: "blob",
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch profile posts:", error);
+    // throw error;
+  }
+};
+
+export const getProfileFollowCounts = async (
+  profileId: number,
+): Promise<FollowCounts | undefined> => {
+  try {
+    const response = await api.get(`follows/follow-counts/${profileId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch profile posts:", error);
+  }
+};

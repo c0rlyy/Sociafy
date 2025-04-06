@@ -32,7 +32,9 @@ export const useAuthStore = create<AuthStateT>((set, get) => ({
       set(() => ({ user: userD, isLogged: true }));
       return userD;
     } catch (error) {
+      console.log(error);
       set(() => ({ isLogged: false, user: null }));
+      // return error as Error
     } finally {
       set({ loadingUserData: false });
     }
