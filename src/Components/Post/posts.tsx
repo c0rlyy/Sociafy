@@ -3,9 +3,9 @@ import Dot from "../Dots/dot"
 import PostItem from "./post-item"
 export default function Posts() {
   return (
-    <main className="flex flex-col px-2 py-3 h-[780px]">
-      <h1 className="text-4xl">Friend's Posts</h1>
-      <article className="grid grid-cols-1 gap-2  border-red-500 p-3 overflow-y-scroll ">
+    <main className="flex flex-col px-4 py-6 h-[900px] bg-gray-100 rounded-md m-6">
+      <h1 className="text-4xl ">Friend's Posts</h1>
+      <article className="grid grid-cols-1 gap-2   m-4 overflow-y-scroll  ">
         { posts.map((post)=>(
         <PostItem key={post.id}
           imageUrls={post.imageUrls}

@@ -3,20 +3,16 @@ import ProtectedRoute from "../../pages/Secret/ProtectedRoute";
 import { useTheme } from "../../store/themeContext";
 import FooterMenu from "../FooterMenu/FooterMenu";
 import FooterSearchBar from "../FooterMenu/FooterSearchBar";
+import Hamburger from "../Icon/Hamburger";
 type Props = {
   children: ReactNode;
 };
 const Layout: React.FC<Props> = ({ children }) => {
   const { theme } = useTheme();
-  const searchBarHandler = () => {
-    setOpenedSearch((prev) => !prev);
-  };
-
-  const [openedSearch, setOpenedSearch] = useState(false);
-
   return (
-    <article className="grid grid-cols-1 md:grid-cols-[280px_1fr] border"
+    <article className="flex  relative"
     >
+
       { children}
     </article>
   );

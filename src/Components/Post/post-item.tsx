@@ -26,9 +26,9 @@ export default function PostItem({
   isLiked
 }: PostItemPropsT) {
   return (
-    <div className="w-full border border-gray-200 rounded-md bg-white mb-4">
+    <div className=" mx-auto max-w-[800px] w-[450px]  border border-gray-200 rounded-md bg-white mb-4">
       {/* Header */}
-      <div className="flex items-center justify-between p-3">
+      <div className="flex items-center justify-between p-3 border">
         <div className="flex items-center space-x-2">
           {avatarUrl ? (
             <img
@@ -47,16 +47,23 @@ export default function PostItem({
         <Dots className="text-gray-600" />
       </div>
 
-      {/* Image Gallery */}
-      <div className="relative h-[500px]">
-        {imageUrls.map((url, index) => (
-          <img
-            key={index}
-            src={url}
-            alt={`Post by ${username}`}
-            className="w-full absolute h-full aspect-square top-0 right-0"
-          />
-        ))}
+      <div className="relative w-full aspect-square overflow-hidden border mx-0 m-auto">
+        {imageUrls.length > 0 ? (
+          <div className="flex overflow-x-auto snap-x snap-mandatory h-full">
+            {imageUrls.map((url, index) => (
+              <img
+                key={index}
+                src={url}
+                alt={`Post by ${username}`}
+                className="w-full h-full flex-shrink-0 snap-center object-cover"
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+            <p className="text-gray-400">No image</p>
+          </div>
+        )}
       </div>
 
       {/* Actions */}
