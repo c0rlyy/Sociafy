@@ -15,6 +15,8 @@ TODO: Post
 TODO: Security:
 1. Do MainPage mozna dostac sie przez url
 2. Po zamknięciu kart usunac token z LS,(window=>beforeunload w useEffect)
+3. Po wygasniecu tokena i ponownym wejscu na apke jezeli nie ma neta i requesty nie przechodzą to z jakiegos powodu
+nie przekierowuje na landing page
 
 
 TODO: Errory
@@ -31,10 +33,10 @@ TODO: Errory
 Likes
 1. Kazdy post ma button
 2. Po kliknieciu wykonuje sie fetch like'owania danego posta(post_id)
-3. Jesli post jest zalajkowany zablokuj wykonanie fetcha
-4. Jesli kliknieto w button, to +=1 do posta
+3. Jesli post jest zalajkowany zablokuj wykonanie fetcha ( nie musisz dostaniesz error z backendu ze juz liknales, zamisat tego powinien byc unlike)
+4. Jesli kliknieto w button, to +=1 do posta ()
 5. Przetrzymywac state dla posta
-6. User nie moze drugi raz polajkowac posta, jezeli juz to zrobił
+6. User nie moze drugi raz polajkowac posta, jezeli juz to zrobił (nie moze dostaniesz error z backendu)
 7.
 
 FIX:
