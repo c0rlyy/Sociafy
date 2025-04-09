@@ -8,6 +8,7 @@ import ProtectedRoute from "./pages/protected/ProtectedRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ModalManager from "./Components/Modals/ModalManager";
 import { Toaster } from "react-hot-toast";
+import UserPage from "./pages/UserPage/userPage";
 function App() {
   const queryClient = new QueryClient();
   const router = createBrowserRouter([
@@ -23,6 +24,14 @@ function App() {
         </ProtectedRoute>
       ),
     },
+    {
+      path:"/:user",
+      element: (
+        <ProtectedRoute>
+          <UserPage/>
+        </ProtectedRoute>
+      )
+    }
   ]);
   return (
     <QueryClientProvider client={queryClient}>

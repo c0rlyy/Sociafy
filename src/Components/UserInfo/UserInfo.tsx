@@ -4,6 +4,7 @@ import { useAuthStore } from "../../store/authStore";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import Loader from "../../pages/Loader/Loader";
+import Popover from "../Popover/Popover";
 import {
   FollowCounts,
   getFileBlobData,
@@ -12,6 +13,8 @@ import {
   UserProfileWithPosts,
 } from "../../api/auth";
 import UserInfoCard from "./UserInfoCard";
+import UserPopover from "../Popover/UserPopover";
+import { usePopoverStore } from "../../store/popoverStore";
 
 export interface UserPorfilePostsWithFollowsCount {
   userProfileData: UserProfileWithPosts;
@@ -25,6 +28,7 @@ export default function UserInfo() {
   const [userProfileData, setUserProfileData] = useState<
     UserPorfilePostsWithFollowsCount | undefined
   >();
+  const {popoverType, isPopoverOpened }=usePopoverStore()
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -36,6 +40,7 @@ export default function UserInfo() {
         const profileFollowCounts = await getProfileFollowCounts(
           user.profile.profile_id,
         );
+        console.log(user)
         const fullData = {
           followCounts: profileFollowCounts,
           userProfileData: profilePostData,
@@ -53,6 +58,7 @@ export default function UserInfo() {
 
   return (
     <div className=" self-end h-full center flex ">
+      {popoverType ==="user-popup" && isPopoverOpened && <UserPopover userData={user} userProfileData={userProfileData}/> }
       <UserInfoCard  user={user} userProfileData={userProfileData}/>
       {/* This code below should be implemented inside of /userProfile page  */}
 

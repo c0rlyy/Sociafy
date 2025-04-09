@@ -65,6 +65,7 @@ const MainPage = () => {
         variants={contentVariants}
         className="flex-grow flex flex-col h-screen overflow-y-auto bg-gray-50">
           <header className="flex mt-12 w-full justify-center   ">
+
           <Reels/>
           <UserInfo/>
           </header>
