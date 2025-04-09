@@ -1,7 +1,7 @@
 import { create } from 'zustand'
-import type { ModalStore } from '../types/auth'
+import type { ModalStoreT } from '../types/ui';
 
-const useModalStore = create<ModalStore>((set) => ({
+const useModalStore = create<ModalStoreT>((set) => ({
   isOpen: false,
   open: (type:string, data=null ) => set(() => ({ isOpen: true, modalType:type, modalData:data })),
   close: () => set({ isOpen: false, modalType:"", modalData:"" }),

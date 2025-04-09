@@ -1,8 +1,13 @@
 import MenuButton from "./Template/MenuButton";
 import Icon from "../Icon/Icon";
+import useModalStore from "../../modalStore/modalStore";
 export default function AddButton(){
+  const { open, modalType}=useModalStore()
+  const openCreatePostModal=()=>{
+        open("post")
+  }
   return (
-    <MenuButton nameProp="Create Post" color="#4FDFFF" >
+    <MenuButton onClick={openCreatePostModal}  nameProp="Create Post" color="#4FDFFF" >
       <Icon>
         <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <g clip-path="url(#clip0_6_123)">
@@ -17,9 +22,6 @@ export default function AddButton(){
         </clipPath>
         </defs>
         </svg>
-
-
-
       </Icon>
     </MenuButton>
   )

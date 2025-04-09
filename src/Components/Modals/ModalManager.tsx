@@ -1,4 +1,5 @@
 import useModalStore from "../../modalStore/modalStore"
+import PostModal from "./PostModal/PostModal"
 
 import SignUpModal from "./SignUpModal/SignUpModal"
 
@@ -8,6 +9,7 @@ const ModalManager = () => {
   return (
   <>
     {modalType === "sign-up" && <SignUpModal />}
+    {modalType==="post" && <PostModal/> }
   </>
   )
 }

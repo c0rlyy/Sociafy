@@ -40,20 +40,7 @@ export interface UserProfileWithPosts {
   posts: Post[];
 }
 
-type ModalDataT =
-  | {
-      [key: string]: string;
-    }
-  | "";
-export type ModalType = "sign-up" | "";
-export interface ModalStore {
-  open: (modalType: ModalType) => void;
-  isOpen: boolean;
-  onConfirm: () => void;
-  setModalData: (data: ModalDataT) => void;
-  modalType: ModalType;
-  close: () => void;
-}
+
 export interface AuthStateT {
   getToken: () => string | null;
   setToken: (server_token: string) => string | null | undefined;

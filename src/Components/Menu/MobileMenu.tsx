@@ -1,6 +1,11 @@
+import useModalStore from "../../modalStore/modalStore";
 import Icon from "../Icon/Icon";
 
 export default function MobileMenu(){
+  const { open}=useModalStore()
+  const openMobilePostCreator=()=>{
+    open("post")
+  }
   return (
     <div className="absolute bottom-0 w-full md:hidden border bg-white">
       <div className="flex items-center justify-center p-4 gap-4">
@@ -11,7 +16,7 @@ export default function MobileMenu(){
         <span className="text-sm text-gray-500">Home</span>
         </div>
 
-        <div className="flex flex-col items-center">
+        <div onClick={openMobilePostCreator} className="flex flex-col items-center">
         <Icon>
         <svg  xmlns="http://www.w3.org/2000/svg"  width="48"  height="48"  viewBox="0 0 24 24"  fill="none"  stroke="#39aaf7"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-library-plus"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 3m0 2.667a2.667 2.667 0 0 1 2.667 -2.667h8.666a2.667 2.667 0 0 1 2.667 2.667v8.666a2.667 2.667 0 0 1 -2.667 2.667h-8.666a2.667 2.667 0 0 1 -2.667 -2.667z" /><path d="M4.012 7.26a2.005 2.005 0 0 0 -1.012 1.737v10c0 1.1 .9 2 2 2h10c.75 0 1.158 -.385 1.5 -1" /><path d="M11 10h6" /><path d="M14 7v6" /></svg>
         </Icon>
