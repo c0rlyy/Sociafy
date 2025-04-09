@@ -45,7 +45,6 @@ export default function UserInfo() {
           followCounts: profileFollowCounts,
           userProfileData: profilePostData,
         } as UserPorfilePostsWithFollowsCount;
-        console.log(fullData);
         setUserProfileData(fullData);
       }
     };
@@ -103,6 +102,7 @@ export default function UserInfo() {
             </div>
           </div>
         ))}
+<<<<<<< HEAD
       </div> */}
     </div>
   );

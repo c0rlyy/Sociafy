@@ -1,33 +1,9 @@
 import { AxiosError, isAxiosError } from "axios";
 import api from "../axios-instance/axios";
-import type { AuthorizedT, UserT } from "../types/auth";
+import type { AuthorizedT, FollowCounts, UserProfileWithPosts, UserT } from "../types/auth";
 import toast from "react-hot-toast";
 
-export interface File {
-  path: string;
-  file_type: string;
-  file_id: number;
-}
 
-export interface FollowCounts {
-  followers: number;
-  followed: number;
-}
-
-export interface Post {
-  post_title: string;
-  post_description: string;
-  post_id: number;
-  profile_id: number;
-  user_id: number;
-  post_files: File[];
-}
-
-export interface UserProfileWithPosts {
-  description: string | null;
-  profile_id: number;
-  posts: Post[];
-}
 
 export const login = async (
   userData: UserT,
