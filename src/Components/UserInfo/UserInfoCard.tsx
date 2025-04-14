@@ -1,7 +1,16 @@
+import { UserPorfilePostsWithFollowsCount, UserT } from "../../types/auth";
 import DefaultAvatar from "../Avatar/Avatar";
 import Badge from "../Badge/Badge";
 
-export default function UserInfoCard({user,userProfileData}) {
+type UserInfoCardProps = {
+  user: UserT;
+  userProfileData: UserPorfilePostsWithFollowsCount;
+};
+
+export default function UserInfoCard({
+  user,
+  userProfileData,
+}: UserInfoCardProps) {
   return (
     <div className="flex h-screen">
       {user?.profile?.picture_id ? (

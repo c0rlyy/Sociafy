@@ -1,101 +1,76 @@
-import Badge from "../Badge/Badge";
-import DefaultAvatar from "../Avatar/Avatar";
 import { useAuthStore } from "../../store/authStore";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import Loader from "../../pages/Loader/Loader";
 import {
-  FollowCounts,
-  getFileBlobData,
   getProfileFollowCounts,
   getUserProfileWithPosts,
-  UserProfileWithPosts,
 } from "../../api/auth";
 import UserInfoCard from "./UserInfoCard";
-
-export interface UserPorfilePostsWithFollowsCount {
-  userProfileData: UserProfileWithPosts;
-  followCounts: FollowCounts;
-}
+import PostItem from "../Post/PostItem";
+import { UserPorfilePostsWithFollowsCount, UserT } from "../../types/auth";
 
 export default function UserInfo() {
   const getUser = useAuthStore((state) => state.getUser);
   const user = useAuthStore(useShallow((state) => state.user));
-  const userLoading = useAuthStore((state) => state.loadingUserData);
   const [userProfileData, setUserProfileData] = useState<
     UserPorfilePostsWithFollowsCount | undefined
   >();
+  const [isLoading, setIsLoading] = useState(true);
 
+  //TODO handle error in a better way coz it fucking sucks
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await getUser();
-      if (user && user.profile) {
-        const profilePostData = await getUserProfileWithPosts(
-          user.profile.profile_id,
-        );
-        const profileFollowCounts = await getProfileFollowCounts(
-          user.profile.profile_id,
-        );
-        const fullData = {
-          followCounts: profileFollowCounts,
-          userProfileData: profilePostData,
-        } as UserPorfilePostsWithFollowsCount;
-        setUserProfileData(fullData);
+      try {
+        const user = await getUser();
+        if (!user?.profile) throw Error("error while fetching user");
+
+        const profileId = user.profile.profile_id;
+        const [userProfileData, followCounts] = await Promise.all([
+          getUserProfileWithPosts(profileId),
+          getProfileFollowCounts(profileId),
+        ]);
+
+        setUserProfileData({
+          userProfileData,
+          followCounts,
+        } as UserPorfilePostsWithFollowsCount);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
+
     fetchUser();
   }, []);
 
-  if (userLoading) {
+  if (isLoading) {
     return <Loader></Loader>;
   }
 
   return (
-    <div className="flex h-screen">
-      <UserInfoCard user={user} userProfileData={userProfileData}></UserInfoCard>
-      <div className="ml-4 max-h-screen flex-1 overflow-y-auto">
-        {userProfileData?.userProfileData?.posts.map((post) => (
-          <div key={post.post_id} className="mb-4 rounded-md border p-2">
-            <p className="font-bold">{post.post_title}</p>
-            <p className="text-sm">{post.post_description}</p>
-
-            <div className="mt-2 flex flex-wrap gap-2">
-              {post.post_files.map((file) => {
-                const isImage =
-                  file.file_type.startsWith("i") ||
-                  file.file_type.startsWith("p");
-                const isVideo =
-                  file.file_type.startsWith("m") ||
-                  file.file_type.startsWith("v");
-
-                return (
-                  <div key={file.file_id}>
-                    {isImage && (
-                      <img
-                        src={`http://localhost:8000/api/v1/file-retrive/${file.file_id}`}
-                        alt="post image"
-                        className="mt-1 h-32 w-32 rounded-md object-cover"
-                      />
-                    )}
-                    {isVideo && (
-                      <video
-                        controls
-                        className="mt-1 h-32 w-32 rounded-md object-cover"
-                      >
-                        <source
-                          src={`http://localhost:8000/api/v1/file-retrive/${file.file_id}`}
-                          type="video/mp4"
-                        />
-                        Your browser does not support the video tag.
-                      </video>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        ))}
+    <div className="flex h-screen w-max overflow-scroll">
+      <UserInfoCard
+        user={user as UserT}
+        userProfileData={userProfileData as UserPorfilePostsWithFollowsCount}
+      ></UserInfoCard>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {userProfileData?.userProfileData.posts.map((post) => {
+          return (
+            <PostItem
+              avatarFileId={user?.profile?.picture_id}
+              username={user?.user_name as string}
+              description={
+                userProfileData?.userProfileData.description as string
+              }
+              imageFiles={post.post_files}
+              postId={post.post_id}
+              key={post.post_id}
+            ></PostItem>
+          );
+        })}
       </div>
     </div>
-  )
+  );
 }

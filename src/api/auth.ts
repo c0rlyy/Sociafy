@@ -1,9 +1,12 @@
 import { AxiosError, isAxiosError } from "axios";
 import api from "../axios-instance/axios";
-import type { AuthorizedT, FollowCounts, UserProfileWithPosts, UserT } from "../types/auth";
+import type {
+  AuthorizedT,
+  FollowCounts,
+  UserProfileWithPosts,
+  UserT,
+} from "../types/auth";
 import toast from "react-hot-toast";
-
-
 
 export const login = async (
   userData: UserT,
@@ -27,6 +30,7 @@ export const login = async (
     throw new Error("Server error");
   }
 };
+
 export const addUser = async (data: UserT): Promise<AuthorizedT> => {
   try {
     const response = await api.post("/users", {
@@ -34,6 +38,7 @@ export const addUser = async (data: UserT): Promise<AuthorizedT> => {
       password: data.password,
       user_name: data.username,
     });
+
     console.log(response.data);
     toast.success("Successfully registered account !");
     return response?.data;
@@ -76,7 +81,6 @@ export const getFileBlobData = async (
     return response.data;
   } catch (error) {
     console.error("Failed to fetch profile posts:", error);
-    // throw error;
   }
 };
 

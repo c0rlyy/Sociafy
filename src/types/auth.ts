@@ -3,6 +3,7 @@ export type ProfileT = {
   profile_id: number;
   picture_id: number | null;
 };
+
 export type UserT = {
   email?: string | null;
   user_name: string | null;
@@ -40,6 +41,20 @@ export interface UserProfileWithPosts {
   posts: Post[];
 }
 
+export interface UserPorfilePostsWithFollowsCount {
+  userProfileData: UserProfileWithPosts;
+  followCounts: FollowCounts;
+}
+
+export interface UserPostData {
+  post_title: string;
+  post_description: string;
+  post_id: number;
+  profile_id: number;
+  user_id: number;
+  post_files: File[];
+}
+
 type ModalDataT =
   | {
       [key: string]: string;
@@ -63,5 +78,4 @@ export interface AuthStateT {
   getUser: () => Promise<UserT | undefined | null>;
   user: UserT | null;
   loading: boolean;
-  loadingUserData: boolean;
 }

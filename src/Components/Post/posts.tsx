@@ -1,27 +1,28 @@
-import posts from "../../mocks/posts.json"
-import Dot from "../Dots/dot"
-import PostItem from "./post-item"
-export default function Posts() {
+import posts from "../../mocks/posts.json";
+import { Post, UserT } from "../../types/auth";
+import PostItem, {PostItemPropsT} from "./PostItem";
+
+type PostsProps = {
+  posts:PostItemPropsT[]
+}
+
+export default function Posts({posts}:PostsProps) {
   return (
-    <main className="flex flex-col px-2 py-3 h-[780px]">
-      <h1 className="text-4xl">Friend's Posts</h1>
-      <article className="grid grid-cols-1 gap-2  border-red-500 p-3 overflow-y-scroll ">
-        { posts.map((post)=>(
-        <PostItem key={post.id}
-          imageUrls={post.imageUrls}
-          username={post.username}
-          avatarUrl={post.avatarUrl}
-          caption={post.caption}
-          likes={post.likes}
-          comments={post.comments}
-          createdAt={post.createdAt}
-          location={post.location}
-          isLiked={ post.isLiked}
+    <main className="flex h-[780px] flex-col px-2 py-3">
+      <article className="grid grid-cols-1 gap-2  overflow-y-scroll border-red-500 p-3 ">
+        {/* {posts.map((post) => (
+          <PostItem
+            key={post.postId}
+            postId={post.postId}
+            imageFiles={post.imageFiles}
+            username={post.username}
+            description={post.description}
+            avatarFileId={post.avatarFileId}
+            countOfComments={post.countOfComments}
+            countOfLikes={post.countOfLikes}
           />
-      ))}
+        ))} */}
       </article>
-
-
     </main>
-  )
+  );
 }

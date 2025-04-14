@@ -5,7 +5,6 @@ import { getUserData } from "../api/auth";
 
 export const useAuthStore = create<AuthStateT>((set, get) => ({
   loading: false,
-  loadingUserData: false,
   user: null,
   isLogged: !!Cookies.get("ACCESS_TOKEN"),
   setIsLogged: (value: boolean | undefined) => {
@@ -19,9 +18,7 @@ export const useAuthStore = create<AuthStateT>((set, get) => ({
     });
     return server_token;
   },
-
   getUser: async () => {
-    set(() => ({ loadingUserData: true }));
     try {
       const token = get().getToken();
       if (!token) {
@@ -34,9 +31,6 @@ export const useAuthStore = create<AuthStateT>((set, get) => ({
     } catch (error) {
       console.log(error);
       set(() => ({ isLogged: false, user: null }));
-      // return error as Error
-    } finally {
-      set({ loadingUserData: false });
     }
 
     return null;

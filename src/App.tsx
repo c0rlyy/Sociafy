@@ -1,4 +1,3 @@
-
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import LandingPage from "./pages/LandingPage/LandingPage";
@@ -27,9 +26,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-      <ModalManager/>
-      <Toaster/>
-      <RouterProvider router={router} />
+        <ModalManager />
+        <Toaster />
+        <RouterProvider router={router} />
       </ThemeProvider>
     </QueryClientProvider>
   );
