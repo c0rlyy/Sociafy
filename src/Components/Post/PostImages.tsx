@@ -1,9 +1,14 @@
-
 import { useState } from "react";
 
-export const PostImages = ({ allImagesState }) => {
+type PostImagesProps = {
+  imagesState: {
+    imagesUrls: string[];
+  };
+};
+
+export const PostImages = ({ imagesState }: PostImagesProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const images = allImagesState.imagesUrls;
+  const images = imagesState.imagesUrls;
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -15,10 +20,7 @@ export const PostImages = ({ allImagesState }) => {
 
   return (
     <div className="relative h-[500px] w-full overflow-hidden">
-      <img
-        src={images[currentIndex]}
-        className="h-full w-full object-cover"
-      />
+      <img src={images[currentIndex]} className="h-full w-full object-cover" />
 
       {images.length > 1 && (
         <>

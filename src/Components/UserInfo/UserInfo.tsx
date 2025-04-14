@@ -55,7 +55,7 @@ export default function UserInfo() {
         user={user as UserT}
         userProfileData={userProfileData as UserPorfilePostsWithFollowsCount}
       ></UserInfoCard>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-1">
         {userProfileData?.userProfileData.posts.map((post) => {
           return (
             <PostItem

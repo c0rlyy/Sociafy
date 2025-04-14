@@ -6,24 +6,24 @@ import { File } from "../../types/auth";
 import PostComments from "./PostComments";
 import PostLikes from "./PostLikes";
 import { PostImages } from "./PostImages";
+import Loader from "../../pages/Loader/Loader";
 
 // changed props post, like doesnt make sense to be a prop since it should be only internal state of the post itself
 // also changed props names to better reflect their actual content
 // kocham reacta
 export type PostItemPropsT = {
   username: string;
-  avatarFileId: number | null;
+  avatarFileId: number | null | undefined;
   imageFiles: File[];
   description: string;
   postId: number;
 };
 
-type AllImagesState = {
-  avatarUrl: undefined | string;
+export type ImagesState = {
   imagesUrls: undefined | string[];
 };
 
-const getImageUrlFromBlob = (imageBlob: Blob) => {
+export const getImageUrlFromBlob = (imageBlob: Blob) => {
   return URL.createObjectURL(imageBlob);
 };
 
@@ -34,22 +34,26 @@ export default function PostItem({
   description,
   postId,
 }: PostItemPropsT) {
-  const [allImagesState, setAllImagesState] = useState<AllImagesState>({
-    avatarUrl: undefined,
+  const [imagesState, setImagesState] = useState<ImagesState>({
     imagesUrls: [],
   });
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
 
   useEffect(() => {
     const getImageUrlBlobs = async () => {
       try {
+        if (avatarFileId) {
+          getFileBlobData(avatarFileId).then((blob) => {
+            const url = getImageUrlFromBlob(blob);
+            setAvatarUrl(url);
+          });
+        }
         const results = await Promise.all([
-          getFileBlobData(avatarFileId),
           ...imageFiles.map((file) => getFileBlobData(file.file_id)),
         ]);
 
-        setAllImagesState({
-          avatarUrl: getImageUrlFromBlob(results[0]),
-          imagesUrls: results.slice(1).map((v) => getImageUrlFromBlob(v)),
+        setImagesState({
+          imagesUrls: results.map((v) => getImageUrlFromBlob(v)),
         });
       } catch (e) {
         console.log(e);
@@ -57,9 +61,8 @@ export default function PostItem({
     };
     getImageUrlBlobs();
   }, []);
-  // <Suspense fallback="loading"></Suspense>
-  if (!allImagesState) {
-    return <h1>wait a second</h1>;
+  if (!imagesState) {
+    return <Loader></Loader>;
   }
 
   return (
@@ -68,7 +71,7 @@ export default function PostItem({
         <div className="flex items-center space-x-2">
           {avatarFileId ? (
             <img
-              src={allImagesState.avatarUrl}
+              src={avatarUrl}
               alt={`${username}'s avatar`}
               className="h-8 w-8 rounded-full object-cover"
             />
@@ -82,7 +85,7 @@ export default function PostItem({
         <Dots />
       </div>
       <div className="relative h-[500px]">
-        <PostImages allImagesState={allImagesState}></PostImages>
+        <PostImages imagesState={imagesState}></PostImages>
       </div>
       <PostLikes postId={postId}></PostLikes>
       <div className="px-3 pb-2">
