@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
-import { UserPorfilePostsWithFollowsCount, UserT } from "../../types/auth";
+import { UserMe, UserPorfilePostsWithFollowsCount, UserT } from "../../types/auth";
 import DefaultAvatar from "../Avatar/Avatar";
 import { getFileBlobData } from "../../api/auth";
 import { getImageUrlFromBlob } from "../Post/PostItem";
 
 type UserInfoCardProps = {
-  user: UserT;
+  user: UserMe;
   userProfileData: UserPorfilePostsWithFollowsCount;
 };
 
@@ -24,8 +24,9 @@ export default function UserInfoCard({
           imgRef.current.src = url;
         }
       });
+
     } catch (e) {
-      console.log(e);
+      // toast.error(e)
     }
   }, [user?.profile?.profile_id]);
 
@@ -38,7 +39,7 @@ export default function UserInfoCard({
       )}
       <div className="flex flex-col">
         <span>{user?.user_name}</span>
-        <span>followed: {userProfileData?.followCounts.followed}</span>
+        <span>followed: {userProfileData?.followCounts.followed || 0}</span>
         <span>followers: {userProfileData?.followCounts.followers || 0}</span>
       </div>
     </div>

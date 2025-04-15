@@ -9,7 +9,16 @@ export type UserT = {
   user_name: string | null;
   password: string | null;
   profile?: ProfileT;
+  id?: number;
 };
+
+export type UserMe = {
+  email: string;
+  user_name: string;
+  id?: number;
+  profile?: ProfileT;
+};
+
 export type AuthorizedT = {
   access_token: string;
   token_type: string;
@@ -75,7 +84,7 @@ export interface AuthStateT {
   logoutHandler: () => void;
   isLogged: boolean | undefined;
   setIsLogged: (value: boolean | undefined) => void;
-  getUser: () => Promise<UserT | undefined | null>;
-  user: UserT | null;
+  getUser: () => Promise<UserMe | undefined | null>;
+  user: UserMe | null;
   loading: boolean;
 }

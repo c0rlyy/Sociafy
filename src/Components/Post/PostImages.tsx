@@ -1,14 +1,12 @@
 import { useState } from "react";
 
 type PostImagesProps = {
-  imagesState: {
-    imagesUrls: string[];
-  };
+  imagesState: string[];
 };
 
 export const PostImages = ({ imagesState }: PostImagesProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const images = imagesState.imagesUrls;
+  const images = imagesState;
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));

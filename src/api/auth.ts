@@ -3,6 +3,7 @@ import api from "../axios-instance/axios";
 import type {
   AuthorizedT,
   FollowCounts,
+  UserMe,
   UserProfileWithPosts,
   UserT,
 } from "../types/auth";
@@ -50,24 +51,35 @@ export const addUser = async (data: UserT): Promise<AuthorizedT> => {
     throw new Error(`Unexpected error occurred: ${String(error)}`);
   }
 };
-export const getUserData = async (): Promise<UserT | undefined> => {
+export const getUserData = async (): Promise<UserMe> => {
   try {
     const response = await api.get("/users/me");
     return response.data;
   } catch (error) {
     console.error("Error fetching user data", error);
+    throw error;
+  }
+};
+
+export const getUserDataById = async (id: number): Promise<UserMe> => {
+  try {
+    const response = await api.get(`/users/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user data", error);
+    throw error;
   }
 };
 
 export const getUserProfileWithPosts = async (
   profileId: number,
-): Promise<UserProfileWithPosts | undefined> => {
+): Promise<UserProfileWithPosts> => {
   try {
     const response = await api.get(`/profile/${profileId}/posts`);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch profile posts:", error);
-    // throw error;
+    throw error;
   }
 };
 
@@ -85,11 +97,12 @@ export const getFileBlobData = async (fileId: number): Promise<Blob> => {
 
 export const getProfileFollowCounts = async (
   profileId: number,
-): Promise<FollowCounts | undefined> => {
+): Promise<FollowCounts> => {
   try {
     const response = await api.get(`follows/follow-counts/${profileId}`);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch profile posts:", error);
+    throw error;
   }
 };

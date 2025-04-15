@@ -19,6 +19,7 @@ export default function UserInfo() {
   const [isLoading, setIsLoading] = useState(true);
 
   //TODO handle error in a better way coz it fucking sucks
+  //TODO mayvbe move state down
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -30,13 +31,13 @@ export default function UserInfo() {
           getUserProfileWithPosts(profileId),
           getProfileFollowCounts(profileId),
         ]);
-
         setUserProfileData({
           userProfileData,
           followCounts,
         } as UserPorfilePostsWithFollowsCount);
       } catch (error) {
         console.error(error);
+        // toast.error("error fetching user")
       } finally {
         setIsLoading(false);
       }
@@ -48,11 +49,14 @@ export default function UserInfo() {
   if (isLoading) {
     return <Loader></Loader>;
   }
+  if (!user) {
+    return <h1>error while fetching user</h1>;
+  }
 
   return (
     <div className="flex h-screen w-max overflow-scroll">
       <UserInfoCard
-        user={user as UserT}
+        user={user}
         userProfileData={userProfileData as UserPorfilePostsWithFollowsCount}
       ></UserInfoCard>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-1">
@@ -60,13 +64,11 @@ export default function UserInfo() {
           return (
             <PostItem
               avatarFileId={user?.profile?.picture_id}
-              username={user?.user_name as string}
-              description={
-                userProfileData?.userProfileData.description as string
-              }
+              description={userProfileData?.userProfileData.description}
               imageFiles={post.post_files}
               postId={post.post_id}
               key={post.post_id}
+              userId={post.user_id}
             ></PostItem>
           );
         })}
