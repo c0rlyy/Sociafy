@@ -16,6 +16,7 @@ function SignUpModal() {
     close()
     reset()
   }
+
   const {
     register,
     handleSubmit,

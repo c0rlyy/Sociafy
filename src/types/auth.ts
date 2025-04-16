@@ -24,46 +24,6 @@ export type AuthorizedT = {
   token_type: string;
 };
 
-export interface File {
-  path: string;
-  file_type: string;
-  file_id: number;
-}
-
-export interface FollowCounts {
-  followers: number;
-  followed: number;
-}
-
-export interface Post {
-  post_title: string;
-  post_description: string;
-  post_id: number;
-  profile_id: number;
-  user_id: number;
-  post_files: File[];
-}
-
-export interface UserProfileWithPosts {
-  description: string | null;
-  profile_id: number;
-  posts: Post[];
-}
-
-export interface UserPorfilePostsWithFollowsCount {
-  userProfileData: UserProfileWithPosts;
-  followCounts: FollowCounts;
-}
-
-export interface UserPostData {
-  post_title: string;
-  post_description: string;
-  post_id: number;
-  profile_id: number;
-  user_id: number;
-  post_files: File[];
-}
-
 type ModalDataT =
   | {
       [key: string]: string;

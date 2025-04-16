@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchCommentsCount } from "../../api/post";
+import { fetchCommentsCount } from "../../api/comments";
 
 type PostCommentsProps = {
   postId: number;

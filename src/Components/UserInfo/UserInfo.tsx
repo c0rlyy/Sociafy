@@ -2,23 +2,25 @@ import { useAuthStore } from "../../store/authStore";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import Loader from "../../pages/Loader/Loader";
-import {
-  getProfileFollowCounts,
-  getUserProfileWithPosts,
-} from "../../api/auth";
+import {} from "../../api/auth";
 import UserInfoCard from "./UserInfoCard";
 import PostItem from "../Post/PostItem";
-import { UserPorfilePostsWithFollowsCount, UserT } from "../../types/auth";
+import { useError } from "../../store/ErrorContext";
+import { tryCatchErrorHandler } from "../../utils/error";
+import { getProfileFollowCounts } from "../../api/follow";
+import { getUserProfileWithPosts } from "../../api/profile";
+import { UserPorfilePostsWithFollowsCount } from "../../types/profile";
 
 export default function UserInfo() {
   const getUser = useAuthStore((state) => state.getUser);
   const user = useAuthStore(useShallow((state) => state.user));
+
   const [userProfileData, setUserProfileData] = useState<
     UserPorfilePostsWithFollowsCount | undefined
   >();
   const [isLoading, setIsLoading] = useState(true);
+  const { showError } = useError();
 
-  //TODO handle error in a better way coz it fucking sucks
   //TODO mayvbe move state down
   useEffect(() => {
     const fetchUser = async () => {
@@ -36,8 +38,7 @@ export default function UserInfo() {
           followCounts,
         } as UserPorfilePostsWithFollowsCount);
       } catch (error) {
-        console.error(error);
-        // toast.error("error fetching user")
+        tryCatchErrorHandler(error, showError);
       } finally {
         setIsLoading(false);
       }
@@ -49,15 +50,17 @@ export default function UserInfo() {
   if (isLoading) {
     return <Loader></Loader>;
   }
-  if (!user) {
-    return <h1>error while fetching user</h1>;
+
+  if (!user || !userProfileData) {
+    showError({ error: "error while getting user data, logging out" });
+    return;
   }
 
   return (
     <div className="flex h-screen w-max overflow-scroll">
       <UserInfoCard
         user={user}
-        userProfileData={userProfileData as UserPorfilePostsWithFollowsCount}
+        userProfileData={userProfileData}
       ></UserInfoCard>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-1">
         {userProfileData?.userProfileData.posts.map((post) => {

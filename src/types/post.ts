@@ -1,13 +1,5 @@
-export type Post = {
-  id: number;
-  author: string;
-  email: string;
-  authorImg: string;
-  postTitle: string;
-  postContent: string;
-  likes: number;
-  postImage: string;
-};
+import { File } from "./file";
+
 export type likePostResult = {
   post_id: number;
   profile_id: number;
@@ -36,3 +28,21 @@ export type ReadComments = {
   post_id: number;
   comment_content: string;
 };
+
+export interface UserPostData {
+  post_title: string;
+  post_description: string;
+  post_id: number;
+  profile_id: number;
+  user_id: number;
+  post_files: File[];
+}
+
+export interface Post {
+  post_title: string;
+  post_description: string;
+  post_id: number;
+  profile_id: number;
+  user_id: number;
+  post_files: File[];
+}

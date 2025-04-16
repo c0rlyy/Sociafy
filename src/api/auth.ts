@@ -70,39 +70,3 @@ export const getUserDataById = async (id: number): Promise<UserMe> => {
     throw error;
   }
 };
-
-export const getUserProfileWithPosts = async (
-  profileId: number,
-): Promise<UserProfileWithPosts> => {
-  try {
-    const response = await api.get(`/profile/${profileId}/posts`);
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch profile posts:", error);
-    throw error;
-  }
-};
-
-export const getFileBlobData = async (fileId: number): Promise<Blob> => {
-  try {
-    const response = await api.get(`/file-retrive/${fileId}`, {
-      responseType: "blob",
-    });
-    return response?.data;
-  } catch (error) {
-    console.error("Failed to fetch profile posts:", error);
-    throw error;
-  }
-};
-
-export const getProfileFollowCounts = async (
-  profileId: number,
-): Promise<FollowCounts> => {
-  try {
-    const response = await api.get(`follows/follow-counts/${profileId}`);
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch profile posts:", error);
-    throw error;
-  }
-};

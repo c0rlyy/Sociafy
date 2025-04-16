@@ -1,8 +1,14 @@
 import { useEffect, useRef } from "react";
-import { UserMe, UserPorfilePostsWithFollowsCount, UserT } from "../../types/auth";
+import {
+  UserMe,
+  UserT,
+} from "../../types/auth";
 import DefaultAvatar from "../Avatar/Avatar";
-import { getFileBlobData } from "../../api/auth";
 import { getImageUrlFromBlob } from "../Post/PostItem";
+import { useError } from "../../store/ErrorContext";
+import { tryCatchErrorHandler } from "../../utils/error";
+import { getFileBlobData } from "../../api/file";
+import { UserPorfilePostsWithFollowsCount } from "../../types/profile";
 
 type UserInfoCardProps = {
   user: UserMe;
@@ -14,6 +20,7 @@ export default function UserInfoCard({
   userProfileData,
 }: UserInfoCardProps) {
   const imgRef = useRef<HTMLImageElement>(null);
+  const { showError } = useError();
 
   useEffect(() => {
     if (!user?.profile?.picture_id) return;
@@ -24,11 +31,10 @@ export default function UserInfoCard({
           imgRef.current.src = url;
         }
       });
-
     } catch (e) {
-      // toast.error(e)
+      tryCatchErrorHandler(e, showError);
     }
-  }, [user?.profile?.profile_id]);
+  }, []);
 
   return (
     <div className="flex h-screen">

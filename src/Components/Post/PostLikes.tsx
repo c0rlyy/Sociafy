@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchCommentsCount, fetchLikesCount } from "../../api/post";
+import { fetchLikesCount } from "../../api/likes";
 
 interface PostLikesProps{
   postId:number

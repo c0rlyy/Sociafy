@@ -1,12 +1,13 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import DefaultAvatar from "../Avatar/Avatar";
 import Dots from "../Dots/dots";
-import { getFileBlobData, getUserData, getUserDataById } from "../../api/auth";
-import { File } from "../../types/auth";
+import {  getUserData, getUserDataById } from "../../api/auth";
 import PostComments from "./PostComments";
 import PostLikes from "./PostLikes";
 import { PostImages } from "./PostImages";
 import Loader from "../../pages/Loader/Loader";
+import { getFileBlobData } from "../../api/file";
+import { File } from "../../types/file";
 
 // changed props post, like doesnt make sense to be a prop since it should be only internal state of the post itself
 // also changed props names to better reflect their actual content
@@ -50,6 +51,7 @@ export default function PostItem({
             }
           });
         }
+
         //TODO to many request for username for the same user lol
         getUserDataById(userId).then((user) => {
           if (userNameRef.current && userNamePRef.current) {

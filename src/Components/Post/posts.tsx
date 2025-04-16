@@ -1,5 +1,4 @@
 import posts from "../../mocks/posts.json";
-import { Post, UserT } from "../../types/auth";
 import PostItem, {PostItemPropsT} from "./PostItem";
 
 type PostsProps = {
