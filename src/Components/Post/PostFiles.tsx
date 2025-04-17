@@ -1,12 +1,13 @@
 import { useState } from "react";
+import { FileData } from "./PostItem";
 
 type PostImagesProps = {
-  imagesState: string[];
+  fileData: FileData[];
 };
 
-export const PostImages = ({ imagesState }: PostImagesProps) => {
+export const PostFiles = ({ fileData }: PostImagesProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const images = imagesState;
+  const images = fileData;
 
   const handlePrev = () => {
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -18,7 +19,19 @@ export const PostImages = ({ imagesState }: PostImagesProps) => {
 
   return (
     <div className="relative h-[500px] w-full overflow-hidden">
-      <img src={images[currentIndex]} className="h-full w-full object-cover" />
+      {images[currentIndex].path.includes("images") ? (
+        <img
+          src={images[currentIndex].fileUrl}
+          className="h-full w-full object-cover"
+          alt="post media"
+        />
+      ) : (
+        <video
+          src={images[currentIndex].fileUrl}
+          className="h-full w-full object-cover"
+          controls
+        />
+      )}
 
       {images.length > 1 && (
         <>

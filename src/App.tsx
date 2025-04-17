@@ -8,6 +8,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ModalManager from "./Components/Modals/ModalManager";
 import { Toaster } from "react-hot-toast";
 import { ErrorProvider } from "./store/ErrorContext";
+import UserInfo from "./Components/UserInfo/UserInfo";
 function App() {
   const queryClient = new QueryClient();
   const router = createBrowserRouter([
@@ -22,7 +23,14 @@ function App() {
           <MainPage />
         </ProtectedRoute>
       ),
-    },
+    }, {
+         path: "/userProfile",
+         element: (
+           <ProtectedRoute>
+             <UserInfo />
+           </ProtectedRoute>
+         ),
+       },
   ]);
   return (
     <ErrorProvider>

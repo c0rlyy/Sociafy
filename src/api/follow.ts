@@ -1,7 +1,6 @@
 import axios, { isAxiosError } from "axios";
 import api from "../axios-instance/axios";
-import { FollowCounts } from "../types/auth";
-import { FollowedUsersResT, FollowersUsersResT } from "../types/follow";
+import { FollowCounts, FollowedUsersResT, FollowersUsersResT } from "../types/follow";
 
 
 

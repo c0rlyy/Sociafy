@@ -1,5 +1,6 @@
 
 import api from "../axios-instance/axios";
+import { UserProfileWithPosts } from "../types/profile";
 export const getUserProfileWithPosts = async (
   profileId: number,
   page: number = 0,

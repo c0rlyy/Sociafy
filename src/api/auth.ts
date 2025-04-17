@@ -2,9 +2,7 @@ import { AxiosError, isAxiosError } from "axios";
 import api from "../axios-instance/axios";
 import type {
   AuthorizedT,
-  FollowCounts,
   UserMe,
-  UserProfileWithPosts,
   UserT,
 } from "../types/auth";
 import toast from "react-hot-toast";

@@ -1,17 +1,17 @@
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
 import DefaultAvatar from "../Avatar/Avatar";
 import Dots from "../Dots/dots";
-import {  getUserData, getUserDataById } from "../../api/auth";
+import { getUserData, getUserDataById } from "../../api/auth";
 import PostComments from "./PostComments";
 import PostLikes from "./PostLikes";
-import { PostImages } from "./PostImages";
+import { PostFiles } from "./PostFiles";
 import Loader from "../../pages/Loader/Loader";
 import { getFileBlobData } from "../../api/file";
 import { File } from "../../types/file";
+import { tryCatchErrorHandler } from "../../utils/error";
+import { useError } from "../../store/ErrorContext";
+import UserAvatar from "../UserInfo/UserAvatar";
 
-// changed props post, like doesnt make sense to be a prop since it should be only internal state of the post itself
-// also changed props names to better reflect their actual content
-// kocham reacta
 export type PostItemPropsT = {
   avatarFileId: number | null | undefined;
   imageFiles: File[];
@@ -22,6 +22,10 @@ export type PostItemPropsT = {
 
 export type ImagesState = {
   imagesUrls: undefined | string[];
+};
+
+export type FileData = File & {
+  fileUrl: string;
 };
 
 export const getImageUrlFromBlob = (imageBlob: Blob) => {
@@ -35,43 +39,36 @@ export default function PostItem({
   postId,
   userId,
 }: PostItemPropsT) {
-  const [imagesState, setImagesState] = useState<string[] | null>(null);
-  const avatarImgRef = useRef<HTMLImageElement>(null);
-  const userNameRef = useRef<HTMLSpanElement>(null);
-  const userNamePRef = useRef<HTMLParagraphElement>(null);
+  const [fileState, setFileState] = useState<FileData[] | null>(null);
+  const [userName, setUserName] = useState("");
+  const { showError } = useError();
 
   useEffect(() => {
     const getImageUrlBlobs = async () => {
       try {
-        if (avatarFileId) {
-          getFileBlobData(avatarFileId).then((blob) => {
-            const url = getImageUrlFromBlob(blob);
-            if (avatarImgRef.current) {
-              avatarImgRef.current.src = url;
-            }
-          });
-        }
-
-        //TODO to many request for username for the same user lol
-        getUserDataById(userId).then((user) => {
-          if (userNameRef.current && userNamePRef.current) {
-            userNameRef.current.textContent = user?.user_name;
-            userNamePRef.current.textContent = user.user_name;
-          }
-        });
-
         const results = await Promise.all([
+          getUserDataById(userId),
           ...imageFiles.map((file) => getFileBlobData(file.file_id)),
         ]);
-
-        setImagesState(results.map((v) => getImageUrlFromBlob(v)));
+        setUserName(results[0].user_name);
+        const blobs = results.slice(1) as Blob[];
+        blobs.forEach((blob) => {
+          console.info(blob.type);
+        });
+        const filesWithUrls: FileData[] = imageFiles.map((file, idx) => ({
+          ...file,
+          fileUrl: getImageUrlFromBlob(blobs[idx]),
+        }));
+        setFileState(filesWithUrls);
       } catch (e) {
         console.log(e);
+        tryCatchErrorHandler(e, showError);
       }
     };
     getImageUrlBlobs();
   }, []);
-  if (!imagesState) {
+
+  if (!fileState) {
     return <Loader></Loader>;
   }
 
@@ -79,31 +76,20 @@ export default function PostItem({
     <div className="mb-4 w-full rounded-md border border-gray-200 bg-white">
       <div className="flex items-center justify-between p-3">
         <div className="flex items-center space-x-2">
-          {avatarFileId ? (
-            <img
-              ref={avatarImgRef}
-              alt={`user's avatar`}
-              className="h-8 w-8 rounded-full object-cover"
-            />
-          ) : (
-            <DefaultAvatar />
-          )}
+          <UserAvatar profilePicutreId={avatarFileId}></UserAvatar>
           <div>
-            <p ref={userNamePRef} className="text-sm font-medium"></p>
+            <p className="text-sm font-medium">{userName}</p>
           </div>
         </div>
         <Dots />
       </div>
       <div className="relative h-[500px]">
-        <PostImages imagesState={imagesState}></PostImages>
+        <PostFiles fileData={fileState}></PostFiles>
       </div>
       <PostLikes postId={postId}></PostLikes>
       <div className="px-3 pb-2">
         <p className="text-sm">
-          <span ref={userNameRef} className="font-medium">
-            .....
-          </span>{" "}
-          {description}
+          <span className="font-medium">{userName}</span> {description}
         </p>
       </div>
       <PostComments postId={postId}></PostComments>

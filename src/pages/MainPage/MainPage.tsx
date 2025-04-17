@@ -9,6 +9,7 @@ import SettingsButton from "../../Components/Buttons/SettingsButton";
 import UserInfo from "../../Components/UserInfo/UserInfo";
 import Reels from "../../Components/Reels/reels";
 import Content from "../../Components/Content/Content";
+import { Link } from "react-router-dom";
 const MainPage = () => {
   return (
       <Layout>
@@ -22,11 +23,12 @@ const MainPage = () => {
           <AddButton/>
           <LogoutButton/>
           <SettingsButton/>
+          <Link to={"/userProfile"}> welcome </Link>
         </div>
       </main>
       <aside className=" w-full  flex flex-col ">
         <header className="flex items-center ">
-          <UserInfo/>
+          {/* <UserInfo/> */}
         </header>
           <Reels/>
           <Content/>

@@ -1,23 +1,17 @@
 import { useAuthStore } from "../../store/authStore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import Loader from "../../pages/Loader/Loader";
 import {} from "../../api/auth";
 import UserInfoCard from "./UserInfoCard";
-import PostItem from "../Post/PostItem";
 import { useError } from "../../store/ErrorContext";
 import { tryCatchErrorHandler } from "../../utils/error";
-import { getProfileFollowCounts } from "../../api/follow";
-import { getUserProfileWithPosts } from "../../api/profile";
-import { UserPorfilePostsWithFollowsCount } from "../../types/profile";
+import UserPosts from "./UserPosts";
 
 export default function UserInfo() {
   const getUser = useAuthStore((state) => state.getUser);
   const user = useAuthStore(useShallow((state) => state.user));
 
-  const [userProfileData, setUserProfileData] = useState<
-    UserPorfilePostsWithFollowsCount | undefined
-  >();
   const [isLoading, setIsLoading] = useState(true);
   const { showError } = useError();
 
@@ -25,25 +19,13 @@ export default function UserInfo() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const user = await getUser();
-        if (!user?.profile) throw Error("error while fetching user");
-
-        const profileId = user.profile.profile_id;
-        const [userProfileData, followCounts] = await Promise.all([
-          getUserProfileWithPosts(profileId),
-          getProfileFollowCounts(profileId),
-        ]);
-        setUserProfileData({
-          userProfileData,
-          followCounts,
-        } as UserPorfilePostsWithFollowsCount);
+        await getUser();
       } catch (error) {
         tryCatchErrorHandler(error, showError);
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchUser();
   }, []);
 
@@ -51,31 +33,23 @@ export default function UserInfo() {
     return <Loader></Loader>;
   }
 
-  if (!user || !userProfileData) {
+  if (!user) {
     showError({ error: "error while getting user data, logging out" });
     return;
   }
 
   return (
-    <div className="flex h-screen w-max overflow-scroll">
-      <UserInfoCard
-        user={user}
-        userProfileData={userProfileData}
-      ></UserInfoCard>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 lg:grid-cols-1">
-        {userProfileData?.userProfileData.posts.map((post) => {
-          return (
-            <PostItem
-              avatarFileId={user?.profile?.picture_id}
-              description={userProfileData?.userProfileData.description}
-              imageFiles={post.post_files}
-              postId={post.post_id}
-              key={post.post_id}
-              userId={post.user_id}
-            ></PostItem>
-          );
-        })}
+    <div className="grid grid-cols-3 h-screen overflow-hidden">
+      {/* Optional sidebar */}
+      <div className="col-span-1 p-4">
+        <UserInfoCard user={user} />
+      </div>
+
+      {/* Scrollable feed */}
+      <div className="col-span-2 h-screen overflow-y-auto p-4">
+        <UserPosts user={user} />
       </div>
     </div>
+
   );
 }

@@ -1,4 +1,4 @@
-import { FollowCounts } from "./follow";
+import { File } from "./file";
 import { Post } from "./post";
 
 export interface UserProfileWithPosts {
@@ -7,7 +7,11 @@ export interface UserProfileWithPosts {
   posts: Post[];
 }
 
-export interface UserPorfilePostsWithFollowsCount {
-  userProfileData: UserProfileWithPosts;
-  followCounts: FollowCounts;
+export interface ProfilePost {
+  post_title:string,
+  post_description:string,
+  post_id:number,
+  profile_id:number
+  user_id:number,
+  post_files:File[]
 }

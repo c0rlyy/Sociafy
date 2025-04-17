@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchCommentsCount } from "../../api/comments";
+import { tryCatchErrorHandler } from "../../utils/error";
+import { useError } from "../../store/ErrorContext";
 
 type PostCommentsProps = {
   postId: number;
@@ -7,6 +9,7 @@ type PostCommentsProps = {
 
 export default function PostComments({ postId }: PostCommentsProps) {
   const [countOfComments, setCountOfComments] = useState(0);
+  const { showError } = useError();
 
   useEffect(() => {
     try {
@@ -14,7 +17,7 @@ export default function PostComments({ postId }: PostCommentsProps) {
         setCountOfComments(r.post_comments_count);
       });
     } catch (e) {
-      console.log(e)
+      tryCatchErrorHandler(e, showError);
     }
   });
 
