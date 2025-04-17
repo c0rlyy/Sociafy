@@ -40,12 +40,10 @@ export default function UserInfo() {
 
   return (
     <div className="grid grid-cols-3 h-screen overflow-hidden">
-      {/* Optional sidebar */}
       <div className="col-span-1 p-4">
         <UserInfoCard user={user} />
       </div>
 
-      {/* Scrollable feed */}
       <div className="col-span-2 h-screen overflow-y-auto p-4">
         <UserPosts user={user} />
       </div>
