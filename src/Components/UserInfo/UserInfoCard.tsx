@@ -7,31 +7,47 @@ import type { UserData } from "../../types/user";
 import FollowedBadge from "../Badge/FollowedBadge";
 import FollowersBadge from "../Badge/FollowersBadge";
 import { usePopoverStore } from "../../store/popover-store.";
-type UserInfoCardProps={
-  user:UserData,
-  userProfileData:UserResponseDataT
-}
-export default function UserInfoCard({ user, userProfileData }:  UserInfoCardProps ) {
+import { useEffect, useRef, useState } from "react";
+import { UserMe, UserT } from "../../types/auth";
+import DefaultAvatar from "../Avatar/Avatar";
+import { getImageUrlFromBlob } from "../Post/PostItem";
+import { useError } from "../../store/ErrorContext";
+import { tryCatchErrorHandler } from "../../utils/error";
+import { getFileBlobData } from "../../api/file";
+import { getProfileFollowCounts } from "../../api/follow";
+import UserAvatar from "./UserAvatar";
+import { FollowCounts } from "../../types/follow";
+
+type UserInfoCardProps = {
+  user: UserMe;
+};
+
+export default function UserInfoCard({ user }: UserInfoCardProps) {
+  const followedRefs = useRef<HTMLSpanElement>(null);
+  const followersRefs = useRef<HTMLSpanElement>(null);
+  const { showError } = useError();
+
+  useEffect(() => {
+    try {
+      if (!user.profile) throw Error("error while fetchiung user data");
+      getProfileFollowCounts(user.profile.profile_id).then((res) => {
+        if (followedRefs.current && followersRefs.current) {
+          followersRefs.current.innerText = `followers: ${res.followers || 0}`;
+          followedRefs.current.innerText = `followed: ${res.followed || 0}`;
+        }
+      });
+    } catch (e) {
+      tryCatchErrorHandler(e, showError);
+    }
+  }, []);
 
   return (
-    <div  className="absolute top-0 right-0 items-center justify-center flex-col px-1  py-3 gap-2">
-      <div className="flex items-center gap-2 ">
-      {user?.profile?.picture_id ? (
-          <UserImage apiUrl={`http://localhost:8000/api/v1/file-retrive/${user?.profile?.picture_id}`} />
-      ) : (
-        <DefaultAvatar />
-      )}
-      {/* <div className="md:flex flex-col  gap-2 hidden">
-        <span className="font-semibold text-xs">{user?.user_name}</span>
-        <Badge badgeText="Photographer" />
-        <span className="text-gray-300 text-xs ">Fashion Designer</span>
-      </div>
-      </div>
-      <div className="md:flex flex-col hidden">
-        <div className="flex items-center gap-2 ">
-      <FollowedBadge followedNum={highNumbersConverter(userProfileData?.followCounts?.followers || 0)}/>
-      <FollowersBadge followers={highNumbersConverter(userProfileData?.followCounts.followers || 0)}/>
-        </div> */}
+    <div className="flex ">
+      <UserAvatar profilePicutreId={user.profile?.picture_id}></UserAvatar>
+      <div className="flex flex-col">
+        <span>{user?.user_name}</span>
+        <span ref={followedRefs}>followed: </span>
+        <span ref={followersRefs}>followers: </span>
       </div>
     </div>
   );

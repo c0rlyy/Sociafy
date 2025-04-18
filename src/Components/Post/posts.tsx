@@ -1,26 +1,24 @@
-import posts from "../../mocks/posts.json";
-import PostItem from "./post-item";
-export default function Posts() {
-  // Temporary mocks applied
+import { PostItemPropsT } from "./PostItem";
+
+type PostsProps = {
+  posts: PostItemPropsT[];
+};
+
+export default function Posts({ posts }: PostsProps) {
   return (
-    <main className="m-6 flex h-[900px] flex-col rounded-md bg-gray-100 px-4 py-6">
-      <h1 className="text-4xl ">Friend's Posts</h1>
-      <article className="m-4 grid grid-cols-1   gap-2 overflow-y-scroll  ">
+    <main className="flex h-[780px] flex-col px-2 py-3">
+      {/* <article className="grid grid-cols-1 gap-2  overflow-y-scroll border-red-500 p-3 ">
         {posts.map((post) => (
           <PostItem
-            key={post.id}
-            images={post.imageUrls.map((url) => new File([url], "image.jpg"))}
+            key={post.postId}
+            postId={post.postId}
+            imageFiles={post.imageFiles}
             username={post.username}
-            avatarUrl={post.avatarUrl}
-            caption={post.caption}
-            likes={post.likes}
-            comments={post.comments}
-            createdAt={post.createdAt}
-            location={post.location}
-            isLiked={post.isLiked}
+            description={post.description}
+            avatarFileId={post.avatarFileId}
           />
         ))}
-      </article>
+      </article> */}
     </main>
   );
 }

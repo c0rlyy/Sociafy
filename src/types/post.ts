@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { z } from "zod";
 import type { postSchema } from "../schemas/schemas";
 
@@ -11,6 +12,10 @@ export type Post = {
   likes: number;
   postImage: string;
 };
+=======
+import { File } from "./file";
+
+>>>>>>> a5efd547195b0f73fe298239a394970a498dd9aa
 export type likePostResult = {
   post_id: number;
   profile_id: number;
@@ -26,6 +31,7 @@ export type ReadComments = {
   post_id: number;
   comment_content: string;
 };
+<<<<<<< HEAD
 type ValidationErrors = {
   [K in keyof PostData]?: string;
 };
@@ -36,4 +42,23 @@ export interface PostStoreT {
   errors: ValidationErrors;
   updateField: <K extends keyof PostData>(field: K, value: PostData[K]) => void;
   removePostFile: (index: number) => void;
+=======
+
+export interface UserPostData {
+  post_title: string;
+  post_description: string;
+  post_id: number;
+  profile_id: number;
+  user_id: number;
+  post_files: File[];
+}
+
+export interface Post {
+  post_title: string;
+  post_description: string;
+  post_id: number;
+  profile_id: number;
+  user_id: number;
+  post_files: File[];
+>>>>>>> a5efd547195b0f73fe298239a394970a498dd9aa
 }

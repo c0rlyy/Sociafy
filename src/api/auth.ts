@@ -1,9 +1,11 @@
 import { AxiosError, isAxiosError } from "axios";
 import api from "../axios-instance/axios";
-import type { AuthorizedT, FollowCounts, UserProfileWithPosts, UserT } from "../types/auth";
+import type {
+  AuthorizedT,
+  UserMe,
+  UserT,
+} from "../types/auth";
 import toast from "react-hot-toast";
-
-
 
 export const login = async (
   userData: UserT,
@@ -27,6 +29,7 @@ export const login = async (
     throw new Error("Server error");
   }
 };
+
 export const addUser = async (data: UserT): Promise<AuthorizedT> => {
   try {
     const response = await api.post("/users", {
@@ -34,6 +37,7 @@ export const addUser = async (data: UserT): Promise<AuthorizedT> => {
       password: data.password,
       user_name: data.username,
     });
+
     console.log(response.data);
     toast.success("Successfully registered account !");
     return response?.data;
@@ -45,48 +49,22 @@ export const addUser = async (data: UserT): Promise<AuthorizedT> => {
     throw new Error(`Unexpected error occurred: ${String(error)}`);
   }
 };
-export const getUserData = async (): Promise<UserT | undefined> => {
+export const getUserData = async (): Promise<UserMe> => {
   try {
     const response = await api.get("/users/me");
     return response.data;
   } catch (error) {
     console.error("Error fetching user data", error);
+    throw error;
   }
 };
 
-export const getUserProfileWithPosts = async (
-  profileId: number,
-): Promise<UserProfileWithPosts | undefined> => {
+export const getUserDataById = async (id: number): Promise<UserMe> => {
   try {
-    const response = await api.get(`/profile/${profileId}/posts`);
+    const response = await api.get(`/users/${id}`);
     return response.data;
   } catch (error) {
-    console.error("Failed to fetch profile posts:", error);
-    // throw error;
-  }
-};
-
-export const getFileBlobData = async (
-  fileId: number,
-): Promise<Blob | undefined> => {
-  try {
-    const response = await api.get(`/file-retrive/${fileId}`, {
-      responseType: "blob",
-    });
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch profile posts:", error);
-    // throw error;
-  }
-};
-
-export const getProfileFollowCounts = async (
-  profileId: number,
-): Promise<FollowCounts | undefined> => {
-  try {
-    const response = await api.get(`follows/follow-counts/${profileId}`);
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch profile posts:", error);
+    console.error("Error fetching user data", error);
+    throw error;
   }
 };

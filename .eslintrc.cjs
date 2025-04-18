@@ -15,13 +15,33 @@ module.exports = {
     project: ["./tsconfig.json", "./tsconfig.node.json"],
     tsconfigRootDir: __dirname,
   },
-  plugins: ["react-refresh"],
+  plugins: ["react-refresh", "@typescript-eslint"],
   rules: {
     "react-refresh/only-export-components": [
       "warn",
       { allowConstantExport: true },
     ],
-    "unused-imports/no-unused-imports": "warn",
-    "unused-imports/no-unused-vars": ["warn", { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }]
+    "no-unused-vars": [
+      "warn",
+      {
+        vars: "all",
+        args: "after-used",
+        caughtErrors: "all",
+        ignoreRestSiblings: false,
+        reportUsedIgnorePattern: false,
+      },
+    ],
+    // "no-unused-vars": "warn",
+    // "no-unused-imports": "warn",
+    // "unused-imports/no-unused-imports": "warn",
+    // "unused-imports/no-unused-vars": [
+    //   "warn",
+    //   {
+    //     vars: "all",
+    //     varsIgnorePattern: "^_",
+    //     args: "after-used",
+    //     argsIgnorePattern: "^_",
+    //   },
+    // ],
   },
 };
