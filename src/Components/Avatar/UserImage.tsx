@@ -1,4 +1,4 @@
-import { usePopoverStore } from "../../store/popoverStore"
+import { usePopoverStore } from "../../store/popover-store."
 export default function UserImage({apiUrl }:{apiUrl:string}) {
   const {openPopover, popoverType }=usePopoverStore()
   const openPopoverHandler=()=>{

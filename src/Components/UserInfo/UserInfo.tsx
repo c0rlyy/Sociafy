@@ -1,10 +1,8 @@
-import Badge from "../Badge/Badge";
-import DefaultAvatar from "../Avatar/Avatar";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../store/auth-store.";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import Loader from "../../pages/Loader/Loader";
-import Popover from "../Popover/Popover";
+
 import {
   FollowCounts,
   getFileBlobData,
@@ -14,7 +12,7 @@ import {
 } from "../../api/auth";
 import UserInfoCard from "./UserInfoCard";
 import UserPopover from "../Popover/UserPopover";
-import { usePopoverStore } from "../../store/popoverStore";
+import { usePopoverStore } from "../../store/popover-store.";
 
 export interface UserPorfilePostsWithFollowsCount {
   userProfileData: UserProfileWithPosts;
@@ -102,7 +100,6 @@ export default function UserInfo() {
             </div>
           </div>
         ))}
-<<<<<<< HEAD
       </div> */}
     </div>
   );

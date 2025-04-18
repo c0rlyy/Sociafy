@@ -1,6 +1,6 @@
 import Popover from "./Popover"
 import type { UserData, UserResponseDataT} from "../../types/user"
-import { usePopoverStore } from "../../store/popoverStore"
+import { usePopoverStore } from "../../store/popover-store."
 import { highNumbersConverter } from "../../utils/helpers"
 import FollowersBadge from "../Badge/FollowersBadge"
 import FollowedBadge from "../Badge/FollowedBadge"

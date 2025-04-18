@@ -1,22 +1,21 @@
-export type popoverStoreT={
-  isPopoverOpened:boolean,
-  popoverData:string,
-  setPopoverData:(data:any)=>void,
-  popoverType:"user-popup" | "",
-  openPopover:()=>void,
-  closePopover:()=>void,
-}
-type ModalDataT =
-  | {
-      [key: string]: string;
-    }
-  | "";
-export type ModalTypeT = "sign-up" | "post";
+export type popoverStoreT = {
+  isPopoverOpened: boolean;
+  popoverType: "user-popup" | "";
+  openPopover: () => void;
+  closePopover: () => void;
+};
+
+export type ModalTypeT = "sign-up" | "post-modal-wrapper" | "";
 export interface ModalStoreT {
   open: (modalType: ModalTypeT) => void;
   isOpen: boolean;
   onConfirm: () => void;
-  setModalData: (data: ModalDataT) => void;
   modalType: ModalTypeT;
   close: () => void;
+}
+export interface StepperStoreT {
+  currentStep: number;
+  totalSteps: number;
+  onNext: () => void;
+  onBack: () => void;
 }

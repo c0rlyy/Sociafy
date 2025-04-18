@@ -2,7 +2,7 @@ import LoginForm from "../Forms/LoginForm/LoginForm";
 import { useMediaQuery } from "react-responsive";
 import React, { useEffect } from "react";
 import TypeAnimation from "../Animations/TypeAnimation";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../store/auth-store.";
 import { useNavigate } from "react-router-dom";
 const LandingPage: React.FC = () => {
   const {isLogged }=useAuthStore()

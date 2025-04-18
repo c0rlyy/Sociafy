@@ -6,21 +6,15 @@ import Badge from "../Badge/Badge";
 import type { UserData } from "../../types/user";
 import FollowedBadge from "../Badge/FollowedBadge";
 import FollowersBadge from "../Badge/FollowersBadge";
-import { usePopoverStore } from "../../store/popoverStore";
+import { usePopoverStore } from "../../store/popover-store.";
 type UserInfoCardProps={
   user:UserData,
   userProfileData:UserResponseDataT
 }
 export default function UserInfoCard({ user, userProfileData }:  UserInfoCardProps ) {
-  const {openPopover, popoverType }=usePopoverStore()
-  const openPopoverHandler=()=>{
-  if(popoverType==="user-popup"){
-    openPopover()
-  }
 
-  }
   return (
-    <div onClick={openPopoverHandler} className="absolute top-0 right-0 items-center justify-center flex-col px-1  py-3 gap-2">
+    <div  className="absolute top-0 right-0 items-center justify-center flex-col px-1  py-3 gap-2">
       <div className="flex items-center gap-2 ">
       {user?.profile?.picture_id ? (
           <UserImage apiUrl={`http://localhost:8000/api/v1/file-retrive/${user?.profile?.picture_id}`} />

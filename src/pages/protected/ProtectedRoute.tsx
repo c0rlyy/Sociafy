@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../store/auth-store.";
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   const nav = useNavigate();

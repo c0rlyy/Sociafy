@@ -1,5 +1,5 @@
 import React, { ReactElement, Children, isValidElement } from "react"
-import { usePopoverStore } from "../../store/popoverStore"
+import { usePopoverStore } from "../../store/popover-store."
 import Icon from "../Icon/Icon"
 import { motion } from "framer-motion"
 type PopoverHeaderProps = { children: React.ReactNode }

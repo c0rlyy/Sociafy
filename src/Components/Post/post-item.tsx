@@ -1,78 +1,77 @@
 import DefaultAvatar from "../Avatar/Avatar";
-import Badge from "../Badge/Badge";
 import Dots from "../Dots/dots";
 
 type PostItemPropsT = {
-  username: string,
-  avatarUrl: string,
-  imageUrls: string[],
-  caption: string,
-  likes: number,
-  comments: number,
-  createdAt: string,
-  location: string,
+  username: string;
+  avatarUrl: string;
+  images: File[];
+  caption: string;
+  likes: number;
+  comments: number;
+  createdAt: string;
+  location: string;
   isLiked: boolean;
-}
+};
 
 export default function PostItem({
   username,
   avatarUrl,
-  imageUrls,
+  images,
   caption,
   likes,
   comments,
   createdAt,
   location,
-  isLiked
+  isLiked,
 }: PostItemPropsT) {
   return (
-    <div className=" mx-auto max-w-[800px] w-[450px]  border border-gray-200 rounded-md bg-white mb-4">
+    <div className=" mx-auto mb-4 w-[450px]  max-w-[800px] rounded-md border border-gray-200 bg-white">
       {/* Header */}
-      <div className="flex items-center justify-between p-3 border">
+      <div className="flex items-center justify-between border p-3">
         <div className="flex items-center space-x-2">
           {avatarUrl ? (
             <img
               src={avatarUrl}
               alt={`${username}'s avatar`}
-              className="w-8 h-8 rounded-full object-cover"
+              className="h-8 w-8 rounded-full object-cover"
             />
           ) : (
-            <DefaultAvatar className="w-8 h-8" />
+            <DefaultAvatar className="h-8 w-8" />
           )}
           <div>
-            <p className="font-medium text-sm">{username}</p>
+            <p className="text-sm font-medium">{username}</p>
             {location && <p className="text-xs text-gray-500">{location}</p>}
           </div>
         </div>
         <Dots className="text-gray-600" />
       </div>
 
-      <div className="relative w-full aspect-square overflow-hidden border mx-0 m-auto">
-        {imageUrls.length > 0 ? (
-          <div className="flex overflow-x-auto snap-x snap-mandatory h-full">
-            {imageUrls.map((url, index) => (
+      <div className="relative m-auto mx-0 aspect-square w-full overflow-hidden border">
+        {images.length > 0 ? (
+          <div className="flex h-full snap-x snap-mandatory overflow-x-auto">
+            {images.map((img, index) => (
               <img
                 key={index}
-                src={url}
+                src={URL.createObjectURL(img)}
                 alt={`Post by ${username}`}
-                className="w-full h-full flex-shrink-0 snap-center object-cover"
+                className="h-full w-full flex-shrink-0 snap-center object-cover"
               />
             ))}
           </div>
         ) : (
-          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center bg-gray-100">
             <p className="text-gray-400">No image</p>
           </div>
         )}
       </div>
 
       {/* Actions */}
-      <div className="p-3 flex items-center justify-between">
+      <div className="flex items-center justify-between p-3">
         <div className="flex items-center space-x-4">
           <button className="focus:outline-none">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className={`w-6 h-6 ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-700'}`}
+              className={`h-6 w-6 ${isLiked ? "fill-red-500 text-red-500" : "text-gray-700"}`}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -88,7 +87,7 @@ export default function PostItem({
           <button className="focus:outline-none">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6 text-gray-700"
+              className="h-6 w-6 text-gray-700"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -105,7 +104,7 @@ export default function PostItem({
         <button className="focus:outline-none">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6 text-gray-700"
+            className="h-6 w-6 text-gray-700"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -122,7 +121,7 @@ export default function PostItem({
 
       {/* Likes */}
       <div className="px-3 pb-2">
-        <p className="font-medium text-sm">{likes} likes</p>
+        <p className="text-sm font-medium">{likes} likes</p>
       </div>
 
       {/* Caption */}

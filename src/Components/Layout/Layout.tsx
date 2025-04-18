@@ -4,7 +4,7 @@ import { useTheme } from "../../store/themeContext";
 import FooterMenu from "../FooterMenu/FooterMenu";
 import FooterSearchBar from "../FooterMenu/FooterSearchBar";
 import Hamburger from "../Icon/Hamburger";
-import { usePopoverStore } from "../../store/popoverStore";
+import { usePopoverStore } from "../../store/popover-store.";
 type Props = {
   children: ReactNode;
 };
