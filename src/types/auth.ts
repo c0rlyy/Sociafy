@@ -17,6 +17,7 @@ export type UserMe = {
   user_name: string;
   id?: number;
   profile?: ProfileT;
+  profile_picture?: string;
 };
 
 export type AuthorizedT = {
@@ -24,7 +25,6 @@ export type AuthorizedT = {
   token_type: string;
 };
 
-<<<<<<< HEAD
 export interface File {
   path: string;
   file_type: string;
@@ -51,8 +51,6 @@ export interface UserProfileWithPosts {
   posts: Post[];
 }
 
-
-=======
 type ModalDataT =
   | {
       [key: string]: string;
@@ -67,7 +65,6 @@ export interface ModalStore {
   modalType: ModalType;
   close: () => void;
 }
->>>>>>> a5efd547195b0f73fe298239a394970a498dd9aa
 export interface AuthStateT {
   getToken: () => string | null;
   setToken: (server_token: string) => string | null | undefined;
@@ -77,4 +74,8 @@ export interface AuthStateT {
   getUser: () => Promise<UserMe | undefined | null>;
   user: UserMe | null;
   loading: boolean;
+  profilePicture: Blob | null;
+  profilePictureUrl: string | null;
+  // setProfilePicture: (profilePicture: Blob) => void;
+  fetchProfilePicture: () => void;
 }

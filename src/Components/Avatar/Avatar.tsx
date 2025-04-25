@@ -1,11 +1,10 @@
-import UserImage from "../../../public/assets/Icons/User.png";
 export default function DefaultAvatar() {
   return (
-    <div className="flex size-8 items-center justify-center rounded-full border bg-gray-300">
+    <div className="flex size-12 items-center justify-center rounded-full border bg-gray-300">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
+        width="32"
+        height="32"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"

@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type InfiniteScrollProps<T> = {
   fetchData: (nextPage: number) => Promise<void>;
@@ -48,7 +48,7 @@ export default function InfiniteScroll<T>({
 
   return (
     <>
-      <div>
+      <div className=" h-full overflow-y-scroll  p-6">
         {itemsList.map(mapFn)}
         <div ref={observerTarget} className="h-10" />
       </div>

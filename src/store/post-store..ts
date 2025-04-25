@@ -9,6 +9,7 @@ export const usePostStore = create<PostStoreT>((set) => ({
   errors: {},
   updateField: (field, value) => {
     set((state) => {
+      console.log(state);
       if (field === "files") {
         const newFiles = Array.isArray(value)
           ? [...state.postData.files, ...value]
@@ -30,7 +31,13 @@ export const usePostStore = create<PostStoreT>((set) => ({
       };
     });
   },
-
+  flushPostData: () => {
+    set((state) => {
+      return {
+        postData: { ...state.postData, files: [] },
+      };
+    });
+  },
   removePostFile: (index) => {
     set((state) => {
       const newMedia = [...state.postData.files];

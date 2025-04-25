@@ -4,11 +4,10 @@ import { ProfilePost } from "../../types/profile";
 import { fetchProfilePosts } from "../../api/post";
 import { tryCatchErrorHandler } from "../../utils/error";
 import { useError } from "../../store/ErrorContext";
-import PostItem from "../Post/PostItem";
 import InfiniteScroll from "../InfiniteScroll/InfiniteScroll";
 import Loader from "../../pages/Loader/Loader";
 import { AxiosError } from "axios";
-
+import PostItem from "../Post/PostItem";
 export interface UserPostsProps {
   user: UserMe;
 }
@@ -50,10 +49,14 @@ export default function UserPosts({ user }: UserPostsProps) {
   }
 
   const mapFn = (v: ProfilePost) => {
+    useEffect(() => {
+      console.log(v);
+    }, [v]);
     return (
       <PostItem
-        avatarFileId={user.profile?.picture_id}
-        description={v.post_description}
+        username={user.user_name}
+        avatarUrl={user.profile?.picture_id}
+        description={v.post_title}
         imageFiles={v.post_files}
         postId={v.post_id}
         userId={v.user_id}
@@ -67,6 +70,6 @@ export default function UserPosts({ user }: UserPostsProps) {
       fetchData={fetchPaginationData}
       itemsList={profilePosts}
       mapFn={mapFn}
-    ></InfiniteScroll>
+    />
   );
 }

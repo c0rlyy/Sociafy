@@ -10,16 +10,17 @@ type Props = {
 };
 const Layout: React.FC<Props> = ({ children }) => {
   const { theme } = useTheme();
-  const { closePopover, isPopoverOpened, popoverType}=usePopoverStore()
-  const eventObservable=()=>{
-    if(isPopoverOpened && popoverType==="user-popup")
-    closePopover()
-  }
+  const { closePopover, isPopoverOpened, popoverType } = usePopoverStore();
+  const eventObservable = () => {
+    if (isPopoverOpened && popoverType === "user-popup") closePopover();
+  };
   return (
-    <article onKeyDown={closePopover} onClick={eventObservable} className="flex  relative"
+    <article
+      onKeyDown={closePopover}
+      onClick={eventObservable}
+      className="relative flex h-screen "
     >
-
-      { children}
+      {children}
     </article>
   );
 };

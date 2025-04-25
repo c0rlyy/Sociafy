@@ -1,16 +1,6 @@
 import { z } from "zod";
 
-// Define allowed MIME types
-const ALLOWED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-  "image/gif",
-];
-const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm", "video/ogg"];
-const ALLOWED_FILE_TYPES = [...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES];
-
-const MAX_FILE_SIZE = 2 * 1024 * 1024;
+const MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024;
 
 export const loginSchema = z.object({
   username: z.string().min(1, { message: "Username cannot be empty" }),
@@ -57,23 +47,34 @@ export const registerSchema = z
     message: "Passwords don't match",
     path: ["repeatPassword"],
   });
-const fileSchema = z.object({
-  name: z.string(),
-  size: z
-    .number()
-    .max(MAX_FILE_SIZE, { message: "File size must be less than 2MB" }),
-  type: z.string().refine((type) => ALLOWED_FILE_TYPES.includes(type), {
-    message:
-      "File must be a valid image (JPEG, PNG, WebP, GIF) or video (MP4, WebM, OGG)",
-  }),
-});
+
 export const postSchema = z.object({
   caption: z
     .string()
     .min(0)
     .max(2200, { message: "You've exceeded maximum post length limit." }),
   files: z
-    .array(fileSchema)
-    .nonempty({ message: "Please upload at least one file." })
-    .max(3, { message: "You can only upload up to 3 files" }),
+    .instanceof(FileList)
+    .refine((list) => list.length > 0, { message: "No files selected" })
+    .refine((list) => list.length <= 3, { message: "Maximum 3 files allowed" })
+    .transform((list) => Array.from(list))
+    .refine(
+      (files) => {
+        const allowedTypes: { [key: string]: boolean } = {
+          "image/jpeg": true,
+          "image/png": true,
+          "image/webp": true,
+          "video/mp4": true,
+          "video/webm": true,
+        };
+        return Array.from(files).every((file) => allowedTypes[file.type]);
+      },
+      { message: "Invalid file type. Allowed types: JPG, PNG, WEBM, MP4" },
+    )
+    .refine(
+      (files) => Array.from(files).every((file) => file.size <= MAX_FILE_SIZE),
+      {
+        message: "File size should not exceed 10MB",
+      },
+    ),
 });

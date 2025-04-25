@@ -7,7 +7,7 @@ export default function MobileMenu() {
     open("post-modal-wrapper");
   };
   return (
-    <div className="absolute bottom-0 w-full border bg-white md:hidden">
+    <div className="absolute bottom-0 z-10 w-full border bg-white md:hidden">
       <div className="flex items-center justify-center gap-4 p-4">
         <div className="flex flex-col items-center">
           <Icon>

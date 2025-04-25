@@ -1,8 +1,10 @@
-import axios, { isAxiosError } from "axios";
+import axios from "axios";
 import api from "../axios-instance/axios";
-import { FollowCounts, FollowedUsersResT, FollowersUsersResT } from "../types/follow";
-
-
+import {
+  FollowCounts,
+  FollowedUsersResT,
+  FollowersUsersResT,
+} from "../types/follow";
 
 export async function fetchFollowed(
   profileId: number,

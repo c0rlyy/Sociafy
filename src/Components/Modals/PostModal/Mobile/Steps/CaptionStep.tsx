@@ -11,6 +11,7 @@ import { SubmitHandler } from "react-hook-form";
 type FormValues = z.infer<typeof postSchema>;
 export default function CaptionStep() {
   const caption = postSchema.pick({ caption: true });
+  const { postData } = usePostStore();
   const {
     register,
     formState: { errors },
@@ -26,7 +27,11 @@ export default function CaptionStep() {
   };
   return (
     <main className="mt-4 flex w-full flex-col gap-6">
-      <form onSubmit={handleSubmit(onSubmit)} action="">
+      <form
+        className="flex flex-col gap-6"
+        onSubmit={handleSubmit(onSubmit)}
+        action=""
+      >
         <BackIcon />
         <div className="text-center">
           <h1 className="text-4xl">Caption </h1>
@@ -39,6 +44,7 @@ export default function CaptionStep() {
             placeholder="Post content here..."
             name="caption"
             id=""
+            defaultValue={postData.caption}
           />
         </div>
         {errors && (
@@ -47,7 +53,7 @@ export default function CaptionStep() {
         <div className="flex justify-center ">
           <button
             className={clsx(
-              "w-full rounded-lg bg-black px-2 py-2.5 text-white transition-all hover:bg-opacity-65",
+              "w-full rounded-lg bg-blue-500  px-2 py-2.5 text-white transition-all hover:bg-opacity-65",
             )}
             type="submit"
           >
