@@ -1,4 +1,7 @@
 import { z } from "zod";
+
+const MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024;
+
 export const loginSchema = z.object({
   username: z.string().min(1, { message: "Username cannot be empty" }),
   password: z
@@ -44,3 +47,34 @@ export const registerSchema = z
     message: "Passwords don't match",
     path: ["repeatPassword"],
   });
+
+export const postSchema = z.object({
+  caption: z
+    .string()
+    .min(0)
+    .max(2200, { message: "You've exceeded maximum post length limit." }),
+  files: z
+    .instanceof(FileList)
+    .refine((list) => list.length > 0, { message: "No files selected" })
+    .refine((list) => list.length <= 3, { message: "Maximum 3 files allowed" })
+    .transform((list) => Array.from(list))
+    .refine(
+      (files) => {
+        const allowedTypes: { [key: string]: boolean } = {
+          "image/jpeg": true,
+          "image/png": true,
+          "image/webp": true,
+          "video/mp4": true,
+          "video/webm": true,
+        };
+        return Array.from(files).every((file) => allowedTypes[file.type]);
+      },
+      { message: "Invalid file type. Allowed types: JPG, PNG, WEBM, MP4" },
+    )
+    .refine(
+      (files) => Array.from(files).every((file) => file.size <= MAX_FILE_SIZE),
+      {
+        message: "File size should not exceed 10MB",
+      },
+    ),
+});

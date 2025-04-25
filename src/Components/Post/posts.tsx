@@ -1,11 +1,10 @@
-import posts from "../../mocks/posts.json";
-import PostItem, {PostItemPropsT} from "./PostItem";
+import { PostItemPropsT } from "./PostItem";
 
 type PostsProps = {
-  posts:PostItemPropsT[]
-}
+  posts: PostItemPropsT[];
+};
 
-export default function Posts({posts}:PostsProps) {
+export default function Posts({ posts }: PostsProps) {
   return (
     <main className="flex h-[780px] flex-col px-2 py-3">
       {/* <article className="grid grid-cols-1 gap-2  overflow-y-scroll border-red-500 p-3 ">

@@ -3,21 +3,24 @@ import ProtectedRoute from "../../pages/Secret/ProtectedRoute";
 import { useTheme } from "../../store/themeContext";
 import FooterMenu from "../FooterMenu/FooterMenu";
 import FooterSearchBar from "../FooterMenu/FooterSearchBar";
+import Hamburger from "../Icon/Hamburger";
+import { usePopoverStore } from "../../store/popover-store.";
 type Props = {
   children: ReactNode;
 };
 const Layout: React.FC<Props> = ({ children }) => {
   const { theme } = useTheme();
-  const searchBarHandler = () => {
-    setOpenedSearch((prev) => !prev);
+  const { closePopover, isPopoverOpened, popoverType } = usePopoverStore();
+  const eventObservable = () => {
+    if (isPopoverOpened && popoverType === "user-popup") closePopover();
   };
-
-  const [openedSearch, setOpenedSearch] = useState(false);
-
   return (
-    <article className="grid grid-cols-1 md:grid-cols-[280px_1fr] border"
+    <article
+      onKeyDown={closePopover}
+      onClick={eventObservable}
+      className="relative flex h-screen "
     >
-      { children}
+      {children}
     </article>
   );
 };

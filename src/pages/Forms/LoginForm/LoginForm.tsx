@@ -9,7 +9,7 @@ import { loginSchema } from "../../../schemas/schemas";
 import useModalStore from "../../../modalStore/modalStore";
 import toast from "react-hot-toast";
 import type { UserT } from "../../../types/auth";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../../store/auth-store.";
 type loginFormScreen = {
   mdScreen: boolean;
 };

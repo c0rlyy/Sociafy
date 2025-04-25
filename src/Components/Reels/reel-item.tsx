@@ -1,4 +1,11 @@
 import User from "../../../public/assets/Icons/User.png";
+
+// There is no need to write types for this, because backend hasn't been implemented for that yet
+type ReelItemT = {
+  username: string;
+  url?: string;
+};
+
 export default function ReelItem() {
   return (
     <div className="relative size-12 rounded-full">

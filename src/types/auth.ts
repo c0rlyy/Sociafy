@@ -17,12 +17,39 @@ export type UserMe = {
   user_name: string;
   id?: number;
   profile?: ProfileT;
+  profile_picture?: string;
 };
 
 export type AuthorizedT = {
   access_token: string;
   token_type: string;
 };
+
+export interface File {
+  path: string;
+  file_type: string;
+  file_id: number;
+}
+
+export interface FollowCounts {
+  followers: number;
+  followed: number;
+}
+
+export interface Post {
+  post_title: string;
+  post_description: string;
+  post_id: number;
+  profile_id: number;
+  user_id: number;
+  post_files: File[];
+}
+
+export interface UserProfileWithPosts {
+  description: string | null;
+  profile_id: number;
+  posts: Post[];
+}
 
 type ModalDataT =
   | {
@@ -47,4 +74,8 @@ export interface AuthStateT {
   getUser: () => Promise<UserMe | undefined | null>;
   user: UserMe | null;
   loading: boolean;
+  profilePicture: Blob | null;
+  profilePictureUrl: string | null;
+  // setProfilePicture: (profilePicture: Blob) => void;
+  fetchProfilePicture: () => void;
 }

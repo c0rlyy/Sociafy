@@ -1,6 +1,7 @@
 import MenuButton from "./Template/MenuButton";
 import Icon from "../Icon/Icon";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../../store/auth-store.";
+
 export default function LogoutButton() {
   const { logoutHandler } = useAuthStore();
   return (

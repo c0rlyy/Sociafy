@@ -1,7 +1,6 @@
-import { Suspense, useEffect, useLayoutEffect, useRef, useState } from "react";
-import DefaultAvatar from "../Avatar/Avatar";
+import { useEffect, useState } from "react";
 import Dots from "../Dots/dots";
-import { getUserData, getUserDataById } from "../../api/auth";
+import { getUserDataById } from "../../api/auth";
 import PostComments from "./PostComments";
 import PostLikes from "./PostLikes";
 import { PostFiles } from "./PostFiles";
@@ -13,7 +12,6 @@ import { useError } from "../../store/ErrorContext";
 import UserAvatar from "../UserInfo/UserAvatar";
 
 export type PostItemPropsT = {
-  avatarFileId: number | null | undefined;
   imageFiles: File[];
   description: string | null;
   postId: number;
@@ -33,7 +31,6 @@ export const getImageUrlFromBlob = (imageBlob: Blob) => {
 };
 
 export default function PostItem({
-  avatarFileId,
   imageFiles,
   description,
   postId,
@@ -65,6 +62,7 @@ export default function PostItem({
         tryCatchErrorHandler(e, showError);
       }
     };
+    console.log(imageFiles);
     getImageUrlBlobs();
   }, []);
 
@@ -73,23 +71,23 @@ export default function PostItem({
   }
 
   return (
-    <div className="mb-4 w-full rounded-md border border-gray-200 bg-white">
+    <div className="mb-4 max-w-full rounded-md border border-gray-200 bg-white">
       <div className="flex items-center justify-between p-3">
         <div className="flex items-center space-x-2">
-          <UserAvatar profilePicutreId={avatarFileId}></UserAvatar>
+          <UserAvatar></UserAvatar>
           <div>
             <p className="text-sm font-medium">{userName}</p>
           </div>
         </div>
         <Dots />
       </div>
-      <div className="relative h-[500px]">
+      <div className="relative mx-auto aspect-square size-3/4 max-h-[500px] overflow-hidden border">
         <PostFiles fileData={fileState}></PostFiles>
       </div>
       <PostLikes postId={postId}></PostLikes>
       <div className="px-3 pb-2">
         <p className="text-sm">
-          <span className="font-medium">{userName}</span> {description}
+          <span className="font-semibold">{userName}:</span> {description}
         </p>
       </div>
       <PostComments postId={postId}></PostComments>

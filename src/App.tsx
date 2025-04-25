@@ -7,6 +7,7 @@ import ProtectedRoute from "./pages/protected/ProtectedRoute";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ModalManager from "./Components/Modals/ModalManager";
 import { Toaster } from "react-hot-toast";
+import UserPage from "./pages/UserPage/userPage";
 import { ErrorProvider } from "./store/ErrorContext";
 import UserInfo from "./Components/UserInfo/UserInfo";
 function App() {
@@ -23,14 +24,23 @@ function App() {
           <MainPage />
         </ProtectedRoute>
       ),
-    }, {
-         path: "/userProfile",
-         element: (
-           <ProtectedRoute>
-             <UserInfo />
-           </ProtectedRoute>
-         ),
-       },
+    },
+    {
+      path: "/:user",
+      element: (
+        <ProtectedRoute>
+          <UserPage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/userProfile",
+      element: (
+        <ProtectedRoute>
+          <UserInfo />
+        </ProtectedRoute>
+      ),
+    },
   ]);
   return (
     <ErrorProvider>

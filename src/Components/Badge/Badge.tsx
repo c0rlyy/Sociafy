@@ -1,13 +1,15 @@
 export default function Badge({
   badgeText,
-  className = ""
+  className = "",
 }: {
   badgeText: string;
   className?: string;
 }) {
   return (
-    <div className={`px-3 bg-[#D9D9D9] rounded-lg ${className} transition-all hover:bg-opacity-60 cursor-pointer`}>
-      <span className="text-sm truncate text-ellipsis">{badgeText}</span>
+    <div
+      className={`flex cursor-pointer justify-center rounded-lg bg-[#D9D9D9] px-[4px] py-[3px] transition-all hover:bg-opacity-60 ${className}`}
+    >
+      <span className="truncate text-ellipsis text-xs">{badgeText}</span>
     </div>
   );
 }

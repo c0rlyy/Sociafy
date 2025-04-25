@@ -58,7 +58,7 @@ const Overlay: React.FC<OverlayProps> = ({ children, size, color }) => {
   }
   return (
     <div
-      className={`${setColor()} ${setSize()} absolute p-4 rounded-lg shadow-lg z-[30000] animate-slide-down m-0 mx-auto overflow-hidden
+      className={`${setColor()} ${setSize()} absolute p-4 rounded-lg shadow-lg z-[998] animate-slide-down m-0 mx-auto overflow-hidden
       }`}
     >
       <div className={classes.content}>{children}</div>

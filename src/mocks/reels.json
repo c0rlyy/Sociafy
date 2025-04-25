@@ -53,5 +53,170 @@
     "comments": 147,
     "createdAt": "2025-03-30T17:05:00Z",
     "music": "Lo-fi - Midnight Palette"
+  },
+  {
+    "id": "reel_006",
+    "username": "urban_rider",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/30.jpg",
+    "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+    "caption": "Night ride through the city 🏙️🚴‍♂️",
+    "likes": 1762,
+    "comments": 101,
+    "createdAt": "2025-04-04T21:10:00Z",
+    "music": "Synthwave - Neon Lights"
+  },
+  {
+    "id": "reel_007",
+    "username": "daily_doodle",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/55.jpg",
+    "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "caption": "Drawing with coffee stains ☕🖋️ #creative",
+    "likes": 938,
+    "comments": 67,
+    "createdAt": "2025-04-03T13:50:00Z",
+    "music": "Lo-fi - Sketch Pad"
+  },
+  {
+    "id": "reel_008",
+    "username": "gamer_guy",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/21.jpg",
+    "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+    "caption": "Insane 1v4 clutch 🎮🔥 #gaming",
+    "likes": 2241,
+    "comments": 190,
+    "createdAt": "2025-04-05T19:25:00Z",
+    "music": "Dubstep - Final Round"
+  },
+  {
+    "id": "reel_009",
+    "username": "zen_garden",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/8.jpg",
+    "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "caption": "Mini bonsai setup 🪴✨ #nature",
+    "likes": 1320,
+    "comments": 79,
+    "createdAt": "2025-04-01T11:45:00Z",
+    "music": "Ambient - Nature Flow"
+  },
+  {
+    "id": "reel_010",
+    "username": "thetechdoc",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/7.jpg",
+    "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+    "caption": "Why your phone slows down over time 🔧📱 #techfacts",
+    "likes": 2893,
+    "comments": 202,
+    "createdAt": "2025-04-06T09:05:00Z",
+    "music": "Electronica - Byte Pulse"
+  },
+  {
+    "id": "reel_011",
+    "username": "plantmom_diaries",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/22.jpg",
+    "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "caption": "Repotting my monstera 🌿💚",
+    "likes": 1430,
+    "comments": 88,
+    "createdAt": "2025-04-05T15:20:00Z",
+    "music": "Acoustic - Greenhouse Days"
+  },
+  {
+    "id": "reel_012",
+    "username": "code.crush",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/40.jpg",
+    "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+    "caption": "This VS Code trick blew my mind! 👩‍💻💡",
+    "likes": 2175,
+    "comments": 145,
+    "createdAt": "2025-04-06T08:30:00Z",
+    "music": "Techno - Debug Jam"
+  },
+  {
+    "id": "reel_013",
+    "username": "street.eats",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/39.jpg",
+    "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "caption": "Best taco truck in LA 🌮🔥",
+    "likes": 3620,
+    "comments": 289,
+    "createdAt": "2025-04-04T17:00:00Z",
+    "music": "Latin Beats - Street Food Shuffle"
+  },
+  {
+    "id": "reel_014",
+    "username": "sky.snapz",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/18.jpg",
+    "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+    "caption": "Drone flight over icy peaks ❄️🗻",
+    "likes": 4215,
+    "comments": 342,
+    "createdAt": "2025-04-03T07:10:00Z",
+    "music": "Cinematic - Skyfall Drift"
+  },
+  {
+    "id": "reel_015",
+    "username": "puppyplanet",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/31.jpg",
+    "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "caption": "When the zoomies hit 😂🐶",
+    "likes": 5102,
+    "comments": 603,
+    "createdAt": "2025-04-06T12:40:00Z",
+    "music": "Pop - Tail Waggin’ Tunes"
+  },
+  {
+    "id": "reel_016",
+    "username": "vintagewheels",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/5.jpg",
+    "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+    "caption": "Restoring a 1965 Mustang 🛠️🚗",
+    "likes": 3021,
+    "comments": 198,
+    "createdAt": "2025-04-02T10:55:00Z",
+    "music": "Rock - Engine Riffs"
+  },
+  {
+    "id": "reel_017",
+    "username": "sara_in_stitches",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/12.jpg",
+    "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "caption": "Finished my first embroidery hoop! 🧵💖",
+    "likes": 1654,
+    "comments": 94,
+    "createdAt": "2025-04-05T14:00:00Z",
+    "music": "Indie - Threaded Melodies"
+  },
+  {
+    "id": "reel_018",
+    "username": "coffeehead",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/15.jpg",
+    "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+    "caption": "Latte art level: swan 🦢☕",
+    "likes": 1940,
+    "comments": 112,
+    "createdAt": "2025-04-03T09:20:00Z",
+    "music": "Lo-fi - Morning Brew"
+  },
+  {
+    "id": "reel_019",
+    "username": "kpop.kween",
+    "avatarUrl": "https://randomuser.me/api/portraits/women/6.jpg",
+    "videoUrl": "https://www.w3schools.com/html/mov_bbb.mp4",
+    "caption": "Dance cover time! 🕺🎤 #kpop",
+    "likes": 3750,
+    "comments": 410,
+    "createdAt": "2025-04-06T18:05:00Z",
+    "music": "K-Pop - Seoul Vibes"
+  },
+  {
+    "id": "reel_020",
+    "username": "mindful.matt",
+    "avatarUrl": "https://randomuser.me/api/portraits/men/9.jpg",
+    "videoUrl": "https://www.w3schools.com/html/movie.mp4",
+    "caption": "60 seconds of guided breathing 🌬️🧘",
+    "likes": 1422,
+    "comments": 76,
+    "createdAt": "2025-04-01T06:45:00Z",
+    "music": "Ambient - Mind Still"
   }
 ]

@@ -1,24 +1,70 @@
-# Logs
-logs
-*.log
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+yarn.lock
+package-lock.json
+
+# testing
+/coverage
+/cypress/videos
+/cypress/screenshots
+
+# production
+/build
+/dist
+
+# misc
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+error.log
+debug.log
 
-node_modules
-dist
-dist-ssr
-*.local
+# editors
+/.idea
+/.vscode
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+*.launch
+.settings/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# cache
+.npm
+.eslintcache
+.stylelintcache
+.cache
+.parcel-cache
+
+# misc
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
+*.pem
+.vercel
+.next
+
+# storybook
+storybook-static
+
+# PWA
+**/public/sw.js
+**/public/workbox-*.js
+**/public/worker-*.js
+**/public/sw.js.map
+**/public/workbox-*.js.map
+**/public/worker-*.js.map

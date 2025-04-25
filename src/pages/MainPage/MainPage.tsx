@@ -1,39 +1,95 @@
+import { useState } from "react";
+import { motion } from "framer-motion";
 import Layout from "../../Components/Layout/Layout";
-import HomeButton from "../../Components/Buttons/HomeButton";
-import MessagesButton from "../../Components/Buttons/MessagesButton";
-import AddButton from "../../Components/Buttons/AddButton";
-import LogoutButton from "../../Components/Buttons/LogoutButton";
-import Logo from "../../../public/assets/Icons/SFy.png"
-import SettingsButton from "../../Components/Buttons/SettingsButton";
-
 import UserInfo from "../../Components/UserInfo/UserInfo";
-import Reels from "../../Components/Reels/reels";
 import Content from "../../Components/Content/Content";
-import { Link } from "react-router-dom";
+import Navbar from "../../Components/Navbar/Navbar";
+import Hamburger from "../../Components/Icon/Hamburger";
+import MobileMenu from "../../Components/Menu/MobileMenu";
+
 const MainPage = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleToggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+  };
+
+  const navbarVariants = {
+    open: {
+      x: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+    closed: {
+      x: "-100%",
+      opacity: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+  };
+
+  const contentVariants = {
+    compressed: {
+      marginLeft: "256px", // When menu is open, content is pushed right
+      width: "calc(100% - 256px)",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+    expanded: {
+      marginLeft: "0px",
+      width: "100%",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30,
+      },
+    },
+  };
+
   return (
-      <Layout>
-      <main className=" w-64 p-2.5 h-screen  flex flex-col justify-center ">
-        <div className="flex flex-col h-auto gap-4 justify-center">
-          <picture className="size-full ">
-              <img className="w-full h-full" src={Logo} alt="" />
-          </picture>
-          <HomeButton/>
-          <MessagesButton/>
-          <AddButton/>
-          <LogoutButton/>
-          <SettingsButton/>
-          <Link to={"/userProfile"}> welcome </Link>
-        </div>
-      </main>
-      <aside className=" w-full  flex flex-col ">
-        <header className="flex items-center ">
-          {/* <UserInfo/> */}
+    <Layout>
+      <motion.div
+        className="fixed z-10 h-full w-64 bg-white shadow-lg"
+        initial="closed"
+        animate={isMenuOpen ? "open" : "closed"}
+        variants={navbarVariants}
+      >
+        <Navbar
+          variants={navbarVariants}
+          isVisible={isMenuOpen}
+          closeNavbarHandler={handleToggleMenu}
+        />
+      </motion.div>
+
+      <motion.aside
+        initial="expanded"
+        animate={isMenuOpen ? "compressed" : "expanded"}
+        variants={contentVariants}
+        className="h-full bg-gray-50"
+      >
+        <header className="relative flex w-full items-center justify-between border">
+          <Hamburger
+            isVisible={isMenuOpen}
+            visibilityHandler={handleToggleMenu}
+          />
+          <UserInfo />
         </header>
-          <Reels/>
-          <Content/>
-      </aside>
-      </Layout>
-  )
+        <Content />
+      </motion.aside>
+
+      <MobileMenu />
+    </Layout>
+  );
 };
+
 export default MainPage;
