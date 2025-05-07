@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
 import type { ReactNode } from "react";
-import useModalStore from "../../modalStore/modalStore";
+import useModalStore from "../../store/modalStore";
 import classes from "./Modal.module.css";
 
 interface OverlayProps {
@@ -13,12 +13,7 @@ const overlays = document.getElementById("overlays") as HTMLElement;
 
 const Backdrop: React.FC = () => {
   const { close } = useModalStore();
-  return (
-    <div
-      className={classes.backdrop}
-      onClick={close}
-    ></div>
-  );
+  return <div className={classes.backdrop} onClick={close}></div>;
 };
 
 const Overlay: React.FC<OverlayProps> = ({ children, size, color }) => {
@@ -39,27 +34,27 @@ const Overlay: React.FC<OverlayProps> = ({ children, size, color }) => {
 
   const setColor = () => {
     if (color === undefined) {
-      return "bg-zinc-50"
+      return "bg-zinc-50";
     }
     switch (color) {
-      case color==="":
-        return "bg-zinc-50"
+      case color === "":
+        return "bg-zinc-50";
       case color == undefined:
-        return "bg-black"
+        return "bg-black";
       case color.startsWith("#"):
-        return `bg-[${color}]`
-      case color ==="black":
-        return "bg-black"
+        return `bg-[${color}]`;
+      case color === "black":
+        return "bg-black";
       case color === "white":
-        return "bg-white"
+        return "bg-white";
       default:
-        return "bg-zinc-50"
+        return "bg-zinc-50";
     }
-  }
+  };
   return (
     <div
-      className={`${setColor()} ${setSize()} absolute p-4 rounded-lg shadow-lg z-[998] animate-slide-down m-0 mx-auto overflow-hidden
-      }`}
+      className={`${setColor()} ${setSize()} animate-slide-down } absolute z-[998] m-0 mx-auto overflow-hidden rounded-lg p-4
+      shadow-lg`}
     >
       <div className={classes.content}>{children}</div>
     </div>
@@ -77,8 +72,10 @@ const Modal: React.FC<ModalProps> = ({ children, size, color }) => {
     <>
       {ReactDOM.createPortal(<Backdrop />, overlays)}
       {ReactDOM.createPortal(
-        <Overlay size={size} color={color}>{children}</Overlay>,
-        overlays
+        <Overlay size={size} color={color}>
+          {children}
+        </Overlay>,
+        overlays,
       )}
     </>
   );

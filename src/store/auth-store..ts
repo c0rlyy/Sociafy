@@ -3,7 +3,7 @@ import type { AuthStateT } from "../types/auth";
 import Cookies from "js-cookie";
 import { getUserData } from "../api/auth";
 import { getFileBlobData } from "../api/file";
-import { getImageUrlFromBlob } from "../Components/Post/PostItem";
+import { getImageUrlFromBlob } from "../Components/molecules/Post/PostItem";
 import { tryCatchErrorHandler } from "../utils/error";
 export const useAuthStore = create<AuthStateT>((set, get) => ({
   loading: false,
