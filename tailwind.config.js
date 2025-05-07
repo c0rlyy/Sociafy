@@ -1,63 +1,121 @@
 /** @type {import('tailwindcss').Config} */
-export const content = ["./src/**/*.{js,jsx,ts,tsx}"];
-export const theme = {
-  extend: {
-    fontFamily: {
-      sans: "Helvetica, Arial, sans-serif",
-      logoFont: "Lora",
-    },
-    fontSize: {
-      postCont: `clamp(.8rem,1.2vw,2.3rem)`,
-      postTitle: `clamp(.5rem,1vw,1rem)`,
-      postUser: `clamp(.7rem,1vw,2rem)`,
-      account: `clamp(.8rem,1vw,2rem)`,
-    },
-    gridTemplateColumns: {
-      landing: `minmax(0,20rem) minmax(20ch,70ch) minmax(20ch,60ch) minmax(0,5rem)`,
-      postColumns: `minmax(0,50%) minmax(17rem,40rem) minmax(0,50%)`,
-      userProfile: `repeat(auto-fill, minmax(200px,1fr))`,
-      layout: `minmax(min-content,18%) minmax(30rem,1fr) minmax(20ch,40ch)`,
-      mobileLayout: `minmax(min-content,18%) minmax(30rem,1fr)`,
-      PostCardColumns: `minmax(0,5ch) minmax(350px, auto) minmax(0,10ch)`,
-      userProfileLayout: `minmax(0,30ch) minmax(0,1fr)`,
-      userProfileUpperMenu: `minmax(auto,15ch) minmax(50ch,700px)`,
-      mainPageCenterContainer: `minmax(5rem, 10rem) minmax(40ch,1fr) minmax(0,20ch)`,
-      Layout: `minmax(0,30ch) minmax(0,1fr)`,
-      userProfileLayoutGrid: `minmax(0,30%) minmax(0rem,1fr) minmax(0,30ch) `,
-      fileUploaderLayout: `minmax(0,30ch) minmax(0,1fr)`,
-      SignUpLayout: `minmax(0,40vw) minmax(0,1fr)`,
-      settingsLayout: `minmax(10vw,25vw) minmax(0,1fr)`,
-    },
-    gridTemplateRows: {
-      userProfileRows: `auto`,
-      userProfileContainerRows: `minmax(0,20rem) minmax(0,1fr)`,
-      PostPageRows: `minmax(5rem,15rem)`,
-      postCard: `minmax(10ch, 15ch) minmax(150px,400px) minmax(5ch, 10ch) minmax(5ch, 15ch)`,
-      footer: `minmax(15ch,30ch) minmax(0,1fr)`,
-      layout: ` minmax(5ch, 8ch) minmax(1fr, auto)`,
-      mobileLayout: `minmax(10rem,1fr) minmax(1fr, auto)`,
-      mainPageCentreContainer: `minmax(1.5rem, 3rem) minmax(0,1fr)`,
-      recommendedContainer: `minmax(auto,15rem) minmax(0,13rem) minmax(0,1fr)`,
-      fileUploaderRows: `minmax(0,15rem) minmax(5ch, 10ch) minmax(0,1fr)`,
-      signUpRows: `minmax(0,15rem) minmax(0,40ch) minmax(0,10ch) minmax(0,1fr)`,
-    },
-    gridColumn: {
-      userPictures: `2/ span 3`,
-    },
-    gridRows: {
-      userPicturesRow: `1/ span 4`,
-    },
-    gridAutoRows: {
-      userProfileRows: `minmax(100px,300px)`,
-    },
-    screens: {
-      extraSm: "400px",
-      smScreen: "640px",
-    },
-    maxWidth: {
-      extraSmWidth: "400px",
+module.exports = {
+  content: ["./src/**/*.{js,jsx,ts,tsx,html}"],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          DEFAULT: "#5771ff",
+          100: "#000a44",
+          200: "#001589",
+          300: "#001fcd",
+          400: "#1236ff",
+          500: "#5771ff",
+          600: "#788dff",
+          700: "#9aa9ff",
+          800: "#bcc6ff",
+          900: "#dde2ff",
+        },
+        accent: {
+          DEFAULT: "#23c9ff",
+          100: "#002c3a",
+          200: "#005774",
+          300: "#0083ae",
+          400: "#00aee9",
+          500: "#23c9ff",
+          600: "#50d3ff",
+          700: "#7bdeff",
+          800: "#a7e9ff",
+          900: "#d3f4ff",
+        },
+        secondary: {
+          DEFAULT: "#283044",
+          100: "#080a0d",
+          200: "#10131b",
+          300: "#181d28",
+          400: "#202636",
+          500: "#283044",
+          600: "#455376",
+          700: "#6779a6",
+          800: "#99a5c3",
+          900: "#ccd2e1",
+        },
+        background: {
+          DEFAULT: "#fffeff",
+          100: "#660066",
+          200: "#cc00cc",
+          300: "#ff33ff",
+          400: "#ff99ff",
+          500: "#fffeff",
+          600: "#ffffff",
+          700: "#ffffff",
+          800: "#ffffff",
+          900: "#ffffff",
+        },
+        text: {
+          DEFAULT: "#0b0a07",
+          100: "#020202",
+          200: "#050503",
+          300: "#070705",
+          400: "#0a0906",
+          500: "#0b0a07",
+          600: "#48422e",
+          700: "#847854",
+          800: "#b3a888",
+          900: "#d9d3c3",
+        },
+
+        // New semantic colors
+        success: {
+          DEFAULT: "#4ade80", // green-400
+          100: "#052e16",
+          200: "#14532d",
+          300: "#166534",
+          400: "#22c55e",
+          500: "#4ade80",
+          600: "#86efac",
+          700: "#bbf7d0",
+          800: "#dcfce7",
+          900: "#f0fdf4",
+        },
+        error: {
+          DEFAULT: "#f87171", // red-400
+          100: "#450a0a",
+          200: "#7f1d1d",
+          300: "#b91c1c",
+          400: "#ef4444",
+          500: "#f87171",
+          600: "#fca5a5",
+          700: "#fecaca",
+          800: "#fee2e2",
+          900: "#fef2f2",
+        },
+        warning: {
+          DEFAULT: "#facc15", // yellow-400
+          100: "#422006",
+          200: "#78350f",
+          300: "#ca8a04",
+          400: "#eab308",
+          500: "#facc15",
+          600: "#fde047",
+          700: "#fef08a",
+          800: "#fef9c3",
+          900: "#fefce8",
+        },
+        info: {
+          DEFAULT: "#38bdf8", // sky-400
+          100: "#082f49",
+          200: "#0369a1",
+          300: "#0284c7",
+          400: "#0ea5e9",
+          500: "#38bdf8",
+          600: "#7dd3fc",
+          700: "#bae6fd",
+          800: "#e0f2fe",
+          900: "#f0f9ff",
+        },
+      },
     },
   },
+  darkMode: "class",
 };
-export const darkMode = "class";
-export const plugins = ["prettier-plugin-tailwindcss"];

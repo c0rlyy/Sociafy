@@ -9,7 +9,8 @@ import ModalManager from "./Components/Modals/ModalManager";
 import { Toaster } from "react-hot-toast";
 import UserPage from "./pages/UserPage/userPage";
 import { ErrorProvider } from "./store/ErrorContext";
-import UserInfo from "./Components/UserInfo/UserInfo";
+import UserInfo from "./Components/organisms/UserInfo/UserInfo";
+import CookieConsent from "./Components/organisms/CookieConsent/CookieConsent";
 function App() {
   const queryClient = new QueryClient();
   const router = createBrowserRouter([
@@ -47,6 +48,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <ModalManager />
+
           <Toaster />
           <RouterProvider router={router} />
         </ThemeProvider>

@@ -1,16 +1,24 @@
-import useModalStore from "../../modalStore/modalStore";
-import PostModalWrapper from "./PostModal/PostModalWrapper";
+import useModalStore from "../../store/modalStore";
+import PostModalWrapper from "../organisms/PostModal/PostModalWrapper";
+import SignUpModal from "../molecules/SignUpModal/SignUpModal";
 
-import SignUpModal from "./SignUpModal/SignUpModal";
+type ModalComponentsT = {
+  [key: string]: React.ComponentType;
+};
+
+const MODAL_COMPONENTS: ModalComponentsT = {
+  "sign-up": SignUpModal,
+  "post-modal-wrapper": PostModalWrapper,
+};
 
 const ModalManager = () => {
   const { modalType } = useModalStore();
 
-  return (
-    <>
-      {modalType === "sign-up" && <SignUpModal />}
-      {modalType === "post-modal-wrapper" && <PostModalWrapper />}
-    </>
-  );
+  if (!modalType) return null;
+
+  const ModalComponent = MODAL_COMPONENTS[modalType];
+
+  return ModalComponent ? <ModalComponent /> : null;
 };
+
 export default ModalManager;
