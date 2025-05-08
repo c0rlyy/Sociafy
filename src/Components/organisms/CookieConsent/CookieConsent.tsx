@@ -5,26 +5,18 @@ import { Stack } from "../../atoms/Stack/Stack";
 import { Heading, Paragraph } from "../../atoms/Typography/Typography";
 import ButtonGroup from "../../molecules/ButtonGroup/ButtonGroup";
 import { Popup } from "../../molecules/Popup/Popup";
-import Switch from "../../molecules/Switch/Switch";
+import Preferences from "./Preferences";
+import { useCookieConsent } from "../../../hooks/useCookieConsent";
 
 export default function CookieConsent() {
-  const [showCookieConsent, setShowCookieConsent] = useState(false);
+  const [showPreferences, setShowPreferences] = useState(false);
+  const { hasConsented, acceptAll, declineAll, isReviewed } =
+    useCookieConsent();
+  const handlePreferences = () => {
+    setShowPreferences((prev) => !prev);
+  };
 
-  useEffect(() => {
-    const existingAgreement = localStorage.getItem("cookie-consent");
-    if (!existingAgreement) {
-      setShowCookieConsent(true);
-    }
-  }, [setShowCookieConsent]);
-  const handleConsentAccept = () => {
-    localStorage.setItem("cookie-consent", "accepted");
-    setShowCookieConsent(false);
-  };
-  const handleConsentDecline = () => {
-    localStorage.setItem("cookie-consent", "declined");
-    setShowCookieConsent(false);
-  };
-  if (!showCookieConsent) return null;
+  if (hasConsented) return null;
   return (
     <Popup id="cookie-consent" position="center" size="lg">
       <Box padding="sm">
@@ -54,18 +46,18 @@ export default function CookieConsent() {
           </Box>
           <ButtonGroup>
             <Button
-              onClick={handleConsentAccept}
+              onClick={acceptAll}
               size="md"
               variant="primary"
               type="button"
             >
               Accept all
             </Button>
-            <Button size="md" variant="outline">
+            <Button onClick={handlePreferences} size="md" variant="outline">
               Preferences
             </Button>
             <Button
-              onClick={handleConsentDecline}
+              onClick={declineAll}
               size="md"
               variant="secondary"
               type="button"
@@ -74,7 +66,7 @@ export default function CookieConsent() {
             </Button>
           </ButtonGroup>
         </Stack>
-        <Switch />
+        {showPreferences && <Preferences />}
       </Box>
     </Popup>
   );
